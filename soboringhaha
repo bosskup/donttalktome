@@ -1,2212 +1,292 @@
---[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
+--[[ Protected by Lua Guard ]]
 
-]]--
-
-local TABLE_TableIndirection = {};
-bit32 = {};
-TABLE_TableIndirection["N%0"] = 32;
-TABLE_TableIndirection["P%0"] = 2 ^ TABLE_TableIndirection["N%0"];
-bit32.bnot = function(x)
-	x = x % TABLE_TableIndirection["P%0"];
-	return (TABLE_TableIndirection["P%0"] - 1) - x;
-end;
-bit32.band = function(x, y)
-	TABLE_TableIndirection["FlatIdent_95CAC%0"] = 0;
-	TABLE_TableIndirection["r%0"] = nil;
-	TABLE_TableIndirection["p%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_95CAC%0"] == 2) then
-			TABLE_TableIndirection["r%0"] = 0;
-			TABLE_TableIndirection["p%0"] = 1;
-			TABLE_TableIndirection["FlatIdent_95CAC%0"] = 3;
-		end
-		if (TABLE_TableIndirection["FlatIdent_95CAC%0"] == 0) then
-			if (y ~= 255) then
-			else
-				return x % 256;
-			end
-			if (y ~= 65535) then
-			else
-				return x % 65536;
-			end
-			TABLE_TableIndirection["FlatIdent_95CAC%0"] = 1;
-		end
-		if (TABLE_TableIndirection["FlatIdent_95CAC%0"] == 3) then
-			for i = 1, TABLE_TableIndirection["N%0"] do
-				local a, b = x % 2, y % 2;
-				x, y = math.floor(x / 2), math.floor(y / 2);
-				if ((a + b) ~= 2) then
-				else
-					TABLE_TableIndirection["r%0"] = TABLE_TableIndirection["r%0"] + TABLE_TableIndirection["p%0"];
-				end
-				TABLE_TableIndirection["p%0"] = 2 * TABLE_TableIndirection["p%0"];
-			end
-			return TABLE_TableIndirection["r%0"];
-		end
-		if (TABLE_TableIndirection["FlatIdent_95CAC%0"] == 1) then
-			if (y ~= 4294967295) then
-			else
-				return x % 4294967296;
-			end
-			x, y = x % TABLE_TableIndirection["P%0"], y % TABLE_TableIndirection["P%0"];
-			TABLE_TableIndirection["FlatIdent_95CAC%0"] = 2;
-		end
-	end
-end;
-bit32.bor = function(x, y)
-	if (y ~= 255) then
-	else
-		return (x - (x % 256)) + 255;
-	end
-	if (y ~= 65535) then
-	else
-		return (x - (x % 65536)) + 65535;
-	end
-	if (y ~= 4294967295) then
-	else
-		return 4294967295;
-	end
-	x, y = x % TABLE_TableIndirection["P%0"], y % TABLE_TableIndirection["P%0"];
-	TABLE_TableIndirection["r%0"] = 0;
-	TABLE_TableIndirection["p%0"] = 1;
-	for i = 1, TABLE_TableIndirection["N%0"] do
-		TABLE_TableIndirection["FlatIdent_2953F%0"] = 0;
-		TABLE_TableIndirection["a%0"] = nil;
-		TABLE_TableIndirection["b%0"] = nil;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_2953F%0"] == 0) then
-				TABLE_TableIndirection["a%0"], TABLE_TableIndirection["b%0"] = x % 2, y % 2;
-				x, y = math.floor(x / 2), math.floor(y / 2);
-				TABLE_TableIndirection["FlatIdent_2953F%0"] = 1;
-			end
-			if (TABLE_TableIndirection["FlatIdent_2953F%0"] == 1) then
-				if ((TABLE_TableIndirection["a%0"] + TABLE_TableIndirection["b%0"]) < 1) then
-				else
-					TABLE_TableIndirection["r%0"] = TABLE_TableIndirection["r%0"] + TABLE_TableIndirection["p%0"];
-				end
-				TABLE_TableIndirection["p%0"] = 2 * TABLE_TableIndirection["p%0"];
-				break;
-			end
-		end
-	end
-	return TABLE_TableIndirection["r%0"];
-end;
-bit32.bxor = function(x, y)
-	TABLE_TableIndirection["FlatIdent_47A9C%0"] = 0;
-	TABLE_TableIndirection["r%0"] = nil;
-	TABLE_TableIndirection["p%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_47A9C%0"] == 1) then
-			TABLE_TableIndirection["p%0"] = 1;
-			for i = 1, TABLE_TableIndirection["N%0"] do
-				TABLE_TableIndirection["FlatIdent_60EA1%0"] = 0;
-				TABLE_TableIndirection["a%0"] = nil;
-				TABLE_TableIndirection["b%0"] = nil;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_60EA1%0"] == 1) then
-						if ((TABLE_TableIndirection["a%0"] + TABLE_TableIndirection["b%0"]) ~= 1) then
-						else
-							TABLE_TableIndirection["r%0"] = TABLE_TableIndirection["r%0"] + TABLE_TableIndirection["p%0"];
-						end
-						TABLE_TableIndirection["p%0"] = 2 * TABLE_TableIndirection["p%0"];
-						break;
-					end
-					if (TABLE_TableIndirection["FlatIdent_60EA1%0"] == 0) then
-						TABLE_TableIndirection["a%0"], TABLE_TableIndirection["b%0"] = x % 2, y % 2;
-						x, y = math.floor(x / 2), math.floor(y / 2);
-						TABLE_TableIndirection["FlatIdent_60EA1%0"] = 1;
-					end
-				end
-			end
-			TABLE_TableIndirection["FlatIdent_47A9C%0"] = 2;
-		end
-		if (TABLE_TableIndirection["FlatIdent_47A9C%0"] == 2) then
-			return TABLE_TableIndirection["r%0"];
-		end
-		if (TABLE_TableIndirection["FlatIdent_47A9C%0"] == 0) then
-			x, y = x % TABLE_TableIndirection["P%0"], y % TABLE_TableIndirection["P%0"];
-			TABLE_TableIndirection["r%0"] = 0;
-			TABLE_TableIndirection["FlatIdent_47A9C%0"] = 1;
-		end
-	end
-end;
-bit32.lshift = function(x, s_amount)
-	if (math.abs(s_amount) < TABLE_TableIndirection["N%0"]) then
-	else
-		return 0;
-	end
-	x = x % TABLE_TableIndirection["P%0"];
-	if (s_amount < 0) then
-		return math.floor(x * (2 ^ s_amount));
-	else
-		return (x * (2 ^ s_amount)) % TABLE_TableIndirection["P%0"];
-	end
-end;
-bit32.rshift = function(x, s_amount)
-	TABLE_TableIndirection["FlatIdent_8F047%0"] = 0;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_8F047%0"] == 0) then
-			if (math.abs(s_amount) < TABLE_TableIndirection["N%0"]) then
-			else
-				return 0;
-			end
-			x = x % TABLE_TableIndirection["P%0"];
-			TABLE_TableIndirection["FlatIdent_8F047%0"] = 1;
-		end
-		if (TABLE_TableIndirection["FlatIdent_8F047%0"] == 1) then
-			if (s_amount > 0) then
-				return math.floor(x * (2 ^ -s_amount));
-			else
-				return (x * (2 ^ -s_amount)) % TABLE_TableIndirection["P%0"];
-			end
-			break;
-		end
-	end
-end;
-bit32.arshift = function(x, s_amount)
-	TABLE_TableIndirection["FlatIdent_6FA1%0"] = 0;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_6FA1%0"] == 1) then
-			if (s_amount > 0) then
-				TABLE_TableIndirection["add%0"] = 0;
-				if (x < (TABLE_TableIndirection["P%0"] / 2)) then
-				else
-					TABLE_TableIndirection["add%0"] = TABLE_TableIndirection["P%0"] - (2 ^ (TABLE_TableIndirection["N%0"] - s_amount));
-				end
-				return math.floor(x * (2 ^ -s_amount)) + TABLE_TableIndirection["add%0"];
-			else
-				return (x * (2 ^ -s_amount)) % TABLE_TableIndirection["P%0"];
-			end
-			break;
-		end
-		if (0 == TABLE_TableIndirection["FlatIdent_6FA1%0"]) then
-			if (math.abs(s_amount) < TABLE_TableIndirection["N%0"]) then
-			else
-				return 0;
-			end
-			x = x % TABLE_TableIndirection["P%0"];
-			TABLE_TableIndirection["FlatIdent_6FA1%0"] = 1;
-		end
-	end
-end;
-TABLE_TableIndirection["Players%0"] = game:GetService("Players");
-TABLE_TableIndirection["ReplicatedStorage%0"] = game:GetService("ReplicatedStorage");
-TABLE_TableIndirection["RunService%0"] = game:GetService("RunService");
-TABLE_TableIndirection["CoreGui%0"] = game:GetService("CoreGui");
-TABLE_TableIndirection["LP%0"] = TABLE_TableIndirection["Players%0"].LocalPlayer;
-print("[System] ⏳ ตรวจสอบสถานะหน้าล็อบบี้...");
-TABLE_TableIndirection["Events%0"] = TABLE_TableIndirection["ReplicatedStorage%0"]:WaitForChild("Events", 10);
-if TABLE_TableIndirection["Events%0"] then
-	TABLE_TableIndirection["FlatIdent_940A0%0"] = 0;
-	TABLE_TableIndirection["playGame%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_940A0%0"] == 0) then
-			TABLE_TableIndirection["playGame%0"] = TABLE_TableIndirection["Events%0"]:FindFirstChild("playgame") or TABLE_TableIndirection["Events%0"]:WaitForChild("playgame", 5);
-			if (TABLE_TableIndirection["playGame%0"] or (990 > 1620)) then
-				while task.wait(1) do
-					TABLE_TableIndirection["playerGui%0"] = TABLE_TableIndirection["LP%0"]:FindFirstChild("PlayerGui");
-					TABLE_TableIndirection["hud%0"] = TABLE_TableIndirection["playerGui%0"] and TABLE_TableIndirection["playerGui%0"]:FindFirstChild("HUD");
-					TABLE_TableIndirection["mainUI%0"] = TABLE_TableIndirection["hud%0"] and TABLE_TableIndirection["hud%0"]:FindFirstChild("Main");
-					if ((TABLE_TableIndirection["mainUI%0"] and TABLE_TableIndirection["mainUI%0"].Visible) or (877 > 4695)) then
-						print("[System] ✅ เข้าเกมสำเร็จ! UI โหลดครบแล้ว กำลังเริ่มตรวจสอบสถานะตัวละคร...");
-						task.wait(2);
-						break;
-					end
-					pcall(function()
-						TABLE_TableIndirection["FlatIdent_946F%0"] = 0;
-						while true do
-							if (TABLE_TableIndirection["FlatIdent_946F%0"] == 0) then
-								TABLE_TableIndirection["playGame%0"]:FireServer("Main Game");
-								print("[System] 🎮 กำลังยิง Remote พยายามเข้า Main Game...");
-								break;
-							end
-						end
-					end);
-				end
-			end
-			break;
-		end
-	end
-else
-	print("[System] ⚠️ ข้ามขั้นตอนล็อบบี้ (อาจจะอยู่ใน Main Game อยู่แล้ว)");
-	task.wait(2);
-end
-task.spawn(function()
-	TABLE_TableIndirection["FlatIdent_6053C%0"] = 0;
-	TABLE_TableIndirection["LP%1"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_6053C%0"] == 0) then
-			TABLE_TableIndirection["LP%1"] = game:GetService("Players").LocalPlayer;
-			if ((2691 >= 1851) and getconnections) then
-				for _, connection in pairs(getconnections(TABLE_TableIndirection["LP%1"].Idled)) do
-					connection:Disable();
-				end
-				print("[System] 🛡️ เปิดใช้งาน Anti-AFK (แบบตัดสัญญาณ Idled) เรียบร้อยแล้ว");
-			else
-				warn("[System] ⚠️ ตัวรันของคุณไม่รองรับ getconnections (Anti-AFK แบบนี้อาจไม่ทำงาน)");
-			end
-			break;
-		end
-	end
-end);
-_G.SystemEnabled = true;
-_G.LowCPUMode = true;
-_G.FPSCap = 15;
-if (setfpscap or (2985 >= 4856)) then
-	TABLE_TableIndirection["FlatIdent_8F59B%0"] = 0;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_8F59B%0"] == 0) then
-			setfpscap(_G.FPSCap);
-			print("[System] 🎥 ล็อค FPS ไว้ที่ " .. tostring(_G.FPSCap) .. " เรียบร้อยแล้ว");
-			break;
-		end
-	end
-else
-	warn("[System] ⚠️ ตัวรันของคุณไม่รองรับคำสั่ง setfpscap");
-end
-task.spawn(function()
-	while task.wait(10) do
-		if ((setfpscap and _G.FPSCap) or (4593 <= 2672)) then
-			pcall(function()
-				setfpscap(_G.FPSCap);
-			end);
-		end
-	end
-end);
-TABLE_TableIndirection["currentQuest%0"] = nil;
-TABLE_TableIndirection["isProcessingQuest%0"] = false;
-TABLE_TableIndirection["cachedHasQuest%0"] = false;
-_G.IsRespawning = false;
-TABLE_TableIndirection["LP%0"].CharacterAdded:Connect(function(char)
-	TABLE_TableIndirection["FlatIdent_2AC68%0"] = 0;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_2AC68%0"] == 4) then
-			_G.IsRespawning = false;
-			break;
-		end
-		if (TABLE_TableIndirection["FlatIdent_2AC68%0"] == 2) then
-			TABLE_TableIndirection["isProcessingQuest%0"] = false;
-			TABLE_TableIndirection["currentQuest%0"] = nil;
-			TABLE_TableIndirection["FlatIdent_2AC68%0"] = 3;
-		end
-		if (TABLE_TableIndirection["FlatIdent_2AC68%0"] == 3) then
-			TABLE_TableIndirection["cachedHasQuest%0"] = false;
-			print("[System] ♻️ โหลดเสร็จสิ้น! เคลียร์สถานะและเริ่มลุยฟาร์มต่อ...");
-			TABLE_TableIndirection["FlatIdent_2AC68%0"] = 4;
-		end
-		if (TABLE_TableIndirection["FlatIdent_2AC68%0"] == 0) then
-			_G.IsRespawning = true;
-			print("[System] 💀 ตรวจพบตัวละครเกิดใหม่ กำลังรอเกมโหลด 15 วินาที...");
-			TABLE_TableIndirection["FlatIdent_2AC68%0"] = 1;
-		end
-		if (TABLE_TableIndirection["FlatIdent_2AC68%0"] == 1) then
-			char:WaitForChild("HumanoidRootPart", 10);
-			task.wait(15);
-			TABLE_TableIndirection["FlatIdent_2AC68%0"] = 2;
-		end
-	end
-end);
-TABLE_TableIndirection["Config%0"] = {};
-TABLE_TableIndirection["Config%0"].FLY_SPEED = 70;
-TABLE_TableIndirection["Config%0"].HEAD_OFFSET = 7;
-TABLE_TableIndirection["Config%0"].KILL_OFFSET = 7;
-TABLE_TableIndirection["Config%0"].HIT_CHECK_DELAY = 0.15;
-TABLE_TableIndirection["Config%0"].KILL_STUCK_TIMEOUT = 32;
-TABLE_TableIndirection["Config%0"].STOP_RADIUS = 3.5;
-TABLE_TableIndirection["Config%0"].PULL_RADIUS = 250;
-TABLE_TableIndirection["Config%0"].TELEPORT_THRESHOLD = 40;
-TABLE_TableIndirection["Config%0"].ATTACK_DELAY = 0.05;
-TABLE_TableIndirection["Config%0"].COMBO_COOLDOWN = 1.5;
-TABLE_TableIndirection["Events%1"] = TABLE_TableIndirection["ReplicatedStorage%0"]:WaitForChild("Events");
-TABLE_TableIndirection["CombatRegister%0"] = TABLE_TableIndirection["Events%1"]:WaitForChild("CombatRegister");
-TABLE_TableIndirection["dashRemote%0"] = TABLE_TableIndirection["Events%1"]:WaitForChild("takestam");
-TABLE_TableIndirection["QuestRemote%0"] = TABLE_TableIndirection["Events%1"]:WaitForChild("Quest");
-TABLE_TableIndirection["SetSpawnRemote%0"] = TABLE_TableIndirection["Events%1"]:WaitForChild("SetSpawn");
-TABLE_TableIndirection["MeleeAnims%0"] = TABLE_TableIndirection["ReplicatedStorage%0"]:WaitForChild("CombatAnimations"):WaitForChild("Melee");
-TABLE_TableIndirection["PunchAnims%0"] = {[1]=TABLE_TableIndirection["MeleeAnims%0"]:WaitForChild("Punch1"),[2]=TABLE_TableIndirection["MeleeAnims%0"]:WaitForChild("Punch2"),[3]=TABLE_TableIndirection["MeleeAnims%0"]:WaitForChild("Punch3"),[4]=TABLE_TableIndirection["MeleeAnims%0"]:WaitForChild("GroundPunch4"),[5]=TABLE_TableIndirection["MeleeAnims%0"]:WaitForChild("GroundPunch5")};
-TABLE_TableIndirection["QUESTS%0"] = {{NPCId="Daph",Position=Vector3.new(-578.6, 5.9, -3431.5),SpawnPoint=nil,GatherPoint=Vector3.new(-647.8, 30.3, -3474.7),MinLevel=1,MaxLevel=14,TargetQuestName="Help Daph",TargetMobs={"Bandit"}},{NPCId="Noah",Position=Vector3.new(-1710.4, 4, -3376.7),SpawnPoint=Vector3.new(-1540.9, 5.1, -3340.3),GatherPoint=Vector3.new(-1795.4, 21.7, -3346.7),MinLevel=15,MaxLevel=19,TargetQuestName="Help Noah",TargetMobs={"Desert Bandit"}},{NPCId="Robert",Position=Vector3.new(-1445.1, 10.2, -5102.7),SpawnPoint=Vector3.new(-1296.9, 4.2, -5060.6),GatherPoint=Vector3.new(-1501, 68.1, -5249.7),MinLevel=20,MaxLevel=24,TargetQuestName="Help Robert",TargetMobs={"Corrupt Marine"}},{NPCId="Kevin",Position=Vector3.new(-1219.4, 63.7, -5194.4),SpawnPoint=Vector3.new(-1296.9, 4.2, -5060.6),GatherPoint=Vector3.new(-1170.6, 71.4, -5248.5),MinLevel=25,MaxLevel=29,TargetQuestName="Help Kevin",TargetMobs={"Shell's Bandit"}},{NPCId="Zen",Position=Vector3.new(-3172.1, 12.2, -5226.7),SpawnPoint=Vector3.new(-3150.3, 11.8, -5233.6),GatherPoint=Vector3.new(-3251.4, 23.6, -5253.7),MinLevel=30,MaxLevel=39,TargetQuestName="Help Zen",TargetMobs={"Zou Inhabitant"}},{NPCId="Chef Rice",Position=Vector3.new(-2968.3, 6.6, -6697.7),SpawnPoint=Vector3.new(-2978.9, 52.6, -6796.3),GatherPoint=Vector3.new(-2992.5, 3, -6778.7),MinLevel=40,MaxLevel=109,TargetQuestName="Help Rice",TargetMobs={"Krieg Pirate"},LockGatherHeight=true},{NPCId="Zhen",Position=Vector3.new(4095.7, 1818.9, -9833.3),SpawnPoint=Vector3.new(3711.4, 1699.7, -9467.8),GatherPoint={Vector3.new(4171.3, 1832, -9881.4),Vector3.new(4192.9, 1917.2, -9906.8)},MinLevel=110,MaxLevel=159,TargetQuestName="Help zhen",TargetMobs={"Castle Guard"},CustomHeadOffset=9.1,CustomKillOffset=9.1},{NPCId="Miska",Position=Vector3.new(184.7, 41.5, -11658.7),SpawnPoint=Vector3.new(262, 7.6, -11481.3),GatherPoint=Vector3.new(276.4, 55.1, -11757),MinLevel=160,MaxLevel=200,TargetQuestName="Help Miska",TargetMobs={"Gravito's Undermen"},CustomHeadOffset=8.2,CustomKillOffset=8.2},{NPCId="Becky",Position=Vector3.new(7731.1, -2176.1, -17222.7),SpawnPoint=Vector3.new(7973.7, -2152.7, -17075),GatherPoint=Vector3.new(7727.7, -2165.6, -17291.8),MinLevel=190,MaxLevel=400,TargetQuestName="Help Becky",TargetMobs={"Fishman Karate User"}}};
-TABLE_TableIndirection["LevelManager%0"] = {};
-TABLE_TableIndirection["LevelManager%0"].Get = function()
-	TABLE_TableIndirection["FlatIdent_29B3D%0"] = 0;
-	TABLE_TableIndirection["playerGui%0"] = nil;
-	TABLE_TableIndirection["success%0"] = nil;
-	TABLE_TableIndirection["levelVal%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_29B3D%0"] == 1) then
-			TABLE_TableIndirection["success%0"], TABLE_TableIndirection["levelVal%0"] = pcall(function()
-				return tonumber(TABLE_TableIndirection["playerGui%0"].HUD.Main.Bars.Experience.Detail.Level.Text:match("%d+"));
-			end);
-			return (TABLE_TableIndirection["success%0"] and TABLE_TableIndirection["levelVal%0"] and TABLE_TableIndirection["levelVal%0"]) or 1;
-		end
-		if (TABLE_TableIndirection["FlatIdent_29B3D%0"] == 0) then
-			TABLE_TableIndirection["playerGui%0"] = TABLE_TableIndirection["LP%0"]:FindFirstChild("PlayerGui");
-			if (not TABLE_TableIndirection["playerGui%0"] or (1168 > 3156)) then
-				return 1;
-			end
-			TABLE_TableIndirection["FlatIdent_29B3D%0"] = 1;
-		end
-	end
-end;
-TABLE_TableIndirection["LevelManager%0"].GetBestQuest = function()
-	TABLE_TableIndirection["FlatIdent_759F1%0"] = 0;
-	TABLE_TableIndirection["myLevel%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_759F1%0"] == 1) then
-			return nil;
-		end
-		if (0 == TABLE_TableIndirection["FlatIdent_759F1%0"]) then
-			TABLE_TableIndirection["myLevel%0"] = TABLE_TableIndirection["LevelManager%0"].Get();
-			for _, data in ipairs(TABLE_TableIndirection["QUESTS%0"]) do
-				if ((TABLE_TableIndirection["myLevel%0"] >= data.MinLevel) and (TABLE_TableIndirection["myLevel%0"] <= data.MaxLevel)) then
-					return data;
-				end
-			end
-			TABLE_TableIndirection["FlatIdent_759F1%0"] = 1;
-		end
-	end
-end;
-TABLE_TableIndirection["QuestTracker%0"] = {};
-TABLE_TableIndirection["QuestTracker%0"].GetQuestName = function()
-	TABLE_TableIndirection["FlatIdent_6B983%0"] = 0;
-	TABLE_TableIndirection["playerGui%0"] = nil;
-	TABLE_TableIndirection["questGui%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_6B983%0"] == 2) then
-			return nil;
-		end
-		if (TABLE_TableIndirection["FlatIdent_6B983%0"] == 1) then
-			TABLE_TableIndirection["questGui%0"] = TABLE_TableIndirection["playerGui%0"]:FindFirstChild("Quest");
-			if ((4276 >= 1195) and (1404 == 1404) and TABLE_TableIndirection["questGui%0"] and TABLE_TableIndirection["questGui%0"]:FindFirstChild("Main") and TABLE_TableIndirection["questGui%0"].Main:FindFirstChild("Info") and TABLE_TableIndirection["questGui%0"].Main.Info:FindFirstChild("Top")) then
-				TABLE_TableIndirection["FlatIdent_2D88C%0"] = 0;
-				TABLE_TableIndirection["qName%0"] = nil;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_2D88C%0"] == 0) then
-						TABLE_TableIndirection["qName%0"] = TABLE_TableIndirection["questGui%0"].Main.Info.Top:FindFirstChild("QuestName");
-						if ((3232 <= 4690) and ((TABLE_TableIndirection["qName%0"] and TABLE_TableIndirection["qName%0"]:IsA("TextLabel")) or (3748 < 2212))) then
-							return TABLE_TableIndirection["qName%0"].Text;
-						end
-						break;
-					end
-				end
-			end
-			TABLE_TableIndirection["FlatIdent_6B983%0"] = 2;
-		end
-		if (TABLE_TableIndirection["FlatIdent_6B983%0"] == 0) then
-			TABLE_TableIndirection["playerGui%0"] = TABLE_TableIndirection["LP%0"]:FindFirstChild("PlayerGui");
-			if (not TABLE_TableIndirection["playerGui%0"] or (572 > 4486)) then
-				return nil;
-			end
-			TABLE_TableIndirection["FlatIdent_6B983%0"] = 1;
-		end
-	end
-end;
-TABLE_TableIndirection["QuestTracker%0"].GetProgress = function()
-	TABLE_TableIndirection["FlatIdent_D79D%0"] = 0;
-	TABLE_TableIndirection["playerGui%0"] = nil;
-	TABLE_TableIndirection["questGui%0"] = nil;
-	TABLE_TableIndirection["scan%0"] = nil;
-	while true do
-		if (3 == TABLE_TableIndirection["FlatIdent_D79D%0"]) then
-			return TABLE_TableIndirection["scan%0"](TABLE_TableIndirection["questGui%0"]);
-		end
-		if (TABLE_TableIndirection["FlatIdent_D79D%0"] == 2) then
-			TABLE_TableIndirection["scan%0"] = nil;
-			TABLE_TableIndirection["scan%0"] = function(obj)
-				for _, child in ipairs(obj:GetChildren()) do
-					TABLE_TableIndirection["FlatIdent_89237%0"] = 0;
-					TABLE_TableIndirection["c%0"] = nil;
-					TABLE_TableIndirection["t%0"] = nil;
-					while true do
-						if (TABLE_TableIndirection["FlatIdent_89237%0"] == 0) then
-							if (child:IsA("TextLabel") or child:IsA("TextButton")) then
-								TABLE_TableIndirection["FlatIdent_5B2CE%0"] = 0;
-								TABLE_TableIndirection["text%0"] = nil;
-								while true do
-									if (TABLE_TableIndirection["FlatIdent_5B2CE%0"] == 0) then
-										TABLE_TableIndirection["text%0"] = child.Text;
-										if TABLE_TableIndirection["text%0"] then
-											local current, total = TABLE_TableIndirection["text%0"]:match("(%d+)/(%d+)");
-											if ((4090 < 4653) and current and total) then
-												return tonumber(current), tonumber(total);
-											end
-											current, total = TABLE_TableIndirection["text%0"]:match("(%d+) of (%d+)");
-											if (current and total) then
-												return tonumber(current), tonumber(total);
-											end
-										end
-										break;
-									end
-								end
-							end
-							TABLE_TableIndirection["c%0"], TABLE_TableIndirection["t%0"] = TABLE_TableIndirection["scan%0"](child);
-							TABLE_TableIndirection["FlatIdent_89237%0"] = 1;
-						end
-						if (TABLE_TableIndirection["FlatIdent_89237%0"] == 1) then
-							if TABLE_TableIndirection["c%0"] then
-								return TABLE_TableIndirection["c%0"], TABLE_TableIndirection["t%0"];
-							end
-							break;
-						end
-					end
-				end
-				return nil, nil;
-			end;
-			TABLE_TableIndirection["FlatIdent_D79D%0"] = 3;
-		end
-		if (TABLE_TableIndirection["FlatIdent_D79D%0"] == 1) then
-			TABLE_TableIndirection["questGui%0"] = TABLE_TableIndirection["playerGui%0"]:FindFirstChild("Quest");
-			if ((3061 >= 2958) and not TABLE_TableIndirection["questGui%0"]) then
-				return nil, nil;
-			end
-			TABLE_TableIndirection["FlatIdent_D79D%0"] = 2;
-		end
-		if (0 == TABLE_TableIndirection["FlatIdent_D79D%0"]) then
-			TABLE_TableIndirection["playerGui%0"] = TABLE_TableIndirection["LP%0"]:FindFirstChild("PlayerGui");
-			if (not TABLE_TableIndirection["playerGui%0"] or (1180 == 2180) or (896 >= 3146)) then
-				return nil, nil;
-			end
-			TABLE_TableIndirection["FlatIdent_D79D%0"] = 1;
-		end
-	end
-end;
-TABLE_TableIndirection["QuestTracker%0"].IsComplete = function()
-	local current, total = TABLE_TableIndirection["QuestTracker%0"].GetProgress();
-	if ((current and total and (total > 0)) or (2652 < 196)) then
-		return current >= total;
-	end
-	TABLE_TableIndirection["playerGui%0"] = TABLE_TableIndirection["LP%0"]:FindFirstChild("PlayerGui");
-	TABLE_TableIndirection["questGui%0"] = TABLE_TableIndirection["playerGui%0"] and TABLE_TableIndirection["playerGui%0"]:FindFirstChild("Quest");
-	if ((3187 >= 644) and TABLE_TableIndirection["questGui%0"]) then
-		TABLE_TableIndirection["FlatIdent_2E9CB%0"] = 0;
-		TABLE_TableIndirection["checkText%0"] = nil;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_2E9CB%0"] == 1) then
-				if ((4492 >= 2654) and (272 == 272) and TABLE_TableIndirection["checkText%0"](TABLE_TableIndirection["questGui%0"])) then
-					return true;
-				end
-				break;
-			end
-			if (TABLE_TableIndirection["FlatIdent_2E9CB%0"] == 0) then
-				TABLE_TableIndirection["checkText%0"] = nil;
-				TABLE_TableIndirection["checkText%0"] = function(obj)
-					for _, child in ipairs(obj:GetChildren()) do
-						TABLE_TableIndirection["FlatIdent_8BC55%0"] = 0;
-						while true do
-							if (TABLE_TableIndirection["FlatIdent_8BC55%0"] == 0) then
-								if ((644 <= 704) and (child:IsA("TextLabel") or child:IsA("TextButton"))) then
-									TABLE_TableIndirection["FlatIdent_19F98%0"] = 0;
-									TABLE_TableIndirection["text%0"] = nil;
-									while true do
-										if (TABLE_TableIndirection["FlatIdent_19F98%0"] == 0) then
-											TABLE_TableIndirection["text%0"] = (child.Text or ""):lower();
-											if ((958 > 947) and (4135 < 4817) and (TABLE_TableIndirection["text%0"]:find("return") or TABLE_TableIndirection["text%0"]:find("completed") or TABLE_TableIndirection["text%0"]:find("done") or TABLE_TableIndirection["text%0"]:find("talk to"))) then
-												return true;
-											end
-											break;
-										end
-									end
-								end
-								if TABLE_TableIndirection["checkText%0"](child) then
-									return true;
-								end
-								break;
-							end
-						end
-					end
-					return false;
-				end;
-				TABLE_TableIndirection["FlatIdent_2E9CB%0"] = 1;
-			end
-		end
-	end
-	return false;
-end;
-TABLE_TableIndirection["QuestTracker%0"].UpdateHasActiveQuest = function()
-	TABLE_TableIndirection["FlatIdent_75224%0"] = 0;
-	TABLE_TableIndirection["playerGui%0"] = nil;
-	TABLE_TableIndirection["questGui%0"] = nil;
-	TABLE_TableIndirection["main%0"] = nil;
-	TABLE_TableIndirection["name%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_75224%0"] == 0) then
-			TABLE_TableIndirection["playerGui%0"] = TABLE_TableIndirection["LP%0"]:FindFirstChild("PlayerGui");
-			if ((3442 >= 1503) and (100 <= 3123) and not TABLE_TableIndirection["playerGui%0"]) then
-				TABLE_TableIndirection["FlatIdent_28014%0"] = 0;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_28014%0"] == 0) then
-						TABLE_TableIndirection["cachedHasQuest%0"] = false;
-						return;
-					end
-				end
-			end
-			TABLE_TableIndirection["FlatIdent_75224%0"] = 1;
-		end
-		if (TABLE_TableIndirection["FlatIdent_75224%0"] == 4) then
-			if (not TABLE_TableIndirection["name%0"] or (TABLE_TableIndirection["name%0"]:gsub("%s", "") == "") or TABLE_TableIndirection["name%0"]:lower():find("none") or TABLE_TableIndirection["name%0"]:lower():find("no quest") or (TABLE_TableIndirection["name%0"] == "QuestName") or (TABLE_TableIndirection["name%0"] == "Label")) then
-				TABLE_TableIndirection["cachedHasQuest%0"] = false;
-			else
-				TABLE_TableIndirection["cachedHasQuest%0"] = true;
-			end
-			break;
-		end
-		if (TABLE_TableIndirection["FlatIdent_75224%0"] == 1) then
-			TABLE_TableIndirection["questGui%0"] = TABLE_TableIndirection["playerGui%0"]:FindFirstChild("Quest");
-			if (not TABLE_TableIndirection["questGui%0"] or (1369 > 4987)) then
-				TABLE_TableIndirection["FlatIdent_21449%0"] = 0;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_21449%0"] == 0) then
-						TABLE_TableIndirection["cachedHasQuest%0"] = false;
-						return;
-					end
-				end
-			end
-			TABLE_TableIndirection["FlatIdent_75224%0"] = 2;
-		end
-		if (TABLE_TableIndirection["FlatIdent_75224%0"] == 3) then
-			if ((TABLE_TableIndirection["main%0"] and not TABLE_TableIndirection["main%0"].Visible) or (863 >= 4584) or (3170 <= 1464)) then
-				TABLE_TableIndirection["FlatIdent_67691%0"] = 0;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_67691%0"] == 0) then
-						TABLE_TableIndirection["cachedHasQuest%0"] = false;
-						return;
-					end
-				end
-			end
-			TABLE_TableIndirection["name%0"] = TABLE_TableIndirection["QuestTracker%0"].GetQuestName();
-			TABLE_TableIndirection["FlatIdent_75224%0"] = 4;
-		end
-		if (2 == TABLE_TableIndirection["FlatIdent_75224%0"]) then
-			TABLE_TableIndirection["main%0"] = TABLE_TableIndirection["questGui%0"]:FindFirstChild("Main");
-			if (TABLE_TableIndirection["questGui%0"]:IsA("ScreenGui") and not TABLE_TableIndirection["questGui%0"].Enabled) then
-				TABLE_TableIndirection["cachedHasQuest%0"] = false;
-				return;
-			end
-			TABLE_TableIndirection["FlatIdent_75224%0"] = 3;
-		end
-	end
-end;
-TABLE_TableIndirection["FlySystem%0"] = {};
-local function getOrCreateBV(hrp)
-	TABLE_TableIndirection["FlatIdent_1CA5D%0"] = 0;
-	TABLE_TableIndirection["bv%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_1CA5D%0"] == 0) then
-			TABLE_TableIndirection["bv%0"] = hrp:FindFirstChild("FlyBV");
-			if (not TABLE_TableIndirection["bv%0"] or (4797 == 4388)) then
-				TABLE_TableIndirection["FlatIdent_67517%0"] = 0;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_67517%0"] == 2) then
-						TABLE_TableIndirection["bv%0"].Parent = hrp;
-						break;
-					end
-					if (TABLE_TableIndirection["FlatIdent_67517%0"] == 0) then
-						TABLE_TableIndirection["bv%0"] = Instance.new("BodyVelocity");
-						TABLE_TableIndirection["bv%0"].Name = "FlyBV";
-						TABLE_TableIndirection["FlatIdent_67517%0"] = 1;
-					end
-					if (TABLE_TableIndirection["FlatIdent_67517%0"] == 1) then
-						TABLE_TableIndirection["bv%0"].MaxForce = Vector3.new(100000000, 100000000, 100000000);
-						TABLE_TableIndirection["bv%0"].P = 100000;
-						TABLE_TableIndirection["FlatIdent_67517%0"] = 2;
-					end
-				end
-			end
-			TABLE_TableIndirection["FlatIdent_1CA5D%0"] = 1;
-		end
-		if (TABLE_TableIndirection["FlatIdent_1CA5D%0"] == 1) then
-			return TABLE_TableIndirection["bv%0"];
-		end
-	end
-end
-TABLE_TableIndirection["FlySystem%0"].Stop = function(hrp)
-	if ((551 <= 681) and hrp) then
-		TABLE_TableIndirection["FlatIdent_7E707%0"] = 0;
-		TABLE_TableIndirection["bv%0"] = nil;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_7E707%0"] == 1) then
-				hrp.Velocity = Vector3.zero;
-				hrp.AssemblyLinearVelocity = Vector3.zero;
-				TABLE_TableIndirection["FlatIdent_7E707%0"] = 2;
-			end
-			if (TABLE_TableIndirection["FlatIdent_7E707%0"] == 0) then
-				TABLE_TableIndirection["bv%0"] = hrp:FindFirstChild("FlyBV");
-				if ((3277 > 407) and (TABLE_TableIndirection["bv%0"] or (724 >= 1668))) then
-					TABLE_TableIndirection["bv%0"].Velocity = Vector3.zero;
-				end
-				TABLE_TableIndirection["FlatIdent_7E707%0"] = 1;
-			end
-			if (TABLE_TableIndirection["FlatIdent_7E707%0"] == 2) then
-				hrp.AssemblyAngularVelocity = Vector3.zero;
-				break;
-			end
-		end
-	end
-end;
-TABLE_TableIndirection["FlySystem%0"].Remove = function(hrp)
-	if ((4695 >= 1415) and hrp and hrp:FindFirstChild("FlyBV")) then
-		hrp.FlyBV:Destroy();
-	end
-	if hrp then
-		TABLE_TableIndirection["FlatIdent_6679B%0"] = 0;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_6679B%0"] == 0) then
-				hrp.Velocity = Vector3.zero;
-				hrp.AssemblyLinearVelocity = Vector3.zero;
-				break;
-			end
-		end
-	end
-end;
-TABLE_TableIndirection["lastScanTime%0"] = 0;
-TABLE_TableIndirection["cachedIsOcean%0"] = false;
-TABLE_TableIndirection["cachedSandY%0"] = 0;
-local function IsOverOceanOptimized(currentPos)
-	TABLE_TableIndirection["FlatIdent_63AE4%0"] = 0;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_63AE4%0"] == 0) then
-			if (((428 < 1804) and ((tick() - TABLE_TableIndirection["lastScanTime%0"]) >= 1)) or (3212 <= 944)) then
-				TABLE_TableIndirection["FlatIdent_869A9%0"] = 0;
-				TABLE_TableIndirection["params%0"] = nil;
-				TABLE_TableIndirection["LP%1"] = nil;
-				TABLE_TableIndirection["result%0"] = nil;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_869A9%0"] == 0) then
-						TABLE_TableIndirection["lastScanTime%0"] = tick();
-						TABLE_TableIndirection["params%0"] = RaycastParams.new();
-						TABLE_TableIndirection["FlatIdent_869A9%0"] = 1;
-					end
-					if (TABLE_TableIndirection["FlatIdent_869A9%0"] == 3) then
-						TABLE_TableIndirection["result%0"] = workspace:Raycast(currentPos, Vector3.new(0, -5000, 0), TABLE_TableIndirection["params%0"]);
-						if (TABLE_TableIndirection["result%0"] and TABLE_TableIndirection["result%0"].Instance and (TABLE_TableIndirection["result%0"].Instance.Name == "Sand")) then
-							TABLE_TableIndirection["fullName%0"] = TABLE_TableIndirection["result%0"].Instance:GetFullName();
-							if (TABLE_TableIndirection["fullName%0"]:find("WaterStuff") or TABLE_TableIndirection["fullName%0"]:find("Env") or (3096 <= 1798)) then
-								TABLE_TableIndirection["cachedIsOcean%0"] = true;
-								TABLE_TableIndirection["cachedSandY%0"] = TABLE_TableIndirection["result%0"].Position.Y;
-							else
-								TABLE_TableIndirection["cachedIsOcean%0"] = false;
-							end
-						else
-							TABLE_TableIndirection["cachedIsOcean%0"] = false;
-						end
-						break;
-					end
-					if (TABLE_TableIndirection["FlatIdent_869A9%0"] == 2) then
-						TABLE_TableIndirection["params%0"].FilterDescendantsInstances = {TABLE_TableIndirection["LP%1"].Character};
-						TABLE_TableIndirection["params%0"].IgnoreWater = true;
-						TABLE_TableIndirection["FlatIdent_869A9%0"] = 3;
-					end
-					if (TABLE_TableIndirection["FlatIdent_869A9%0"] == 1) then
-						TABLE_TableIndirection["params%0"].FilterType = Enum.RaycastFilterType.Exclude;
-						TABLE_TableIndirection["LP%1"] = game:GetService("Players").LocalPlayer;
-						TABLE_TableIndirection["FlatIdent_869A9%0"] = 2;
-					end
-				end
-			end
-			return TABLE_TableIndirection["cachedIsOcean%0"], TABLE_TableIndirection["cachedSandY%0"];
-		end
-	end
-end
-TABLE_TableIndirection["FlySystem%0"].AdjustToTarget = function(hrp, targetPos, stopRadius, speed, useWaterRadar)
-	TABLE_TableIndirection["FlatIdent_5724B%0"] = 0;
-	TABLE_TableIndirection["distance%0"] = nil;
-	TABLE_TableIndirection["currentSpeed%0"] = nil;
-	TABLE_TableIndirection["myPos%0"] = nil;
-	TABLE_TableIndirection["dir%0"] = nil;
-	TABLE_TableIndirection["bv%0"] = nil;
-	TABLE_TableIndirection["lookPos%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_5724B%0"] == 3) then
-			if ((TABLE_TableIndirection["lookPos%0"] - hrp.Position).Magnitude <= 0.5) then
-			else
-				pcall(function()
-					hrp.CFrame = CFrame.lookAt(hrp.Position, TABLE_TableIndirection["lookPos%0"]);
-				end);
-			end
-			return false;
-		end
-		if (TABLE_TableIndirection["FlatIdent_5724B%0"] == 1) then
-			TABLE_TableIndirection["currentSpeed%0"] = speed or TABLE_TableIndirection["Config%0"].FLY_SPEED;
-			if (TABLE_TableIndirection["distance%0"] >= 20) then
-			else
-				TABLE_TableIndirection["currentSpeed%0"] = math.max(15, TABLE_TableIndirection["currentSpeed%0"] * (TABLE_TableIndirection["distance%0"] / 20));
-			end
-			TABLE_TableIndirection["myPos%0"] = hrp.Position;
-			TABLE_TableIndirection["dir%0"] = (targetPos - TABLE_TableIndirection["myPos%0"]).Unit;
-			TABLE_TableIndirection["FlatIdent_5724B%0"] = 2;
-		end
-		if (0 == TABLE_TableIndirection["FlatIdent_5724B%0"]) then
-			if (not targetPos or not hrp) then
-				return false;
-			end
-			stopRadius = stopRadius or TABLE_TableIndirection["Config%0"].STOP_RADIUS;
-			TABLE_TableIndirection["distance%0"] = (targetPos - hrp.Position).Magnitude;
-			if ((TABLE_TableIndirection["distance%0"] <= stopRadius) or (3325 > 4613)) then
-				TABLE_TableIndirection["FlatIdent_2593F%0"] = 0;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_2593F%0"] == 0) then
-						TABLE_TableIndirection["FlySystem%0"].Stop(hrp);
-						return true;
-					end
-				end
-			end
-			TABLE_TableIndirection["FlatIdent_5724B%0"] = 1;
-		end
-		if (2 == TABLE_TableIndirection["FlatIdent_5724B%0"]) then
-			if ((3537 == 3537) and useWaterRadar) then
-				TABLE_TableIndirection["horizontalDist%0"] = (Vector3.new(targetPos.X, 0, targetPos.Z) - Vector3.new(TABLE_TableIndirection["myPos%0"].X, 0, TABLE_TableIndirection["myPos%0"].Z)).Magnitude;
-				local isOcean, sandY = IsOverOceanOptimized(TABLE_TableIndirection["myPos%0"]);
-				if ((3837 >= 1570) and (((TABLE_TableIndirection["horizontalDist%0"] > 50) and isOcean) or (4950 <= 4553))) then
-					TABLE_TableIndirection["FlatIdent_3B08E%0"] = 0;
-					TABLE_TableIndirection["targetHeight%0"] = nil;
-					TABLE_TableIndirection["tempTarget%0"] = nil;
-					while true do
-						if (TABLE_TableIndirection["FlatIdent_3B08E%0"] == 0) then
-							TABLE_TableIndirection["targetHeight%0"] = sandY + 102;
-							TABLE_TableIndirection["tempTarget%0"] = Vector3.new(targetPos.X, TABLE_TableIndirection["targetHeight%0"], targetPos.Z);
-							TABLE_TableIndirection["FlatIdent_3B08E%0"] = 1;
-						end
-						if (TABLE_TableIndirection["FlatIdent_3B08E%0"] == 1) then
-							TABLE_TableIndirection["dir%0"] = (TABLE_TableIndirection["tempTarget%0"] - TABLE_TableIndirection["myPos%0"]).Unit;
-							if ((TABLE_TableIndirection["myPos%0"].Y > (TABLE_TableIndirection["targetHeight%0"] + 5)) or (2950 == 3812)) then
-								TABLE_TableIndirection["dir%0"] = Vector3.new(TABLE_TableIndirection["dir%0"].X, -0.5, TABLE_TableIndirection["dir%0"].Z).Unit;
-							end
-							break;
-						end
-					end
-				end
-			end
-			TABLE_TableIndirection["bv%0"] = getOrCreateBV(hrp);
-			TABLE_TableIndirection["bv%0"].Velocity = TABLE_TableIndirection["dir%0"] * TABLE_TableIndirection["currentSpeed%0"];
-			TABLE_TableIndirection["lookPos%0"] = Vector3.new(targetPos.X, hrp.Position.Y, targetPos.Z);
-			TABLE_TableIndirection["FlatIdent_5724B%0"] = 3;
-		end
-	end
-end;
-TABLE_TableIndirection["FlySystem%0"].AdjustToMob = function(hrp, mob, headOffset)
-	if ((4723 >= 2318) and (2665 <= 3933) and (not mob or not mob:FindFirstChild("HumanoidRootPart"))) then
-		return false;
-	end
-	TABLE_TableIndirection["targetPos%0"] = mob.HumanoidRootPart.Position + Vector3.new(0, headOffset or TABLE_TableIndirection["Config%0"].HEAD_OFFSET, 0);
-	return TABLE_TableIndirection["FlySystem%0"].AdjustToTarget(hrp, TABLE_TableIndirection["targetPos%0"], 2, TABLE_TableIndirection["Config%0"].FLY_SPEED);
-end;
-TABLE_TableIndirection["PullBackSystem%0"] = {};
-TABLE_TableIndirection["PullBackSystem%0"].lastCheckTime = 0;
-TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity = {};
-TABLE_TableIndirection["monsterLastPosition%0"] = {};
-TABLE_TableIndirection["monsterLastSeenTime%0"] = {};
-TABLE_TableIndirection["PullBackSystem%0"].Reset = function()
-	TABLE_TableIndirection["PullBackSystem%0"].StopAllPulling();
-	TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity = {};
-	TABLE_TableIndirection["monsterLastPosition%0"] = {};
-	TABLE_TableIndirection["monsterLastSeenTime%0"] = {};
-	TABLE_TableIndirection["PullBackSystem%0"].lastCheckTime = 0;
-end;
-TABLE_TableIndirection["PullBackSystem%0"].ClearMonsterData = function(mob)
-	TABLE_TableIndirection["FlatIdent_3CDED%0"] = 0;
-	while true do
-		if (0 == TABLE_TableIndirection["FlatIdent_3CDED%0"]) then
-			TABLE_TableIndirection["monsterLastPosition%0"][mob] = nil;
-			TABLE_TableIndirection["monsterLastSeenTime%0"][mob] = nil;
-			TABLE_TableIndirection["FlatIdent_3CDED%0"] = 1;
-		end
-		if (TABLE_TableIndirection["FlatIdent_3CDED%0"] == 1) then
-			if (((3273 == 3273) and TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob]) or (2027 > 2852)) then
-				TABLE_TableIndirection["FlatIdent_3B868%0"] = 0;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_3B868%0"] == 0) then
-						pcall(function()
-							TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob]:Destroy();
-						end);
-						TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob] = nil;
-						break;
-					end
-				end
-			end
-			break;
-		end
-	end
-end;
-TABLE_TableIndirection["PullBackSystem%0"].CreatePullBV = function(mobHRP)
-	TABLE_TableIndirection["bv%0"] = Instance.new("BodyVelocity");
-	TABLE_TableIndirection["bv%0"].Name = "PullBackBV";
-	TABLE_TableIndirection["bv%0"].MaxForce = Vector3.new(10000000, 10000000, 10000000);
-	TABLE_TableIndirection["bv%0"].P = 50000;
-	TABLE_TableIndirection["bv%0"].Parent = mobHRP;
-	return TABLE_TableIndirection["bv%0"];
-end;
-TABLE_TableIndirection["PullBackSystem%0"].PullMonster = function(mob, targetPos)
-	TABLE_TableIndirection["FlatIdent_D14D%0"] = 0;
-	TABLE_TableIndirection["mobHRP%0"] = nil;
-	TABLE_TableIndirection["currentPos%0"] = nil;
-	TABLE_TableIndirection["distance%0"] = nil;
-	TABLE_TableIndirection["dir%0"] = nil;
-	TABLE_TableIndirection["speed%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_D14D%0"] == 3) then
-			TABLE_TableIndirection["dir%0"] = (targetPos - TABLE_TableIndirection["currentPos%0"]).Unit;
-			TABLE_TableIndirection["speed%0"] = math.min(120, TABLE_TableIndirection["distance%0"] * 3);
-			TABLE_TableIndirection["FlatIdent_D14D%0"] = 4;
-		end
-		if (1 == TABLE_TableIndirection["FlatIdent_D14D%0"]) then
-			TABLE_TableIndirection["currentPos%0"] = TABLE_TableIndirection["mobHRP%0"].Position;
-			TABLE_TableIndirection["distance%0"] = (TABLE_TableIndirection["currentPos%0"] - targetPos).Magnitude;
-			TABLE_TableIndirection["FlatIdent_D14D%0"] = 2;
-		end
-		if (TABLE_TableIndirection["FlatIdent_D14D%0"] == 4) then
-			TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob].Velocity = TABLE_TableIndirection["dir%0"] * TABLE_TableIndirection["speed%0"];
-			return false;
-		end
-		if (TABLE_TableIndirection["FlatIdent_D14D%0"] == 2) then
-			if ((4748 == 4748) and (TABLE_TableIndirection["distance%0"] < 10)) then
-				if ((3736 <= 4740) and (2087 == 2087) and TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob]) then
-					TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob]:Destroy();
-					TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob] = nil;
-				end
-				return true;
-			end
-			if (not TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob] or (3404 > 4503) or (3390 <= 3060)) then
-				TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob] = TABLE_TableIndirection["PullBackSystem%0"].CreatePullBV(TABLE_TableIndirection["mobHRP%0"]);
-			end
-			TABLE_TableIndirection["FlatIdent_D14D%0"] = 3;
-		end
-		if (TABLE_TableIndirection["FlatIdent_D14D%0"] == 0) then
-			if (((3824 > 409) and (not mob or not mob:FindFirstChild("HumanoidRootPart"))) or (1136 > 4317)) then
-				return;
-			end
-			TABLE_TableIndirection["mobHRP%0"] = mob.HumanoidRootPart;
-			TABLE_TableIndirection["FlatIdent_D14D%0"] = 1;
-		end
-	end
-end;
-TABLE_TableIndirection["PullBackSystem%0"].CheckAndPullTeleportedMobs = function(pulledMobs, gatherPoint)
-	if (not pulledMobs or (type(pulledMobs) ~= "table") or (#pulledMobs == 0) or not gatherPoint) then
-		return {};
-	end
-	TABLE_TableIndirection["currentTime%0"] = tick();
-	TABLE_TableIndirection["teleportedMobs%0"] = {};
-	for _, mob in ipairs(pulledMobs) do
-		if ((mob and mob.Parent and mob:FindFirstChild("HumanoidRootPart") and (mob.Humanoid.Health > 0)) or (999 > 2693)) then
-			TABLE_TableIndirection["FlatIdent_2FBBD%0"] = 0;
-			TABLE_TableIndirection["currentPos%0"] = nil;
-			TABLE_TableIndirection["distanceFromGather%0"] = nil;
-			while true do
-				if (0 == TABLE_TableIndirection["FlatIdent_2FBBD%0"]) then
-					TABLE_TableIndirection["currentPos%0"] = mob.HumanoidRootPart.Position;
-					TABLE_TableIndirection["distanceFromGather%0"] = (TABLE_TableIndirection["currentPos%0"] - gatherPoint).Magnitude;
-					TABLE_TableIndirection["FlatIdent_2FBBD%0"] = 1;
-				end
-				if (TABLE_TableIndirection["FlatIdent_2FBBD%0"] == 2) then
-					TABLE_TableIndirection["monsterLastSeenTime%0"][mob] = TABLE_TableIndirection["currentTime%0"];
-					break;
-				end
-				if (TABLE_TableIndirection["FlatIdent_2FBBD%0"] == 1) then
-					if ((463 < 601) and TABLE_TableIndirection["monsterLastPosition%0"][mob]) then
-						TABLE_TableIndirection["distanceJump%0"] = (TABLE_TableIndirection["currentPos%0"] - TABLE_TableIndirection["monsterLastPosition%0"][mob]).Magnitude;
-						if (((TABLE_TableIndirection["distanceJump%0"] > 30) and (TABLE_TableIndirection["distanceFromGather%0"] > TABLE_TableIndirection["Config%0"].TELEPORT_THRESHOLD)) or (3506 <= 1309)) then
-							table.insert(TABLE_TableIndirection["teleportedMobs%0"], mob);
-						end
-					end
-					TABLE_TableIndirection["monsterLastPosition%0"][mob] = TABLE_TableIndirection["currentPos%0"];
-					TABLE_TableIndirection["FlatIdent_2FBBD%0"] = 2;
-				end
-			end
-		else
-			TABLE_TableIndirection["PullBackSystem%0"].ClearMonsterData(mob);
-		end
-	end
-	return TABLE_TableIndirection["teleportedMobs%0"];
-end;
-TABLE_TableIndirection["PullBackSystem%0"].FindNewMobs = function(targetMobNames, gatherPoint, pulledMobs)
-	if (not targetMobNames or (type(targetMobNames) ~= "table") or (#targetMobNames == 0) or not gatherPoint) then
-		return {};
-	end
-	TABLE_TableIndirection["newMobs%0"] = {};
-	if (((2955 == 2955) and ((tick() - TABLE_TableIndirection["PullBackSystem%0"].lastCheckTime) < 0.5)) or (2183 < 687)) then
-		return TABLE_TableIndirection["newMobs%0"];
-	end
-	TABLE_TableIndirection["PullBackSystem%0"].lastCheckTime = tick();
-	TABLE_TableIndirection["folder%0"] = workspace:FindFirstChild("NPCs");
-	if (not TABLE_TableIndirection["folder%0"] or (2903 == 1495)) then
-		return TABLE_TableIndirection["newMobs%0"];
-	end
-	for _, npc in ipairs(TABLE_TableIndirection["folder%0"]:GetChildren()) do
-		if (npc.Parent and npc:FindFirstChild("Humanoid") and (npc.Humanoid.Health > 0) and npc:FindFirstChild("HumanoidRootPart")) then
-			TABLE_TableIndirection["FlatIdent_7B2D6%0"] = 0;
-			TABLE_TableIndirection["isTarget%0"] = nil;
-			TABLE_TableIndirection["alreadyPulled%0"] = nil;
-			TABLE_TableIndirection["mobPos%0"] = nil;
-			TABLE_TableIndirection["distance%0"] = nil;
-			TABLE_TableIndirection["yDistance%0"] = nil;
-			while true do
-				if (TABLE_TableIndirection["FlatIdent_7B2D6%0"] == 4) then
-					TABLE_TableIndirection["yDistance%0"] = math.abs(TABLE_TableIndirection["mobPos%0"].Y - gatherPoint.Y);
-					if (((TABLE_TableIndirection["distance%0"] < TABLE_TableIndirection["Config%0"].PULL_RADIUS) and (TABLE_TableIndirection["yDistance%0"] < 35)) or (3668 < 395)) then
-						table.insert(TABLE_TableIndirection["newMobs%0"], npc);
-					end
-					break;
-				end
-				if (TABLE_TableIndirection["FlatIdent_7B2D6%0"] == 1) then
-					if ((4546 >= 2275) and not TABLE_TableIndirection["isTarget%0"]) then
-						continue;
-					end
-					TABLE_TableIndirection["alreadyPulled%0"] = false;
-					TABLE_TableIndirection["FlatIdent_7B2D6%0"] = 2;
-				end
-				if (3 == TABLE_TableIndirection["FlatIdent_7B2D6%0"]) then
-					TABLE_TableIndirection["mobPos%0"] = npc.HumanoidRootPart.Position;
-					TABLE_TableIndirection["distance%0"] = (TABLE_TableIndirection["mobPos%0"] - gatherPoint).Magnitude;
-					TABLE_TableIndirection["FlatIdent_7B2D6%0"] = 4;
-				end
-				if (TABLE_TableIndirection["FlatIdent_7B2D6%0"] == 0) then
-					TABLE_TableIndirection["isTarget%0"] = false;
-					for _, name in ipairs(targetMobNames) do
-						if (npc.Name ~= name) then
-						else
-							TABLE_TableIndirection["isTarget%0"] = true;
-							break;
-						end
-					end
-					TABLE_TableIndirection["FlatIdent_7B2D6%0"] = 1;
-				end
-				if (TABLE_TableIndirection["FlatIdent_7B2D6%0"] == 2) then
-					if ((4549 == 4549) and (819 >= 22) and pulledMobs and (type(pulledMobs) == "table")) then
-						for _, pulled in ipairs(pulledMobs) do
-							if ((4672 == 4672) and (3162 == 3162) and (pulled == npc)) then
-								TABLE_TableIndirection["alreadyPulled%0"] = true;
-								break;
-							end
-						end
-					end
-					if TABLE_TableIndirection["alreadyPulled%0"] then
-						continue;
-					end
-					TABLE_TableIndirection["FlatIdent_7B2D6%0"] = 3;
-				end
-			end
-		end
-	end
-	return TABLE_TableIndirection["newMobs%0"];
-end;
-TABLE_TableIndirection["PullBackSystem%0"].StopAllPulling = function()
-	for mob, bv in pairs(TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity) do
-		TABLE_TableIndirection["FlatIdent_229D1%0"] = 0;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_229D1%0"] == 0) then
-				pcall(function()
-					bv:Destroy();
-				end);
-				TABLE_TableIndirection["PullBackSystem%0"].pullBackVelocity[mob] = nil;
-				break;
-			end
-		end
-	end
-end;
-TABLE_TableIndirection["CombatSystem%0"] = {};
-TABLE_TableIndirection["comboIndex%0"] = 1;
-TABLE_TableIndirection["lastAttackTime%0"] = 0;
-TABLE_TableIndirection["attacking%0"] = false;
-TABLE_TableIndirection["singleCooldownEndTime%0"] = 0;
-TABLE_TableIndirection["comboHitCount%0"] = 0;
-TABLE_TableIndirection["aoeComboIndex%0"] = 1;
-TABLE_TableIndirection["lastAoeAttackTime%0"] = 0;
-TABLE_TableIndirection["aoeCooldownEndTime%0"] = 0;
-TABLE_TableIndirection["CombatSystem%0"].SingleAttack = function(mob)
-	if (TABLE_TableIndirection["attacking%0"] or not mob or not mob:FindFirstChild("HumanoidRootPart") or (mob.Humanoid.Health <= 0) or (4166 == 455)) then
-		return false;
-	end
-	if (tick() >= TABLE_TableIndirection["singleCooldownEndTime%0"]) then
-	else
-		return false;
-	end
-	TABLE_TableIndirection["attacking%0"] = true;
-	task.spawn(function()
-		TABLE_TableIndirection["FlatIdent_51C44%0"] = 0;
-		TABLE_TableIndirection["anim%0"] = nil;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_51C44%0"] == 1) then
-				TABLE_TableIndirection["anim%0"] = TABLE_TableIndirection["PunchAnims%0"][TABLE_TableIndirection["comboIndex%0"]];
-				if (((4095 >= 3183) and TABLE_TableIndirection["anim%0"]) or (4449 == 2663)) then
-					TABLE_TableIndirection["FlatIdent_5077%0"] = 0;
-					while true do
-						if (TABLE_TableIndirection["FlatIdent_5077%0"] == 0) then
-							pcall(function()
-								TABLE_TableIndirection["CombatRegister%0"]:InvokeServer(unpack({{"swingsfx","Melee",TABLE_TableIndirection["comboIndex%0"],"Ground",false,TABLE_TableIndirection["anim%0"],2,1.5}}));
-							end);
-							task.wait(TABLE_TableIndirection["Config%0"].ATTACK_DELAY);
-							TABLE_TableIndirection["FlatIdent_5077%0"] = 1;
-						end
-						if (TABLE_TableIndirection["FlatIdent_5077%0"] == 2) then
-							TABLE_TableIndirection["lastAttackTime%0"] = tick();
-							if ((TABLE_TableIndirection["comboIndex%0"] < 5) or (3711 < 1008) or (4277 < 2989)) then
-								TABLE_TableIndirection["comboIndex%0"] = TABLE_TableIndirection["comboIndex%0"] + 1;
-								task.wait(0.05);
-							else
-								TABLE_TableIndirection["comboIndex%0"] = 1;
-							end
-							break;
-						end
-						if (TABLE_TableIndirection["FlatIdent_5077%0"] == 1) then
-							pcall(function()
-								TABLE_TableIndirection["CombatRegister%0"]:InvokeServer(unpack({{"damage",{mob.HumanoidRootPart},"Melee",{TABLE_TableIndirection["comboIndex%0"],"Ground","Melee"},true,mob.HumanoidRootPart.CFrame,aircombo="Ground"}}));
-							end);
-							TABLE_TableIndirection["comboHitCount%0"] = TABLE_TableIndirection["comboHitCount%0"] + 1;
-							TABLE_TableIndirection["FlatIdent_5077%0"] = 2;
-						end
-					end
-				end
-				TABLE_TableIndirection["FlatIdent_51C44%0"] = 2;
-			end
-			if (TABLE_TableIndirection["FlatIdent_51C44%0"] == 2) then
-				TABLE_TableIndirection["attacking%0"] = false;
-				break;
-			end
-			if (TABLE_TableIndirection["FlatIdent_51C44%0"] == 0) then
-				if ((tick() - TABLE_TableIndirection["lastAttackTime%0"]) <= 3) then
-				else
-					TABLE_TableIndirection["comboIndex%0"] = 1;
-					TABLE_TableIndirection["comboHitCount%0"] = 0;
-				end
-				if ((TABLE_TableIndirection["comboHitCount%0"] >= 5) or (2369 > 4429)) then
-					TABLE_TableIndirection["comboHitCount%0"] = 0;
-					TABLE_TableIndirection["comboIndex%0"] = 1;
-					TABLE_TableIndirection["singleCooldownEndTime%0"] = tick() + TABLE_TableIndirection["Config%0"].COMBO_COOLDOWN;
-					TABLE_TableIndirection["attacking%0"] = false;
-					return;
-				end
-				TABLE_TableIndirection["FlatIdent_51C44%0"] = 1;
-			end
-		end
-	end);
-	return true;
-end;
-TABLE_TableIndirection["CombatSystem%0"].AoeAttack = function(mobs, hrp)
-	if (TABLE_TableIndirection["attacking%0"] or (#mobs == 0) or (870 >= 4149)) then
-		return;
-	end
-	if (tick() >= TABLE_TableIndirection["aoeCooldownEndTime%0"]) then
-	else
-		return;
-	end
-	TABLE_TableIndirection["targetsHRP%0"] = {};
-	for _, m in ipairs(mobs) do
-		if ((2212 < 3183) and m and m:FindFirstChild("HumanoidRootPart") and m.Humanoid and (m.Humanoid.Health > 0)) then
-			table.insert(TABLE_TableIndirection["targetsHRP%0"], m.HumanoidRootPart);
-		end
-	end
-	if ((4646 > 2992) and (#TABLE_TableIndirection["targetsHRP%0"] == 0)) then
-		return;
-	end
-	TABLE_TableIndirection["attacking%0"] = true;
-	task.spawn(function()
-		if ((1434 < 3106) and ((tick() - TABLE_TableIndirection["lastAoeAttackTime%0"]) > 3) and (tick() > TABLE_TableIndirection["aoeCooldownEndTime%0"])) then
-			TABLE_TableIndirection["aoeComboIndex%0"] = 1;
-		end
-		if ((786 < 3023) and ((TABLE_TableIndirection["aoeComboIndex%0"] > 5) or (1049 <= 906))) then
-			TABLE_TableIndirection["aoeComboIndex%0"] = 1;
-		end
-		TABLE_TableIndirection["anim%0"] = TABLE_TableIndirection["PunchAnims%0"][TABLE_TableIndirection["aoeComboIndex%0"]];
-		if (((4513 > 2726) and TABLE_TableIndirection["anim%0"]) or (2442 < 74)) then
-			TABLE_TableIndirection["FlatIdent_77529%0"] = 0;
-			while true do
-				if (TABLE_TableIndirection["FlatIdent_77529%0"] == 2) then
-					if ((4535 == 4535) and ((TABLE_TableIndirection["aoeComboIndex%0"] == 5) or (1481 >= 2658))) then
-						TABLE_TableIndirection["aoeCooldownEndTime%0"] = tick() + TABLE_TableIndirection["Config%0"].COMBO_COOLDOWN;
-						TABLE_TableIndirection["aoeComboIndex%0"] = 1;
-					else
-						TABLE_TableIndirection["aoeComboIndex%0"] = TABLE_TableIndirection["aoeComboIndex%0"] + 1;
-						task.wait(0.05);
-					end
-					break;
-				end
-				if (0 == TABLE_TableIndirection["FlatIdent_77529%0"]) then
-					pcall(function()
-						TABLE_TableIndirection["CombatRegister%0"]:InvokeServer(unpack({{"swingsfx","Melee",TABLE_TableIndirection["aoeComboIndex%0"],"Ground",false,TABLE_TableIndirection["anim%0"],2,1.5}}));
-					end);
-					task.wait(TABLE_TableIndirection["Config%0"].ATTACK_DELAY);
-					TABLE_TableIndirection["FlatIdent_77529%0"] = 1;
-				end
-				if (1 == TABLE_TableIndirection["FlatIdent_77529%0"]) then
-					pcall(function()
-						TABLE_TableIndirection["CombatRegister%0"]:InvokeServer(unpack({{"damage",TABLE_TableIndirection["targetsHRP%0"],"Melee",{TABLE_TableIndirection["aoeComboIndex%0"],"Ground","Melee"},true,hrp.CFrame,aircombo="Ground"}}));
-					end);
-					TABLE_TableIndirection["lastAoeAttackTime%0"] = tick();
-					TABLE_TableIndirection["FlatIdent_77529%0"] = 2;
-				end
-			end
-		end
-		TABLE_TableIndirection["attacking%0"] = false;
-	end);
-end;
-TABLE_TableIndirection["FarmManager%0"] = {};
-TABLE_TableIndirection["States%0"] = {PULL="PULL",GATHER="GATHER",KILL="KILL",KILL_SINGLE="KILL_SINGLE",WAITING="WAITING"};
-TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].PULL;
-TABLE_TableIndirection["pulledMobs%0"] = {};
-TABLE_TableIndirection["targetMobNames%0"] = {};
-TABLE_TableIndirection["activeGatherPoints%0"] = {};
-TABLE_TableIndirection["gatherIndex%0"] = 1;
-TABLE_TableIndirection["activeGatherPoint%0"] = nil;
-TABLE_TableIndirection["activeQuestData%0"] = nil;
-TABLE_TableIndirection["killStartTime%0"] = 0;
-TABLE_TableIndirection["lockedKillHeight%0"] = 0;
-TABLE_TableIndirection["lastNPCScan%0"] = 0;
-TABLE_TableIndirection["currentTargetMob%0"] = nil;
-TABLE_TableIndirection["gatherWaitTime%0"] = nil;
-TABLE_TableIndirection["FarmManager%0"].SetQuest = function(quest)
-	if quest then
-		TABLE_TableIndirection["FlatIdent_A446%0"] = 0;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_A446%0"] == 1) then
-				if (typeof(quest.GatherPoint) == "Vector3") then
-					TABLE_TableIndirection["FlatIdent_14454%0"] = 0;
-					while true do
-						if (TABLE_TableIndirection["FlatIdent_14454%0"] == 0) then
-							TABLE_TableIndirection["activeGatherPoints%0"] = {quest.GatherPoint};
-							TABLE_TableIndirection["activeGatherPoint%0"] = quest.GatherPoint;
-							break;
-						end
-					end
-				elseif ((type(quest.GatherPoint) == "table") and (#quest.GatherPoint > 0)) then
-					TABLE_TableIndirection["FlatIdent_37555%0"] = 0;
-					while true do
-						if (TABLE_TableIndirection["FlatIdent_37555%0"] == 1) then
-							TABLE_TableIndirection["activeGatherPoint%0"] = TABLE_TableIndirection["activeGatherPoints%0"][TABLE_TableIndirection["gatherIndex%0"]];
-							break;
-						end
-						if (TABLE_TableIndirection["FlatIdent_37555%0"] == 0) then
-							TABLE_TableIndirection["activeGatherPoints%0"] = quest.GatherPoint;
-							TABLE_TableIndirection["gatherIndex%0"] = 1;
-							TABLE_TableIndirection["FlatIdent_37555%0"] = 1;
-						end
-					end
-				end
-				break;
-			end
-			if (TABLE_TableIndirection["FlatIdent_A446%0"] == 0) then
-				TABLE_TableIndirection["targetMobNames%0"] = quest.TargetMobs;
-				TABLE_TableIndirection["activeQuestData%0"] = quest;
-				TABLE_TableIndirection["FlatIdent_A446%0"] = 1;
-			end
-		end
-	else
-		TABLE_TableIndirection["targetMobNames%0"] = {};
-		TABLE_TableIndirection["activeGatherPoints%0"] = {};
-		TABLE_TableIndirection["activeGatherPoint%0"] = nil;
-		TABLE_TableIndirection["activeQuestData%0"] = nil;
-	end
-	TABLE_TableIndirection["pulledMobs%0"] = {};
-	TABLE_TableIndirection["currentTargetMob%0"] = nil;
-	TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].PULL;
-	TABLE_TableIndirection["lockedKillHeight%0"] = 0;
-	TABLE_TableIndirection["aoeCooldownEndTime%0"] = 0;
-	TABLE_TableIndirection["gatherWaitTime%0"] = nil;
-	TABLE_TableIndirection["PullBackSystem%0"].Reset();
-end;
-TABLE_TableIndirection["FarmManager%0"].PullMob = function(mob)
-	if (not mob or not mob.Parent or (3220 == 1364) or (3009 <= 2105)) then
-		return false;
-	end
-	for _, m in ipairs(TABLE_TableIndirection["pulledMobs%0"]) do
-		if ((m == mob) or (1054 > 3392)) then
-			return true;
-		end
-	end
-	table.insert(TABLE_TableIndirection["pulledMobs%0"], mob);
-	return true;
-end;
-TABLE_TableIndirection["FarmManager%0"].CheckTeleportedMobs = function()
-	if ((1830 < 3669) and (not TABLE_TableIndirection["activeGatherPoint%0"] or not TABLE_TableIndirection["pulledMobs%0"] or (type(TABLE_TableIndirection["pulledMobs%0"]) ~= "table") or (#TABLE_TableIndirection["pulledMobs%0"] == 0) or (676 >= 1642))) then
-		return false;
-	end
-	TABLE_TableIndirection["teleportedMobs%0"] = TABLE_TableIndirection["PullBackSystem%0"].CheckAndPullTeleportedMobs(TABLE_TableIndirection["pulledMobs%0"], TABLE_TableIndirection["activeGatherPoint%0"]);
-	TABLE_TableIndirection["hasTeleported%0"] = false;
-	for _, mob in ipairs(TABLE_TableIndirection["teleportedMobs%0"]) do
-		TABLE_TableIndirection["FlatIdent_2DB3E%0"] = 0;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_2DB3E%0"] == 0) then
-				TABLE_TableIndirection["PullBackSystem%0"].PullMonster(mob, TABLE_TableIndirection["activeGatherPoint%0"]);
-				TABLE_TableIndirection["hasTeleported%0"] = true;
-				break;
-			end
-		end
-	end
-	return TABLE_TableIndirection["hasTeleported%0"];
-end;
-TABLE_TableIndirection["FarmManager%0"].CheckNewMobs = function()
-	TABLE_TableIndirection["FlatIdent_3501F%0"] = 0;
-	TABLE_TableIndirection["newMobs%0"] = nil;
-	TABLE_TableIndirection["hasNewMobs%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_3501F%0"] == 1) then
-			TABLE_TableIndirection["hasNewMobs%0"] = false;
-			for _, mob in ipairs(TABLE_TableIndirection["newMobs%0"]) do
-				TABLE_TableIndirection["FlatIdent_15034%0"] = 0;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_15034%0"] == 0) then
-						TABLE_TableIndirection["FarmManager%0"].PullMob(mob);
-						TABLE_TableIndirection["hasNewMobs%0"] = true;
-						break;
-					end
-				end
-			end
-			TABLE_TableIndirection["FlatIdent_3501F%0"] = 2;
-		end
-		if (TABLE_TableIndirection["FlatIdent_3501F%0"] == 2) then
-			return TABLE_TableIndirection["hasNewMobs%0"];
-		end
-		if (0 == TABLE_TableIndirection["FlatIdent_3501F%0"]) then
-			if ((4136 > 2397) and (not TABLE_TableIndirection["activeGatherPoint%0"] or not TABLE_TableIndirection["targetMobNames%0"] or (type(TABLE_TableIndirection["targetMobNames%0"]) ~= "table") or (#TABLE_TableIndirection["targetMobNames%0"] == 0))) then
-				return false;
-			end
-			TABLE_TableIndirection["newMobs%0"] = TABLE_TableIndirection["PullBackSystem%0"].FindNewMobs(TABLE_TableIndirection["targetMobNames%0"], TABLE_TableIndirection["activeGatherPoint%0"], TABLE_TableIndirection["pulledMobs%0"]);
-			TABLE_TableIndirection["FlatIdent_3501F%0"] = 1;
-		end
-	end
-end;
-TABLE_TableIndirection["FarmManager%0"].PullAllMobsToGather = function()
-	if (not TABLE_TableIndirection["activeGatherPoint%0"] or (4334 == 4245) or (1430 >= 3612)) then
-		return false;
-	end
-	if ((2683 >= 2460) and (not TABLE_TableIndirection["pulledMobs%0"] or (type(TABLE_TableIndirection["pulledMobs%0"]) ~= "table") or (#TABLE_TableIndirection["pulledMobs%0"] == 0))) then
-		return false;
-	end
-	TABLE_TableIndirection["anyPulling%0"] = false;
-	for _, mob in ipairs(TABLE_TableIndirection["pulledMobs%0"]) do
-		if ((mob and mob.Parent and mob:FindFirstChild("HumanoidRootPart")) or (1804 >= 3275)) then
-			TABLE_TableIndirection["FlatIdent_23FF9%0"] = 0;
-			TABLE_TableIndirection["flatMobPos%0"] = nil;
-			TABLE_TableIndirection["flatGatherPos%0"] = nil;
-			TABLE_TableIndirection["distance%0"] = nil;
-			while true do
-				if (TABLE_TableIndirection["FlatIdent_23FF9%0"] == 0) then
-					TABLE_TableIndirection["flatMobPos%0"] = Vector3.new(mob.HumanoidRootPart.Position.X, 0, mob.HumanoidRootPart.Position.Z);
-					TABLE_TableIndirection["flatGatherPos%0"] = Vector3.new(TABLE_TableIndirection["activeGatherPoint%0"].X, 0, TABLE_TableIndirection["activeGatherPoint%0"].Z);
-					TABLE_TableIndirection["FlatIdent_23FF9%0"] = 1;
-				end
-				if (TABLE_TableIndirection["FlatIdent_23FF9%0"] == 1) then
-					TABLE_TableIndirection["distance%0"] = (TABLE_TableIndirection["flatMobPos%0"] - TABLE_TableIndirection["flatGatherPos%0"]).Magnitude;
-					if ((TABLE_TableIndirection["distance%0"] > 20) or (1417 > 3629)) then
-						TABLE_TableIndirection["FlatIdent_810B1%0"] = 0;
-						while true do
-							if (TABLE_TableIndirection["FlatIdent_810B1%0"] == 0) then
-								TABLE_TableIndirection["PullBackSystem%0"].PullMonster(mob, TABLE_TableIndirection["activeGatherPoint%0"]);
-								TABLE_TableIndirection["anyPulling%0"] = true;
-								break;
-							end
-						end
-					end
-					break;
-				end
-			end
-		end
-	end
-	return TABLE_TableIndirection["anyPulling%0"];
-end;
-TABLE_TableIndirection["FarmManager%0"].Update = function()
-	if ((4795 > 402) and (not _G.SystemEnabled or not TABLE_TableIndirection["targetMobNames%0"] or (type(TABLE_TableIndirection["targetMobNames%0"]) ~= "table") or (#TABLE_TableIndirection["targetMobNames%0"] == 0) or not TABLE_TableIndirection["activeGatherPoint%0"] or (4276 <= 3031))) then
-		return;
-	end
-	TABLE_TableIndirection["char%0"] = TABLE_TableIndirection["LP%0"].Character;
-	TABLE_TableIndirection["hrp%0"] = TABLE_TableIndirection["char%0"] and TABLE_TableIndirection["char%0"]:FindFirstChild("HumanoidRootPart");
-	if not TABLE_TableIndirection["hrp%0"] then
-		return;
-	end
-	TABLE_TableIndirection["stillAlive%0"] = {};
-	if ((4813 > 3565) and TABLE_TableIndirection["pulledMobs%0"] and (type(TABLE_TableIndirection["pulledMobs%0"]) == "table")) then
-		for _, m in ipairs(TABLE_TableIndirection["pulledMobs%0"]) do
-			if ((3912 == 3912) and m and m.Parent and m:FindFirstChild("Humanoid") and (m.Humanoid.Health > 0) and m:FindFirstChild("HumanoidRootPart")) then
-				table.insert(TABLE_TableIndirection["stillAlive%0"], m);
-			else
-				TABLE_TableIndirection["PullBackSystem%0"].ClearMonsterData(m);
-			end
-		end
-	end
-	TABLE_TableIndirection["pulledMobs%0"] = TABLE_TableIndirection["stillAlive%0"];
-	if ((2821 <= 4824) and ((TABLE_TableIndirection["farmState%0"] == TABLE_TableIndirection["States%0"].PULL) or (4782 <= 1199))) then
-		TABLE_TableIndirection["FlatIdent_679D2%0"] = 0;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_679D2%0"] == 2) then
-				if (not TABLE_TableIndirection["currentTargetMob%0"] or (4864 < 1902)) then
-					if ((1738 <= 2195) and (4839 >= 3700) and ((tick() - TABLE_TableIndirection["lastNPCScan%0"]) > 0.3)) then
-						TABLE_TableIndirection["FlatIdent_45CCF%0"] = 0;
-						TABLE_TableIndirection["folder%0"] = nil;
-						while true do
-							if (TABLE_TableIndirection["FlatIdent_45CCF%0"] == 1) then
-								if TABLE_TableIndirection["folder%0"] then
-									for _, npc in ipairs(TABLE_TableIndirection["folder%0"]:GetChildren()) do
-										TABLE_TableIndirection["alreadyPulled%0"] = false;
-										if ((41 <= 3018) and ((TABLE_TableIndirection["pulledMobs%0"] and (type(TABLE_TableIndirection["pulledMobs%0"]) == "table")) or (1075 > 1918))) then
-											for _, p in ipairs(TABLE_TableIndirection["pulledMobs%0"]) do
-												if (p ~= npc) then
-												else
-													TABLE_TableIndirection["alreadyPulled%0"] = true;
-													break;
-												end
-											end
-										end
-										if ((2145 <= 4104) and (396 <= 3804) and not TABLE_TableIndirection["alreadyPulled%0"] and npc.Parent and npc:FindFirstChild("Humanoid") and (npc.Humanoid.Health > 0)) then
-											for _, name in ipairs(TABLE_TableIndirection["targetMobNames%0"]) do
-												if ((npc.Name == name) or (4169 == 2187)) then
-													TABLE_TableIndirection["yDistance%0"] = math.abs(npc.HumanoidRootPart.Position.Y - TABLE_TableIndirection["activeGatherPoint%0"].Y);
-													if (TABLE_TableIndirection["yDistance%0"] >= 35) then
-													else
-														TABLE_TableIndirection["currentTargetMob%0"] = npc;
-														break;
-													end
-												end
-											end
-										end
-										if TABLE_TableIndirection["currentTargetMob%0"] then
-											break;
-										end
-									end
-								end
-								if ((1406 == 1406) and not TABLE_TableIndirection["currentTargetMob%0"]) then
-									if ((2689 < 4845) and (1531 < 4271) and TABLE_TableIndirection["pulledMobs%0"] and (type(TABLE_TableIndirection["pulledMobs%0"]) == "table") and (#TABLE_TableIndirection["pulledMobs%0"] > 0)) then
-										if (#TABLE_TableIndirection["pulledMobs%0"] == 1) then
-											TABLE_TableIndirection["FlatIdent_499B1%0"] = 0;
-											while true do
-												if (TABLE_TableIndirection["FlatIdent_499B1%0"] == 0) then
-													TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].KILL_SINGLE;
-													TABLE_TableIndirection["killStartTime%0"] = tick();
-													break;
-												end
-											end
-										else
-											TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].GATHER;
-										end
-									else
-										TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].WAITING;
-									end
-								end
-								break;
-							end
-							if (TABLE_TableIndirection["FlatIdent_45CCF%0"] == 0) then
-								TABLE_TableIndirection["lastNPCScan%0"] = tick();
-								TABLE_TableIndirection["folder%0"] = workspace:FindFirstChild("NPCs");
-								TABLE_TableIndirection["FlatIdent_45CCF%0"] = 1;
-							end
-						end
-					end
-				end
-				if (((635 == 635) and TABLE_TableIndirection["currentTargetMob%0"]) or (2322 > 2622)) then
-					TABLE_TableIndirection["currentHeadOffset%0"] = (TABLE_TableIndirection["activeQuestData%0"] and TABLE_TableIndirection["activeQuestData%0"].CustomHeadOffset) or TABLE_TableIndirection["Config%0"].HEAD_OFFSET;
-					if (TABLE_TableIndirection["FlySystem%0"].AdjustToMob(TABLE_TableIndirection["hrp%0"], TABLE_TableIndirection["currentTargetMob%0"], TABLE_TableIndirection["currentHeadOffset%0"]) or (4534 == 2082)) then
-						TABLE_TableIndirection["FlatIdent_79729%0"] = 0;
-						while true do
-							if (0 == TABLE_TableIndirection["FlatIdent_79729%0"]) then
-								TABLE_TableIndirection["CombatSystem%0"].SingleAttack(TABLE_TableIndirection["currentTargetMob%0"]);
-								if ((3373 <= 3556) and (TABLE_TableIndirection["currentTargetMob%0"].Humanoid.Health < TABLE_TableIndirection["currentTargetMob%0"].Humanoid.MaxHealth)) then
-									TABLE_TableIndirection["FlatIdent_FBDE%0"] = 0;
-									while true do
-										if (TABLE_TableIndirection["FlatIdent_FBDE%0"] == 0) then
-											TABLE_TableIndirection["FarmManager%0"].PullMob(TABLE_TableIndirection["currentTargetMob%0"]);
-											TABLE_TableIndirection["currentTargetMob%0"] = nil;
-											break;
-										end
-									end
-								end
-								break;
-							end
-						end
-					end
-				end
-				break;
-			end
-			if (TABLE_TableIndirection["FlatIdent_679D2%0"] == 1) then
-				TABLE_TableIndirection["PullBackSystem%0"].StopAllPulling();
-				if (TABLE_TableIndirection["currentTargetMob%0"] and (not TABLE_TableIndirection["currentTargetMob%0"].Parent or (TABLE_TableIndirection["currentTargetMob%0"].Humanoid.Health <= 0))) then
-					TABLE_TableIndirection["currentTargetMob%0"] = nil;
-				end
-				TABLE_TableIndirection["FlatIdent_679D2%0"] = 2;
-			end
-			if (TABLE_TableIndirection["FlatIdent_679D2%0"] == 0) then
-				TABLE_TableIndirection["lockedKillHeight%0"] = 0;
-				TABLE_TableIndirection["gatherWaitTime%0"] = nil;
-				TABLE_TableIndirection["FlatIdent_679D2%0"] = 1;
-			end
-		end
-	elseif ((TABLE_TableIndirection["farmState%0"] == TABLE_TableIndirection["States%0"].GATHER) or (3291 < 3280) or (1571 > 1867)) then
-		if ((#TABLE_TableIndirection["pulledMobs%0"] == 1) or (2654 >= 2996)) then
-			TABLE_TableIndirection["FlatIdent_7993F%0"] = 0;
-			while true do
-				if (TABLE_TableIndirection["FlatIdent_7993F%0"] == 1) then
-					TABLE_TableIndirection["PullBackSystem%0"].StopAllPulling();
-					return;
-				end
-				if (TABLE_TableIndirection["FlatIdent_7993F%0"] == 0) then
-					TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].KILL_SINGLE;
-					TABLE_TableIndirection["killStartTime%0"] = tick();
-					TABLE_TableIndirection["FlatIdent_7993F%0"] = 1;
-				end
-			end
-		end
-		TABLE_TableIndirection["FarmManager%0"].CheckTeleportedMobs();
-		TABLE_TableIndirection["FarmManager%0"].CheckNewMobs();
-		TABLE_TableIndirection["FarmManager%0"].PullAllMobsToGather();
-		TABLE_TableIndirection["FlySystem%0"].AdjustToTarget(TABLE_TableIndirection["hrp%0"], TABLE_TableIndirection["activeGatherPoint%0"], 15, TABLE_TableIndirection["Config%0"].FLY_SPEED);
-		if ((4386 >= 873) and not TABLE_TableIndirection["gatherWaitTime%0"]) then
-			TABLE_TableIndirection["gatherWaitTime%0"] = tick();
-		end
-		TABLE_TableIndirection["allClose%0"] = true;
-		if ((3978 > 2104) and TABLE_TableIndirection["pulledMobs%0"] and (type(TABLE_TableIndirection["pulledMobs%0"]) == "table")) then
-			for _, mob in ipairs(TABLE_TableIndirection["pulledMobs%0"]) do
-				if (mob and mob:FindFirstChild("HumanoidRootPart")) then
-					TABLE_TableIndirection["flatMobPos%0"] = Vector3.new(mob.HumanoidRootPart.Position.X, 0, mob.HumanoidRootPart.Position.Z);
-					TABLE_TableIndirection["flatGatherPos%0"] = Vector3.new(TABLE_TableIndirection["activeGatherPoint%0"].X, 0, TABLE_TableIndirection["activeGatherPoint%0"].Z);
-					if ((TABLE_TableIndirection["flatMobPos%0"] - TABLE_TableIndirection["flatGatherPos%0"]).Magnitude <= 20) then
-					else
-						TABLE_TableIndirection["allClose%0"] = false;
-						break;
-					end
-				end
-			end
-		end
-		if ((921 <= 1102) and (TABLE_TableIndirection["allClose%0"] or ((tick() - TABLE_TableIndirection["gatherWaitTime%0"]) > 3))) then
-			TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].KILL;
-			TABLE_TableIndirection["killStartTime%0"] = tick();
-			TABLE_TableIndirection["gatherWaitTime%0"] = nil;
-			TABLE_TableIndirection["PullBackSystem%0"].StopAllPulling();
-		end
-	elseif ((4706 >= 963) and (TABLE_TableIndirection["farmState%0"] == TABLE_TableIndirection["States%0"].KILL_SINGLE)) then
-		TABLE_TableIndirection["hasNewMobs%0"] = TABLE_TableIndirection["FarmManager%0"].CheckNewMobs();
-		if TABLE_TableIndirection["hasNewMobs%0"] then
-			TABLE_TableIndirection["FlatIdent_73F66%0"] = 0;
-			while true do
-				if (TABLE_TableIndirection["FlatIdent_73F66%0"] == 1) then
-					return;
-				end
-				if (TABLE_TableIndirection["FlatIdent_73F66%0"] == 0) then
-					TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].GATHER;
-					TABLE_TableIndirection["gatherWaitTime%0"] = nil;
-					TABLE_TableIndirection["FlatIdent_73F66%0"] = 1;
-				end
-			end
-		end
-		if (not TABLE_TableIndirection["pulledMobs%0"] or (type(TABLE_TableIndirection["pulledMobs%0"]) ~= "table") or (#TABLE_TableIndirection["pulledMobs%0"] == 0) or ((tick() - TABLE_TableIndirection["killStartTime%0"]) > TABLE_TableIndirection["Config%0"].KILL_STUCK_TIMEOUT)) then
-			TABLE_TableIndirection["pulledMobs%0"] = {};
-			TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].PULL;
-			TABLE_TableIndirection["PullBackSystem%0"].StopAllPulling();
-		else
-			TABLE_TableIndirection["FlatIdent_C79F%0"] = 0;
-			TABLE_TableIndirection["mob%0"] = nil;
-			while true do
-				if (0 == TABLE_TableIndirection["FlatIdent_C79F%0"]) then
-					TABLE_TableIndirection["mob%0"] = TABLE_TableIndirection["pulledMobs%0"][1];
-					if (TABLE_TableIndirection["mob%0"] and TABLE_TableIndirection["mob%0"]:FindFirstChild("HumanoidRootPart")) then
-						TABLE_TableIndirection["FlatIdent_47A85%0"] = 0;
-						TABLE_TableIndirection["isReady%0"] = nil;
-						while true do
-							if (TABLE_TableIndirection["FlatIdent_47A85%0"] == 1) then
-								if TABLE_TableIndirection["isReady%0"] then
-									TABLE_TableIndirection["CombatSystem%0"].SingleAttack(TABLE_TableIndirection["mob%0"]);
-								end
-								break;
-							end
-							if (TABLE_TableIndirection["FlatIdent_47A85%0"] == 0) then
-								TABLE_TableIndirection["isReady%0"] = false;
-								if ((2995 > 1541) and TABLE_TableIndirection["activeQuestData%0"] and TABLE_TableIndirection["activeQuestData%0"].LockGatherHeight and TABLE_TableIndirection["activeGatherPoint%0"]) then
-									TABLE_TableIndirection["isReady%0"] = TABLE_TableIndirection["FlySystem%0"].AdjustToTarget(TABLE_TableIndirection["hrp%0"], TABLE_TableIndirection["activeGatherPoint%0"], 3, TABLE_TableIndirection["Config%0"].FLY_SPEED);
-								else
-									TABLE_TableIndirection["FlatIdent_1B5ED%0"] = 0;
-									TABLE_TableIndirection["currentHeadOffset%0"] = nil;
-									while true do
-										if (TABLE_TableIndirection["FlatIdent_1B5ED%0"] == 0) then
-											TABLE_TableIndirection["currentHeadOffset%0"] = (TABLE_TableIndirection["activeQuestData%0"] and TABLE_TableIndirection["activeQuestData%0"].CustomHeadOffset) or TABLE_TableIndirection["Config%0"].HEAD_OFFSET;
-											TABLE_TableIndirection["isReady%0"] = TABLE_TableIndirection["FlySystem%0"].AdjustToMob(TABLE_TableIndirection["hrp%0"], TABLE_TableIndirection["mob%0"], TABLE_TableIndirection["currentHeadOffset%0"]);
-											break;
-										end
-									end
-								end
-								TABLE_TableIndirection["FlatIdent_47A85%0"] = 1;
-							end
-						end
-					else
-						TABLE_TableIndirection["pulledMobs%0"] = {};
-						TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].PULL;
-					end
-					break;
-				end
-			end
-		end
-	elseif ((TABLE_TableIndirection["farmState%0"] == TABLE_TableIndirection["States%0"].KILL) or (960 <= 876)) then
-		TABLE_TableIndirection["hasTeleported%0"] = false;
-		if (TABLE_TableIndirection["activeGatherPoint%0"] and TABLE_TableIndirection["pulledMobs%0"] and (type(TABLE_TableIndirection["pulledMobs%0"]) == "table") and (#TABLE_TableIndirection["pulledMobs%0"] > 0)) then
-			TABLE_TableIndirection["hasTeleported%0"] = TABLE_TableIndirection["FarmManager%0"].CheckTeleportedMobs();
-		end
-		if ((3249 > 953) and (TABLE_TableIndirection["hasTeleported%0"] or (2066 == 932))) then
-			TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].GATHER;
-			TABLE_TableIndirection["gatherWaitTime%0"] = nil;
-			return;
-		end
-		if (not TABLE_TableIndirection["pulledMobs%0"] or (type(TABLE_TableIndirection["pulledMobs%0"]) ~= "table") or (#TABLE_TableIndirection["pulledMobs%0"] == 0) or ((tick() - TABLE_TableIndirection["killStartTime%0"]) > TABLE_TableIndirection["Config%0"].KILL_STUCK_TIMEOUT) or (3273 > 4573)) then
-			TABLE_TableIndirection["pulledMobs%0"] = {};
-			TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].PULL;
-			TABLE_TableIndirection["PullBackSystem%0"].StopAllPulling();
-		else
-			TABLE_TableIndirection["FlatIdent_2C195%0"] = 0;
-			TABLE_TableIndirection["flyPos%0"] = nil;
-			while true do
-				if (1 == TABLE_TableIndirection["FlatIdent_2C195%0"]) then
-					TABLE_TableIndirection["FlySystem%0"].AdjustToTarget(TABLE_TableIndirection["hrp%0"], TABLE_TableIndirection["flyPos%0"], 3);
-					TABLE_TableIndirection["CombatSystem%0"].AoeAttack(TABLE_TableIndirection["pulledMobs%0"], TABLE_TableIndirection["hrp%0"]);
-					break;
-				end
-				if (TABLE_TableIndirection["FlatIdent_2C195%0"] == 0) then
-					if (((4825 < 4843) and (TABLE_TableIndirection["lockedKillHeight%0"] == 0)) or (3151 < 1284)) then
-						TABLE_TableIndirection["validMobY%0"] = nil;
-						for _, m in ipairs(TABLE_TableIndirection["pulledMobs%0"]) do
-							if (m and m:FindFirstChild("HumanoidRootPart")) then
-								TABLE_TableIndirection["dist%0"] = (Vector3.new(m.HumanoidRootPart.Position.X, 0, m.HumanoidRootPart.Position.Z) - Vector3.new(TABLE_TableIndirection["activeGatherPoint%0"].X, 0, TABLE_TableIndirection["activeGatherPoint%0"].Z)).Magnitude;
-								if ((TABLE_TableIndirection["dist%0"] <= 30) or (3877 >= 4537) or (1850 == 1529)) then
-									TABLE_TableIndirection["validMobY%0"] = m.HumanoidRootPart.Position.Y;
-									break;
-								end
-							end
-						end
-						if ((821 < 2123) and (TABLE_TableIndirection["validMobY%0"] or (4315 < 1726))) then
-							if (TABLE_TableIndirection["activeQuestData%0"] and TABLE_TableIndirection["activeQuestData%0"].LockGatherHeight and TABLE_TableIndirection["activeGatherPoint%0"]) then
-								TABLE_TableIndirection["lockedKillHeight%0"] = TABLE_TableIndirection["activeGatherPoint%0"].Y;
-							else
-								TABLE_TableIndirection["FlatIdent_6F3E4%0"] = 0;
-								TABLE_TableIndirection["currentKillOffset%0"] = nil;
-								while true do
-									if (TABLE_TableIndirection["FlatIdent_6F3E4%0"] == 0) then
-										TABLE_TableIndirection["currentKillOffset%0"] = (TABLE_TableIndirection["activeQuestData%0"] and TABLE_TableIndirection["activeQuestData%0"].CustomKillOffset) or TABLE_TableIndirection["Config%0"].KILL_OFFSET;
-										TABLE_TableIndirection["lockedKillHeight%0"] = TABLE_TableIndirection["validMobY%0"] + TABLE_TableIndirection["currentKillOffset%0"];
-										break;
-									end
-								end
-							end
-						else
-							TABLE_TableIndirection["FlatIdent_95405%0"] = 0;
-							while true do
-								if (1 == TABLE_TableIndirection["FlatIdent_95405%0"]) then
-									return;
-								end
-								if (TABLE_TableIndirection["FlatIdent_95405%0"] == 0) then
-									TABLE_TableIndirection["pulledMobs%0"] = {};
-									TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].PULL;
-									TABLE_TableIndirection["FlatIdent_95405%0"] = 1;
-								end
-							end
-						end
-					end
-					TABLE_TableIndirection["flyPos%0"] = Vector3.new(TABLE_TableIndirection["activeGatherPoint%0"].X, TABLE_TableIndirection["lockedKillHeight%0"], TABLE_TableIndirection["activeGatherPoint%0"].Z);
-					TABLE_TableIndirection["FlatIdent_2C195%0"] = 1;
-				end
-			end
-		end
-	elseif ((902 < 2325) and ((TABLE_TableIndirection["farmState%0"] == TABLE_TableIndirection["States%0"].WAITING) or (3679 < 625))) then
-		TABLE_TableIndirection["FlatIdent_85FF9%0"] = 0;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_85FF9%0"] == 0) then
-				if ((TABLE_TableIndirection["activeGatherPoint%0"] and TABLE_TableIndirection["targetMobNames%0"] and (type(TABLE_TableIndirection["targetMobNames%0"]) == "table") and (#TABLE_TableIndirection["targetMobNames%0"] > 0)) or (4625 < 632)) then
-					TABLE_TableIndirection["FlatIdent_2E3CE%0"] = 0;
-					TABLE_TableIndirection["newMobs%0"] = nil;
-					while true do
-						if (TABLE_TableIndirection["FlatIdent_2E3CE%0"] == 0) then
-							TABLE_TableIndirection["newMobs%0"] = TABLE_TableIndirection["PullBackSystem%0"].FindNewMobs(TABLE_TableIndirection["targetMobNames%0"], TABLE_TableIndirection["activeGatherPoint%0"], TABLE_TableIndirection["pulledMobs%0"]);
-							if ((#TABLE_TableIndirection["newMobs%0"] > 0) or (83 > 1780)) then
-								for _, mob in ipairs(TABLE_TableIndirection["newMobs%0"]) do
-									TABLE_TableIndirection["FarmManager%0"].PullMob(mob);
-								end
-								TABLE_TableIndirection["farmState%0"] = TABLE_TableIndirection["States%0"].GATHER;
-							else
-								TABLE_TableIndirection["distToGather%0"] = (TABLE_TableIndirection["hrp%0"].Position - TABLE_TableIndirection["activeGatherPoint%0"]).Magnitude;
-								if ((546 <= 1077) and (TABLE_TableIndirection["distToGather%0"] > 40)) then
-									TABLE_TableIndirection["FlySystem%0"].AdjustToTarget(TABLE_TableIndirection["hrp%0"], TABLE_TableIndirection["activeGatherPoint%0"], 15, TABLE_TableIndirection["Config%0"].FLY_SPEED);
-									return;
-								elseif (TABLE_TableIndirection["activeGatherPoints%0"] and (#TABLE_TableIndirection["activeGatherPoints%0"] > 1)) then
-									TABLE_TableIndirection["FlatIdent_FC26%0"] = 0;
-									while true do
-										if (TABLE_TableIndirection["FlatIdent_FC26%0"] == 0) then
-											TABLE_TableIndirection["gatherIndex%0"] = TABLE_TableIndirection["gatherIndex%0"] + 1;
-											if (TABLE_TableIndirection["gatherIndex%0"] <= #TABLE_TableIndirection["activeGatherPoints%0"]) then
-											else
-												TABLE_TableIndirection["gatherIndex%0"] = 1;
-											end
-											TABLE_TableIndirection["FlatIdent_FC26%0"] = 1;
-										end
-										if (TABLE_TableIndirection["FlatIdent_FC26%0"] == 1) then
-											TABLE_TableIndirection["activeGatherPoint%0"] = TABLE_TableIndirection["activeGatherPoints%0"][TABLE_TableIndirection["gatherIndex%0"]];
-											task.wait(0.5);
-											TABLE_TableIndirection["FlatIdent_FC26%0"] = 2;
-										end
-										if (2 == TABLE_TableIndirection["FlatIdent_FC26%0"]) then
-											return;
-										end
-									end
-								end
-							end
-							break;
-						end
-					end
-				end
-				TABLE_TableIndirection["FlySystem%0"].Stop(TABLE_TableIndirection["hrp%0"]);
-				break;
-			end
-		end
-	end
-end;
-TABLE_TableIndirection["SetSpawnManager%0"] = {};
-TABLE_TableIndirection["SetSpawnManager%0"].LastSpawnNPC = nil;
-TABLE_TableIndirection["SetSpawnManager%0"].DoSetSpawn = function(quest)
-	TABLE_TableIndirection["FlatIdent_97E60%0"] = 0;
-	TABLE_TableIndirection["char%0"] = nil;
-	TABLE_TableIndirection["hrp%0"] = nil;
-	TABLE_TableIndirection["hum%0"] = nil;
-	TABLE_TableIndirection["startTime%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_97E60%0"] == 1) then
-			TABLE_TableIndirection["hrp%0"] = TABLE_TableIndirection["char%0"] and TABLE_TableIndirection["char%0"]:FindFirstChild("HumanoidRootPart");
-			TABLE_TableIndirection["hum%0"] = TABLE_TableIndirection["char%0"] and TABLE_TableIndirection["char%0"]:FindFirstChild("Humanoid");
-			if (not TABLE_TableIndirection["hrp%0"] or not TABLE_TableIndirection["hum%0"] or (3242 == 567)) then
-				return;
-			end
-			TABLE_TableIndirection["FlatIdent_97E60%0"] = 2;
-		end
-		if (3 == TABLE_TableIndirection["FlatIdent_97E60%0"]) then
-			if (((4070 > 687) and (not _G.SystemEnabled or (TABLE_TableIndirection["hum%0"].Health <= 0))) or (2253 == 1851)) then
-				return;
-			end
-			TABLE_TableIndirection["FlySystem%0"].Stop(TABLE_TableIndirection["hrp%0"]);
-			task.wait(1);
-			TABLE_TableIndirection["FlatIdent_97E60%0"] = 4;
-		end
-		if (0 == TABLE_TableIndirection["FlatIdent_97E60%0"]) then
-			if ((858 <= 2962) and (not quest or not quest.SpawnPoint or (996 > 4301))) then
-				return;
-			end
-			if ((TABLE_TableIndirection["SetSpawnManager%0"].LastSpawnNPC == quest.NPCId) or (3946 < 1288)) then
-				print("[System] จุดเกิดของ " .. quest.NPCId .. " ถูกเซ็ตไปแล้ว ข้ามการเซ็ตจุดเกิดใหม่...");
-				return;
-			end
-			TABLE_TableIndirection["char%0"] = TABLE_TableIndirection["LP%0"].Character;
-			TABLE_TableIndirection["FlatIdent_97E60%0"] = 1;
-		end
-		if (TABLE_TableIndirection["FlatIdent_97E60%0"] == 4) then
-			pcall(function()
-				TABLE_TableIndirection["QuestRemote%0"]:InvokeServer(unpack({{"npcChat",true}}));
-				task.wait(0.5);
-				for i = 1, 3 do
-					TABLE_TableIndirection["FlatIdent_7735C%0"] = 0;
-					while true do
-						if (TABLE_TableIndirection["FlatIdent_7735C%0"] == 0) then
-							TABLE_TableIndirection["SetSpawnRemote%0"]:FireServer();
-							task.wait(0.3);
-							break;
-						end
-					end
-				end
-				TABLE_TableIndirection["QuestRemote%0"]:InvokeServer(unpack({{"npcChat",false}}));
-			end);
-			TABLE_TableIndirection["SetSpawnManager%0"].LastSpawnNPC = quest.NPCId;
-			print("[System] เซ็ตจุดเกิดเสร็จสมบูรณ์");
-			break;
-		end
-		if (TABLE_TableIndirection["FlatIdent_97E60%0"] == 2) then
-			print("[System] บินไปเซ็ตจุดเกิดที่ NPC: " .. quest.NPCId);
-			TABLE_TableIndirection["startTime%0"] = tick();
-			while _G.SystemEnabled and (TABLE_TableIndirection["LP%0"].Character == TABLE_TableIndirection["char%0"]) and TABLE_TableIndirection["hrp%0"].Parent and (TABLE_TableIndirection["hum%0"].Health > 0) and ((TABLE_TableIndirection["hrp%0"].Position - quest.SpawnPoint).Magnitude > 3) do
-				TABLE_TableIndirection["FlySystem%0"].AdjustToTarget(TABLE_TableIndirection["hrp%0"], quest.SpawnPoint, 3, TABLE_TableIndirection["Config%0"].FLY_SPEED, true);
-				task.wait();
-				if (((tick() - TABLE_TableIndirection["startTime%0"]) > 120) or (847 >= 1263)) then
-					break;
-				end
-			end
-			TABLE_TableIndirection["FlatIdent_97E60%0"] = 3;
-		end
-	end
-end;
-TABLE_TableIndirection["QuestManager%0"] = {};
-TABLE_TableIndirection["QuestManager%0"].AutoAcceptQuest = function()
-	TABLE_TableIndirection["FlatIdent_38BA4%0"] = 0;
-	TABLE_TableIndirection["quest%0"] = nil;
-	TABLE_TableIndirection["char%0"] = nil;
-	TABLE_TableIndirection["hrp%0"] = nil;
-	TABLE_TableIndirection["hum%0"] = nil;
-	TABLE_TableIndirection["startTime%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_38BA4%0"] == 1) then
-			TABLE_TableIndirection["hrp%0"] = TABLE_TableIndirection["char%0"] and TABLE_TableIndirection["char%0"]:FindFirstChild("HumanoidRootPart");
-			TABLE_TableIndirection["hum%0"] = TABLE_TableIndirection["char%0"] and TABLE_TableIndirection["char%0"]:FindFirstChild("Humanoid");
-			if (not TABLE_TableIndirection["hrp%0"] or not TABLE_TableIndirection["hum%0"]) then
-				return nil;
-			end
-			TABLE_TableIndirection["FlatIdent_38BA4%0"] = 2;
-		end
-		if (TABLE_TableIndirection["FlatIdent_38BA4%0"] == 2) then
-			TABLE_TableIndirection["SetSpawnManager%0"].DoSetSpawn(TABLE_TableIndirection["quest%0"]);
-			print("[System] บินไปรับเควส: " .. TABLE_TableIndirection["quest%0"].TargetQuestName);
-			TABLE_TableIndirection["startTime%0"] = tick();
-			TABLE_TableIndirection["FlatIdent_38BA4%0"] = 3;
-		end
-		if (TABLE_TableIndirection["FlatIdent_38BA4%0"] == 5) then
-			TABLE_TableIndirection["QuestTracker%0"].UpdateHasActiveQuest();
-			if (TABLE_TableIndirection["cachedHasQuest%0"] or (1818 == 85)) then
-				return TABLE_TableIndirection["quest%0"];
-			end
-			return nil;
-		end
-		if (TABLE_TableIndirection["FlatIdent_38BA4%0"] == 3) then
-			while _G.SystemEnabled and (TABLE_TableIndirection["LP%0"].Character == TABLE_TableIndirection["char%0"]) and TABLE_TableIndirection["hrp%0"].Parent and (TABLE_TableIndirection["hum%0"].Health > 0) and ((TABLE_TableIndirection["hrp%0"].Position - TABLE_TableIndirection["quest%0"].Position).Magnitude > 3) do
-				TABLE_TableIndirection["FlySystem%0"].AdjustToTarget(TABLE_TableIndirection["hrp%0"], TABLE_TableIndirection["quest%0"].Position, 3, TABLE_TableIndirection["Config%0"].FLY_SPEED, true);
-				task.wait();
-				if (((tick() - TABLE_TableIndirection["startTime%0"]) > 120) or (4445 < 4149)) then
-					break;
-				end
-			end
-			if (not _G.SystemEnabled or (TABLE_TableIndirection["hum%0"].Health <= 0)) then
-				return nil;
-			end
-			TABLE_TableIndirection["FlySystem%0"].Stop(TABLE_TableIndirection["hrp%0"]);
-			TABLE_TableIndirection["FlatIdent_38BA4%0"] = 4;
-		end
-		if (TABLE_TableIndirection["FlatIdent_38BA4%0"] == 4) then
-			task.wait(1.5);
-			pcall(function()
-				TABLE_TableIndirection["QuestRemote%0"]:InvokeServer(unpack({{"npcChat",true}}));
-				task.wait(0.5);
-				TABLE_TableIndirection["QuestRemote%0"]:InvokeServer(unpack({{"takequest",TABLE_TableIndirection["quest%0"].TargetQuestName}}));
-				task.wait(0.5);
-				TABLE_TableIndirection["QuestRemote%0"]:InvokeServer(unpack({{"npcChat",false}}));
-			end);
-			task.wait(2.5);
-			TABLE_TableIndirection["FlatIdent_38BA4%0"] = 5;
-		end
-		if (TABLE_TableIndirection["FlatIdent_38BA4%0"] == 0) then
-			TABLE_TableIndirection["quest%0"] = TABLE_TableIndirection["LevelManager%0"].GetBestQuest();
-			if (not TABLE_TableIndirection["quest%0"] or (2087 > 2372)) then
-				print("[System] หาเควสที่ตรงกับเลเวลไม่เจอ!");
-				return nil;
-			end
-			TABLE_TableIndirection["char%0"] = TABLE_TableIndirection["LP%0"].Character;
-			TABLE_TableIndirection["FlatIdent_38BA4%0"] = 1;
-		end
-	end
-end;
-local function bypassOverlap(part)
-	if ((630 < 2127) and (part:IsA("BasePart") or (656 >= 3330))) then
-		TABLE_TableIndirection["FlatIdent_696E1%0"] = 0;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_696E1%0"] == 0) then
-				part.CanCollide = false;
-				part.CanQuery = false;
-				TABLE_TableIndirection["FlatIdent_696E1%0"] = 1;
-			end
-			if (TABLE_TableIndirection["FlatIdent_696E1%0"] == 1) then
-				part.CanTouch = false;
-				for _, child in pairs(part:GetChildren()) do
-					if (child:IsA("TouchTransmitter") or (2492 <= 335)) then
-						child:Destroy();
-					end
-				end
-				break;
-			end
-		end
-	end
-end
-TABLE_TableIndirection["RunService%0"].Stepped:Connect(function()
-	if _G.SystemEnabled then
-		TABLE_TableIndirection["char%0"] = TABLE_TableIndirection["LP%0"].Character;
-		if (TABLE_TableIndirection["char%0"] or (1938 == 2514)) then
-			for _, part in ipairs(TABLE_TableIndirection["char%0"]:GetDescendants()) do
-				bypassOverlap(part);
-			end
-		end
-	end
-end);
-local function AutoEquip()
-	TABLE_TableIndirection["char%0"] = TABLE_TableIndirection["LP%0"].Character;
-	if ((4255 >= 55) and (4322 >= 2562) and not TABLE_TableIndirection["char%0"]) then
-		return;
-	end
-	if (TABLE_TableIndirection["char%0"]:FindFirstChildOfClass("Tool") or (3637 >= 3770)) then
-		return;
-	end
-	TABLE_TableIndirection["currentBackpack%0"] = TABLE_TableIndirection["LP%0"]:FindFirstChild("Backpack");
-	if ((2999 > 1156) and (not TABLE_TableIndirection["currentBackpack%0"] or (2379 > 4578))) then
-		return;
-	end
-	TABLE_TableIndirection["tool%0"] = TABLE_TableIndirection["currentBackpack%0"]:FindFirstChild("Melee") or TABLE_TableIndirection["currentBackpack%0"]:FindFirstChildOfClass("Tool");
-	if ((2350 > 1155) and TABLE_TableIndirection["tool%0"]) then
-		TABLE_TableIndirection["tool%0"].Parent = TABLE_TableIndirection["char%0"];
-	end
-end
-task.spawn(function()
-	while task.wait(1) do
-		if ((4029 <= 4853) and ((_G.SystemEnabled and TABLE_TableIndirection["LP%0"].Character) or (483 > 743))) then
-			TABLE_TableIndirection["FlatIdent_904EC%0"] = 0;
-			TABLE_TableIndirection["hrp%0"] = nil;
-			while true do
-				if (0 == TABLE_TableIndirection["FlatIdent_904EC%0"]) then
-					TABLE_TableIndirection["hrp%0"] = TABLE_TableIndirection["LP%0"].Character:FindFirstChild("HumanoidRootPart");
-					if (TABLE_TableIndirection["hrp%0"] or (516 > 3434)) then
-						pcall(function()
-							TABLE_TableIndirection["FlatIdent_53252%0"] = 0;
-							TABLE_TableIndirection["args%0"] = nil;
-							while true do
-								if (TABLE_TableIndirection["FlatIdent_53252%0"] == 0) then
-									TABLE_TableIndirection["args%0"] = {0.605,"dash",TABLE_TableIndirection["hrp%0"].CFrame};
-									TABLE_TableIndirection["dashRemote%0"]:FireServer(unpack(TABLE_TableIndirection["args%0"]));
-									break;
-								end
-							end
-						end);
-					end
-					break;
-				end
-			end
-		end
-	end
-end);
-local function SetupGUI()
-	TABLE_TableIndirection["FlatIdent_6A15B%0"] = 0;
-	TABLE_TableIndirection["sg%0"] = nil;
-	TABLE_TableIndirection["btn%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_6A15B%0"] == 3) then
-			TABLE_TableIndirection["btn%0"].MouseButton1Click:Connect(function()
-				_G.SystemEnabled = not _G.SystemEnabled;
-				TABLE_TableIndirection["btn%0"].Text = (_G.SystemEnabled and "AUTO FARM: ON") or "AUTO FARM: OFF";
-				TABLE_TableIndirection["btn%0"].BackgroundColor3 = (_G.SystemEnabled and Color3.fromRGB(50, 200, 50)) or Color3.fromRGB(200, 50, 50);
-				if ((2454 > 578) and not _G.SystemEnabled) then
-					TABLE_TableIndirection["hrp%0"] = TABLE_TableIndirection["LP%0"].Character and TABLE_TableIndirection["LP%0"].Character:FindFirstChild("HumanoidRootPart");
-					if ((4046 >= 3033) and TABLE_TableIndirection["hrp%0"]) then
-						TABLE_TableIndirection["FlySystem%0"].Remove(TABLE_TableIndirection["hrp%0"]);
-					end
-					TABLE_TableIndirection["FarmManager%0"].SetQuest(nil);
-					TABLE_TableIndirection["PullBackSystem%0"].StopAllPulling();
-				end
-			end);
-			break;
-		end
-		if (TABLE_TableIndirection["FlatIdent_6A15B%0"] == 2) then
-			TABLE_TableIndirection["btn%0"].TextColor3 = Color3.new(1, 1, 1);
-			TABLE_TableIndirection["btn%0"].Font = Enum.Font.GothamBold;
-			TABLE_TableIndirection["btn%0"].TextSize = 18;
-			Instance.new("UICorner", TABLE_TableIndirection["btn%0"]).CornerRadius = UDim.new(0, 8);
-			TABLE_TableIndirection["FlatIdent_6A15B%0"] = 3;
-		end
-		if (TABLE_TableIndirection["FlatIdent_6A15B%0"] == 1) then
-			TABLE_TableIndirection["btn%0"].Size = UDim2.new(0, 200, 0, 60);
-			TABLE_TableIndirection["btn%0"].Position = UDim2.new(0.5, -100, 0.05, 0);
-			TABLE_TableIndirection["btn%0"].Text = "AUTO FARM: OFF";
-			TABLE_TableIndirection["btn%0"].BackgroundColor3 = Color3.fromRGB(200, 50, 50);
-			TABLE_TableIndirection["FlatIdent_6A15B%0"] = 2;
-		end
-		if (TABLE_TableIndirection["FlatIdent_6A15B%0"] == 0) then
-			TABLE_TableIndirection["sg%0"] = Instance.new("ScreenGui", TABLE_TableIndirection["CoreGui%0"]);
-			TABLE_TableIndirection["sg%0"].Name = "FarmSystem_Pro";
-			TABLE_TableIndirection["sg%0"].ResetOnSpawn = false;
-			TABLE_TableIndirection["btn%0"] = Instance.new("TextButton", TABLE_TableIndirection["sg%0"]);
-			TABLE_TableIndirection["FlatIdent_6A15B%0"] = 1;
-		end
-	end
-end
-SetupGUI();
-TABLE_TableIndirection["lastQuestTick%0"] = 0;
-TABLE_TableIndirection["mainLoopChar%0"] = nil;
-TABLE_TableIndirection["spawnDelayTick%0"] = 0;
-task.spawn(function()
-	while task.wait() do
-		if _G.SystemEnabled then
-			TABLE_TableIndirection["char%0"] = TABLE_TableIndirection["LP%0"].Character;
-			TABLE_TableIndirection["hrp%0"] = TABLE_TableIndirection["char%0"] and TABLE_TableIndirection["char%0"]:FindFirstChild("HumanoidRootPart");
-			TABLE_TableIndirection["hum%0"] = TABLE_TableIndirection["char%0"] and TABLE_TableIndirection["char%0"]:FindFirstChild("Humanoid");
-			if ((TABLE_TableIndirection["hrp%0"] and TABLE_TableIndirection["hum%0"] and (TABLE_TableIndirection["hum%0"].Health > 0)) or (2719 <= 1447)) then
-				TABLE_TableIndirection["FlatIdent_2B407%0"] = 0;
-				while true do
-					if (TABLE_TableIndirection["FlatIdent_2B407%0"] == 1) then
-						if ((662 <= 972) and ((tick() - TABLE_TableIndirection["spawnDelayTick%0"]) < 4)) then
-							continue;
-						end
-						AutoEquip();
-						TABLE_TableIndirection["FlatIdent_2B407%0"] = 2;
-					end
-					if (TABLE_TableIndirection["FlatIdent_2B407%0"] == 2) then
-						if (not TABLE_TableIndirection["isProcessingQuest%0"] and ((tick() - TABLE_TableIndirection["lastQuestTick%0"]) > 1.5)) then
-							TABLE_TableIndirection["lastQuestTick%0"] = tick();
-							TABLE_TableIndirection["QuestTracker%0"].UpdateHasActiveQuest();
-							TABLE_TableIndirection["isDone%0"] = TABLE_TableIndirection["QuestTracker%0"].IsComplete();
-							if (not TABLE_TableIndirection["cachedHasQuest%0"] or TABLE_TableIndirection["isDone%0"] or (4134 < 3926)) then
-								TABLE_TableIndirection["isProcessingQuest%0"] = true;
-								TABLE_TableIndirection["FarmManager%0"].SetQuest(nil);
-								TABLE_TableIndirection["currentQuest%0"] = TABLE_TableIndirection["QuestManager%0"].AutoAcceptQuest();
-								if TABLE_TableIndirection["currentQuest%0"] then
-									TABLE_TableIndirection["FarmManager%0"].SetQuest(TABLE_TableIndirection["currentQuest%0"]);
-								end
-								TABLE_TableIndirection["isProcessingQuest%0"] = false;
-							elseif ((4370 == 4370) and (TABLE_TableIndirection["currentQuest%0"] == nil) and TABLE_TableIndirection["cachedHasQuest%0"]) then
-								TABLE_TableIndirection["currentQuest%0"] = TABLE_TableIndirection["LevelManager%0"].GetBestQuest();
-								if (TABLE_TableIndirection["currentQuest%0"] or (4762 <= 861)) then
-									TABLE_TableIndirection["SetSpawnManager%0"].DoSetSpawn(TABLE_TableIndirection["currentQuest%0"]);
-									TABLE_TableIndirection["FarmManager%0"].SetQuest(TABLE_TableIndirection["currentQuest%0"]);
-								end
-							end
-						end
-						if ((not TABLE_TableIndirection["isProcessingQuest%0"] and TABLE_TableIndirection["currentQuest%0"] and TABLE_TableIndirection["cachedHasQuest%0"]) or (164 >= 2785)) then
-							TABLE_TableIndirection["FarmManager%0"].Update();
-						end
-						break;
-					end
-					if (TABLE_TableIndirection["FlatIdent_2B407%0"] == 0) then
-						if ((930 < 4458) and (TABLE_TableIndirection["char%0"] ~= TABLE_TableIndirection["mainLoopChar%0"])) then
-							TABLE_TableIndirection["mainLoopChar%0"] = TABLE_TableIndirection["char%0"];
-							TABLE_TableIndirection["spawnDelayTick%0"] = tick();
-							TABLE_TableIndirection["isProcessingQuest%0"] = false;
-							TABLE_TableIndirection["cachedHasQuest%0"] = false;
-							TABLE_TableIndirection["currentQuest%0"] = nil;
-							TABLE_TableIndirection["FarmManager%0"].SetQuest(nil);
-							TABLE_TableIndirection["PullBackSystem%0"].Reset();
-						end
-						if _G.IsRespawning then
-							continue;
-						end
-						TABLE_TableIndirection["FlatIdent_2B407%0"] = 1;
-					end
-				end
-			end
-		end
-	end
-end);
-task.spawn(function()
-	while true do
-		if (_G.SystemEnabled or (1412 == 4264) or (525 == 2109)) then
-			TABLE_TableIndirection["FlatIdent_5E6B6%0"] = 0;
-			while true do
-				if (TABLE_TableIndirection["FlatIdent_5E6B6%0"] == 0) then
-					pcall(function()
-						TABLE_TableIndirection["FlatIdent_81F9%0"] = 0;
-						TABLE_TableIndirection["args%0"] = nil;
-						while true do
-							if (TABLE_TableIndirection["FlatIdent_81F9%0"] == 0) then
-								TABLE_TableIndirection["args%0"] = {3457788725,"536248645108658"};
-								TABLE_TableIndirection["ReplicatedStorage%0"]:WaitForChild("Events"):WaitForChild("ADShop"):FireServer(unpack(TABLE_TableIndirection["args%0"]));
-								break;
-							end
-						end
-					end);
-					task.wait(240);
-					break;
-				end
-			end
-		else
-			task.wait(1);
-		end
-	end
-end);
-print("🚀 AUTO FARM + QUEST SYSTEM READY (Dynamic Sand Radar +107)");
-_G.AutoStatsEnabled = true;
-_G.UpgradeAmount = 4;
-_G.StatCaps = {Defense=2000,Strength=1000};
-local function GetStatValue(statName)
-	TABLE_TableIndirection["val%0"] = -1;
-	pcall(function()
-		TABLE_TableIndirection["statsFolder%0"] = TABLE_TableIndirection["LP%0"].PlayerGui.Statistics.Main.Stats;
-		TABLE_TableIndirection["target%0"] = TABLE_TableIndirection["statsFolder%0"]:FindFirstChild(statName);
-		if TABLE_TableIndirection["target%0"] then
-			for _, v in ipairs(TABLE_TableIndirection["target%0"]:GetDescendants()) do
-				if (v:IsA("TextLabel") or (3168 < 2153)) then
-					TABLE_TableIndirection["num%0"] = tonumber(v.Text:match("%d+"));
-					if (TABLE_TableIndirection["num%0"] or (4976 < 1332)) then
-						TABLE_TableIndirection["val%0"] = TABLE_TableIndirection["num%0"];
-						break;
-					end
-				end
-			end
-		end
-	end);
-	return TABLE_TableIndirection["val%0"];
-end
-local function GetPoints()
-	TABLE_TableIndirection["points%0"] = 0;
-	pcall(function()
-		TABLE_TableIndirection["FlatIdent_44652%0"] = 0;
-		TABLE_TableIndirection["mainUI%0"] = nil;
-		while true do
-			if (TABLE_TableIndirection["FlatIdent_44652%0"] == 0) then
-				TABLE_TableIndirection["mainUI%0"] = TABLE_TableIndirection["LP%0"].PlayerGui.Statistics.Main;
-				for _, v in ipairs(TABLE_TableIndirection["mainUI%0"]:GetDescendants()) do
-					if ((4628 == 4628) and v:IsA("TextLabel") and (v.Name:lower():find("point") or v.Text:lower():find("point"))) then
-						TABLE_TableIndirection["num%0"] = tonumber(v.Text:match("%d+"));
-						if TABLE_TableIndirection["num%0"] then
-							TABLE_TableIndirection["points%0"] = TABLE_TableIndirection["num%0"];
-							break;
-						end
-					end
-				end
-				break;
-			end
-		end
-	end);
-	return TABLE_TableIndirection["points%0"];
-end
-task.spawn(function()
-	TABLE_TableIndirection["FlatIdent_2C1E9%0"] = 0;
-	TABLE_TableIndirection["statsRemote%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_2C1E9%0"] == 0) then
-			TABLE_TableIndirection["statsRemote%0"] = TABLE_TableIndirection["ReplicatedStorage%0"]:WaitForChild("Events"):WaitForChild("stats");
-			while task.wait(0.8) do
-				if (_G.SystemEnabled and _G.AutoStatsEnabled and TABLE_TableIndirection["LP%0"].Character) then
-					TABLE_TableIndirection["myPoints%0"] = GetPoints();
-					if ((33 == 33) and (TABLE_TableIndirection["myPoints%0"] <= 0)) then
-						continue;
-					end
-					TABLE_TableIndirection["currentDef%0"] = GetStatValue("Defense");
-					TABLE_TableIndirection["currentStr%0"] = GetStatValue("Strength");
-					if ((3054 <= 4015) and (TABLE_TableIndirection["currentDef%0"] ~= -1) and (TABLE_TableIndirection["currentStr%0"] ~= -1)) then
-						if ((1871 < 3382) and (TABLE_TableIndirection["currentDef%0"] < (TABLE_TableIndirection["currentStr%0"] * 2)) and (TABLE_TableIndirection["currentDef%0"] < _G.StatCaps.Defense)) then
-							pcall(function()
-								TABLE_TableIndirection["statsRemote%0"]:FireServer("Defense", nil, _G.UpgradeAmount);
-							end);
-						elseif ((1293 <= 2166) and ((TABLE_TableIndirection["currentStr%0"] < _G.StatCaps.Strength) or (54 == 395))) then
-							pcall(function()
-								TABLE_TableIndirection["statsRemote%0"]:FireServer("Strength", nil, _G.UpgradeAmount);
-							end);
-						end
-					elseif (((82 == 82) and (TABLE_TableIndirection["currentDef%0"] == -1)) or (2579 < 123)) then
-						pcall(function()
-							TABLE_TableIndirection["statsRemote%0"]:FireServer("Defense", nil, _G.UpgradeAmount);
-						end);
-					end
-				end
-			end
-			break;
-		end
-	end
-end);
-TABLE_TableIndirection["GuiService%0"] = game:GetService("GuiService");
-TABLE_TableIndirection["TeleportService%0"] = game:GetService("TeleportService");
-TABLE_TableIndirection["GuiService%0"].ErrorMessageChanged:Connect(function()
-	task.wait(5);
-	print("[System] 🔄 ตรวจพบการตัดการเชื่อมต่อ กำลังพยายามกลับเข้าเกม...");
-	pcall(function()
-		if ((#game.Players:GetPlayers() <= 1) or (846 >= 2368)) then
-			TABLE_TableIndirection["TeleportService%0"]:Teleport(game.PlaceId, TABLE_TableIndirection["LP%0"]);
-		else
-			TABLE_TableIndirection["TeleportService%0"]:TeleportToPlaceInstance(game.PlaceId, game.JobId, TABLE_TableIndirection["LP%0"]);
-		end
-	end);
-end);
-TABLE_TableIndirection["queue_on_tp%0"] = (syn and syn.queue_on_teleport) or queue_on_teleport;
-if (TABLE_TableIndirection["queue_on_tp%0"] or (581 < 282) or (4012 <= 3358)) then
-	TABLE_TableIndirection["queue_on_tp%0"]([[
-        repeat task.wait() until game:IsLoaded()
-        print("Successfully Rejoined!")
-    ]]);
-end
-print("✅ [Integrated] Auto Stats Ratio 2:1 System Loaded!");
-if ((1494 <= 3005) and (_G.LowCPUMode or (4609 < 2495))) then
-	TABLE_TableIndirection["FlatIdent_259C6%0"] = 0;
-	TABLE_TableIndirection["CoreGui%1"] = nil;
-	TABLE_TableIndirection["screenGui%0"] = nil;
-	TABLE_TableIndirection["targetGui%0"] = nil;
-	TABLE_TableIndirection["background%0"] = nil;
-	TABLE_TableIndirection["statusLabel%0"] = nil;
-	TABLE_TableIndirection["RunService%1"] = nil;
-	TABLE_TableIndirection["frames%0"] = nil;
-	TABLE_TableIndirection["lastUpdate%0"] = nil;
-	TABLE_TableIndirection["currentFPS%0"] = nil;
-	while true do
-		if (TABLE_TableIndirection["FlatIdent_259C6%0"] == 0) then
-			pcall(function()
-				if setfpscap then
-					setfpscap(_G.FPSCap);
-				end
-			end);
-			pcall(function()
-				game:GetService("RunService"):Set3dRenderingEnabled(false);
-			end);
-			TABLE_TableIndirection["CoreGui%1"] = game:GetService("CoreGui");
-			TABLE_TableIndirection["screenGui%0"] = Instance.new("ScreenGui");
-			TABLE_TableIndirection["FlatIdent_259C6%0"] = 1;
-		end
-		if (TABLE_TableIndirection["FlatIdent_259C6%0"] == 6) then
-			TABLE_TableIndirection["RunService%1"].RenderStepped:Connect(function()
-				TABLE_TableIndirection["frames%0"] = TABLE_TableIndirection["frames%0"] + 1;
-				TABLE_TableIndirection["now%0"] = tick();
-				if ((1152 == 1152) and ((TABLE_TableIndirection["now%0"] - TABLE_TableIndirection["lastUpdate%0"]) >= 1)) then
-					TABLE_TableIndirection["FlatIdent_86ECC%0"] = 0;
-					TABLE_TableIndirection["peli%0"] = nil;
-					TABLE_TableIndirection["level%0"] = nil;
-					while true do
-						if (TABLE_TableIndirection["FlatIdent_86ECC%0"] == 0) then
-							TABLE_TableIndirection["currentFPS%0"] = TABLE_TableIndirection["frames%0"];
-							TABLE_TableIndirection["frames%0"] = 0;
-							TABLE_TableIndirection["FlatIdent_86ECC%0"] = 1;
-						end
-						if (3 == TABLE_TableIndirection["FlatIdent_86ECC%0"]) then
-							pcall(function()
-								TABLE_TableIndirection["levelText%0"] = TABLE_TableIndirection["LP%0"].PlayerGui.HUD.Main.Bars.Experience.Detail.Level.Text;
-								TABLE_TableIndirection["levelNum%0"] = TABLE_TableIndirection["levelText%0"]:match("%d+");
-								if ((1896 <= 3422) and TABLE_TableIndirection["levelNum%0"]) then
-									TABLE_TableIndirection["level%0"] = tostring(TABLE_TableIndirection["levelNum%0"]);
-								end
-							end);
-							TABLE_TableIndirection["statusLabel%0"].Text = string.format("🟢 LOW CPU MODE ENABLED\n\nFPS: %d\nLevel: %s\nPeli: %s", TABLE_TableIndirection["currentFPS%0"], TABLE_TableIndirection["level%0"], TABLE_TableIndirection["peli%0"]);
-							break;
-						end
-						if (TABLE_TableIndirection["FlatIdent_86ECC%0"] == 2) then
-							pcall(function()
-								TABLE_TableIndirection["peli%0"] = TABLE_TableIndirection["LP%0"].PlayerGui.HUD.Main.Peli.TextLabel.Text;
-							end);
-							TABLE_TableIndirection["level%0"] = "0";
-							TABLE_TableIndirection["FlatIdent_86ECC%0"] = 3;
-						end
-						if (TABLE_TableIndirection["FlatIdent_86ECC%0"] == 1) then
-							TABLE_TableIndirection["lastUpdate%0"] = TABLE_TableIndirection["now%0"];
-							TABLE_TableIndirection["peli%0"] = "0";
-							TABLE_TableIndirection["FlatIdent_86ECC%0"] = 2;
-						end
-					end
-				end
-			end);
-			print("[System] 🖥️ เปิดใช้งานโหมดจอดำประหยัดทรัพยากร (FPS Cap: " .. tostring(_G.FPSCap) .. ")");
-			break;
-		end
-		if (TABLE_TableIndirection["FlatIdent_259C6%0"] == 5) then
-			TABLE_TableIndirection["RunService%1"] = game:GetService("RunService");
-			TABLE_TableIndirection["frames%0"] = 0;
-			TABLE_TableIndirection["lastUpdate%0"] = tick();
-			TABLE_TableIndirection["currentFPS%0"] = 0;
-			TABLE_TableIndirection["FlatIdent_259C6%0"] = 6;
-		end
-		if (TABLE_TableIndirection["FlatIdent_259C6%0"] == 2) then
-			TABLE_TableIndirection["background%0"] = Instance.new("Frame");
-			TABLE_TableIndirection["background%0"].Size = UDim2.new(1, 0, 1, 0);
-			TABLE_TableIndirection["background%0"].BackgroundColor3 = Color3.new(0, 0, 0);
-			TABLE_TableIndirection["background%0"].Parent = TABLE_TableIndirection["screenGui%0"];
-			TABLE_TableIndirection["FlatIdent_259C6%0"] = 3;
-		end
-		if (TABLE_TableIndirection["FlatIdent_259C6%0"] == 1) then
-			TABLE_TableIndirection["screenGui%0"].Name = "LowCPUScreen";
-			TABLE_TableIndirection["screenGui%0"].IgnoreGuiInset = true;
-			TABLE_TableIndirection["targetGui%0"] = (gethui and gethui()) or TABLE_TableIndirection["CoreGui%1"];
-			TABLE_TableIndirection["screenGui%0"].Parent = TABLE_TableIndirection["targetGui%0"];
-			TABLE_TableIndirection["FlatIdent_259C6%0"] = 2;
-		end
-		if (TABLE_TableIndirection["FlatIdent_259C6%0"] == 3) then
-			TABLE_TableIndirection["statusLabel%0"] = Instance.new("TextLabel");
-			TABLE_TableIndirection["statusLabel%0"].Size = UDim2.new(1, 0, 1, 0);
-			TABLE_TableIndirection["statusLabel%0"].BackgroundTransparency = 1;
-			TABLE_TableIndirection["statusLabel%0"].TextColor3 = Color3.new(0, 1, 0);
-			TABLE_TableIndirection["FlatIdent_259C6%0"] = 4;
-		end
-		if (TABLE_TableIndirection["FlatIdent_259C6%0"] == 4) then
-			TABLE_TableIndirection["statusLabel%0"].TextSize = 35;
-			TABLE_TableIndirection["statusLabel%0"].Font = Enum.Font.Code;
-			TABLE_TableIndirection["statusLabel%0"].Text = "Loading Data...";
-			TABLE_TableIndirection["statusLabel%0"].Parent = TABLE_TableIndirection["background%0"];
-			TABLE_TableIndirection["FlatIdent_259C6%0"] = 5;
-		end
-	end
-end
+( function (...) local Players = game:GetService("Players") local ReplicatedStorage = game:GetService("ReplicatedStorage") local RunService = game:GetService("RunService") local _IIIllIIllI = game:GetService("CoreGui") local _lIlIIlIlll = Players.LocalPlayer print("[System] ⏳ ตรวจสอบสถานะหน้าล็อบบี้...") local _IIllIIlllI = ReplicatedStorage:WaitForChild("Events", 10) if _IIllIIlllI then local _IIllIllllI = _IIllIIlllI:FindFirstChild("playgame") or _IIllIIlllI:WaitForChild("playgame", 5) if _IIllIllllI then while task.wait(1) do local _IIIIlllIIl = _lIlIIlIlll:FindFirstChild("PlayerGui") local _IIIIIIIlIl = _IIIIlllIIl and _IIIIlllIIl:FindFirstChild("HUD") local _llIlllllIl = _IIIIIIIlIl and _IIIIIIIlIl:FindFirstChild("Main") if _llIlllllIl and _llIlllllIl.Visible then print("[System] ✅ เข้าเกมสำเร็จ! UI โหลดครบแล้ว กำลังเริ่มตรวจสอบสถานะตัวละคร...") task.wait(2) break end
+ pcall( function () _IIllIllllI:FireServer("Main Game") print("[System] 🎮 กำลังยิง Remote พยายามเข้า Main Game...") end
+ ) end
+ end
+ else print("[System] ⚠️ ข้ามขั้นตอนล็อบบี้ (อาจจะอยู่ใน Main Game อยู่แล้ว)") task.wait(2) end
+ task.spawn( function () local _lIlIIlIlll = game:GetService("Players").LocalPlayer if getconnections then for _, connection in pairs(getconnections(_lIlIIlIlll.Idled)) do connection:Disable() end
+ print("[System] 🛡️ เปิดใช้งาน Anti-AFK (แบบตัดสัญญาณ Idled) เรียบร้อยแล้ว") else warn("[System] ⚠️ ตัวรันของคุณไม่รองรับ getconnections (Anti-AFK แบบนี้อาจไม่ทำงาน)") end
+ end
+ ) _G.SystemEnabled = true _G.LowCPUMode = true _G.FPSCap = 15 if setfpscap then setfpscap(_G.FPSCap) print("[System] 🎥 ล็อค FPS ไว้ที่ " .. tostring(_G.FPSCap) .. " เรียบร้อยแล้ว") else warn("[System] ⚠️ ตัวรันของคุณไม่รองรับคำสั่ง setfpscap") end
+ task.spawn( function () while task.wait(10) do if setfpscap and _G.FPSCap then pcall( function () setfpscap(_G.FPSCap) end
+ ) end
+ end
+ end
+ ) local _lIIlIlllll = nil local _IIIlllIIlI = false local _llIIIlIllI = false _G.IsRespawning = false _lIlIIlIlll.CharacterAdded:Connect( function (_lIIIlIlIIl) _G.IsRespawning = true print("[System] 💀 ตรวจพบตัวละครเกิดใหม่ กำลังรอเกมโหลด 15 วินาที...") _lIIIlIlIIl:WaitForChild("HumanoidRootPart", 10) task.wait(15) _IIIlllIIlI = false _lIIlIlllll = nil _llIIIlIllI = false print("[System] ♻️ โหลดเสร็จสิ้น! เคลียร์สถานะและเริ่มลุยฟาร์มต่อ...") _G.IsRespawning = false end
+ ) local _IllIIllIll = {} _IllIIllIll.FLY_SPEED = 70 _IllIIllIll.HEAD_OFFSET = 7 _IllIIllIll.KILL_OFFSET = 7 _IllIIllIll.HIT_CHECK_DELAY = 0.15 _IllIIllIll.KILL_STUCK_TIMEOUT = 32 _IllIIllIll.STOP_RADIUS = 3.5 _IllIIllIll.PULL_RADIUS = 250 _IllIIllIll.TELEPORT_THRESHOLD = 40 _IllIIllIll.ATTACK_DELAY = 0.05 _IllIIllIll.COMBO_COOLDOWN = 1.5 local _IIllIIlllI = ReplicatedStorage:WaitForChild("Events") local _IlllIIIIII = _IIllIIlllI:WaitForChild("CombatRegister") local _IlIIllllIl = _IIllIIlllI:WaitForChild("takestam") local _IlIlIlIllI = _IIllIIlllI:WaitForChild("Quest") local _llIIlIlIII = _IIllIIlllI:WaitForChild("SetSpawn") local _IIIlllIlIl = ReplicatedStorage:WaitForChild("CombatAnimations"):WaitForChild("Melee") local _lIllIIllIl = { [1] = _IIIlllIlIl:WaitForChild("Punch1"), [2] = _IIIlllIlIl:WaitForChild("Punch2"), [3] = _IIIlllIlIl:WaitForChild("Punch3"), [4] = _IIIlllIlIl:WaitForChild("GroundPunch4"), [5] = _IIIlllIlIl:WaitForChild("GroundPunch5"), } local _IlIlIllIIl = { { NPCId = "Daph", Position = Vector3.new(-578.6, 5.9, -3431.5), SpawnPoint = nil, GatherPoint = Vector3.new(-647.8, 30.3, -3474.7), MinLevel = 1, MaxLevel = 14, TargetQuestName = "Help Daph", TargetMobs = {"Bandit"}, }, { NPCId = "Noah", Position = Vector3.new(-1710.4, 4, -3376.7), SpawnPoint = Vector3.new(-1540.9, 5.1, -3340.3), GatherPoint = Vector3.new(-1795.4, 21.7, -3346.7), MinLevel = 15, MaxLevel = 19, TargetQuestName = "Help Noah", TargetMobs = {"Desert Bandit"}, }, { NPCId = "Robert", Position = Vector3.new(-1445.1, 10.2, -5102.7), SpawnPoint = Vector3.new(-1296.9, 4.2, -5060.6), GatherPoint = Vector3.new(-1501, 68.1, -5249.7), MinLevel = 20, MaxLevel = 24, TargetQuestName = "Help Robert", TargetMobs = {"Corrupt Marine"}, }, { NPCId = "Kevin", Position = Vector3.new(-1219.4, 63.7, -5194.4), SpawnPoint = Vector3.new(-1296.9, 4.2, -5060.6), GatherPoint = Vector3.new(-1170.6, 71.4, -5248.5), MinLevel = 25, MaxLevel = 29, TargetQuestName = "Help Kevin", TargetMobs = {"Shell's Bandit"}, }, { NPCId = "Zen", Position = Vector3.new(-3172.1, 12.2, -5226.7), SpawnPoint = Vector3.new(-3150.3, 11.8, -5233.6), GatherPoint = Vector3.new(-3251.4 ,23.6, -5253.7), MinLevel = 30, MaxLevel = 39, TargetQuestName = "Help Zen", TargetMobs = {"Zou Inhabitant"}, }, { NPCId = "Chef Rice", Position = Vector3.new(-2968.3, 6.6, -6697.7), SpawnPoint = Vector3.new(-2978.9, 52.6, -6796.3), GatherPoint = Vector3.new(-2992.5 , 3.0, -6778.7), MinLevel = 40, MaxLevel = 109, TargetQuestName = "Help Rice", TargetMobs = {"Krieg Pirate"}, LockGatherHeight = true, }, { NPCId = "Zhen", Position = Vector3.new(4095.7 ,1818.9, -9833.3), SpawnPoint = Vector3.new(3711.4, 1699.7, -9467.8), GatherPoint = { Vector3.new(4171.3 ,1832.0 ,-9881.4), Vector3.new(4192.9, 1917.2, -9906.8) }, MinLevel = 110, MaxLevel = 159, TargetQuestName = "Help zhen", TargetMobs = {"Castle Guard"}, CustomHeadOffset = 9.1, CustomKillOffset = 9.1, }, { NPCId = "Miska", Position = Vector3.new(184.7, 41.5, -11658.7), SpawnPoint = Vector3.new(262.0, 7.6, -11481.3), GatherPoint = Vector3.new(276.4, 55.1, -11757.0), MinLevel = 160, MaxLevel = 200, TargetQuestName = "Help Miska", TargetMobs = {"Gravito's Undermen"}, CustomHeadOffset = 8.2, CustomKillOffset = 8.2, }, { NPCId = "Becky", Position = Vector3.new(7731.1, -2176.1, -17222.7), SpawnPoint = Vector3.new(7973.7, -2152.7, -17075.0), GatherPoint = Vector3.new(7727.7, -2165.6,-17291.8), MinLevel = 190, MaxLevel = 400, TargetQuestName = "Help Becky", TargetMobs = {"Fishman Karate User"}, }, } local _IIIlIIlIll = {} function _IIIlIIlIll.Get() local _IIIIlllIIl = _lIlIIlIlll:FindFirstChild("PlayerGui") if not _IIIIlllIIl then return 1 end
+ local _llllIIlllI, levelVal = pcall( function () return tonumber(_IIIIlllIIl.HUD.Main.Bars.Experience.Detail.Level.Text:match("%d+")) end
+ ) return (_llllIIlllI and levelVal) and levelVal or 1 end
+ function _IIIlIIlIll.GetBestQuest() local _lIIIllIIIl = _IIIlIIlIll.Get() for _, data in ipairs(_IlIlIllIIl) do if _lIIIllIIIl >= data.MinLevel and _lIIIllIIIl <= data.MaxLevel then return data end
+ end
+ return nil end
+ local _IlIIllIIIl = {} function _IlIIllIIIl.GetQuestName() local _IIIIlllIIl = _lIlIIlIlll:FindFirstChild("PlayerGui") if not _IIIIlllIIl then return nil end
+ local _llllllIIll = _IIIIlllIIl:FindFirstChild("Quest") if _llllllIIll and _llllllIIll:FindFirstChild("Main") and _llllllIIll.Main:FindFirstChild("Info") and _llllllIIll.Main.Info:FindFirstChild("Top") then local _IIIlIIIlIl = _llllllIIll.Main.Info.Top:FindFirstChild("QuestName") if _IIIlIIIlIl and _IIIlIIIlIl:IsA("TextLabel") then return _IIIlIIIlIl.Text end
+ end
+ return nil end
+ function _IlIIllIIIl.GetProgress() local _IIIIlllIIl = _lIlIIlIlll:FindFirstChild("PlayerGui") if not _IIIIlllIIl then return nil, nil end
+ local _llllllIIll = _IIIIlllIIl:FindFirstChild("Quest") if not _llllllIIll then return nil, nil end
+ local function _IIlIlIIlII(obj) for _, child in ipairs(obj:GetChildren()) do if child:IsA("TextLabel") or child:IsA("TextButton") then local _lIIlIIlIII = child.Text if _lIIlIIlIII then local _IlIlIllIlI, total = _lIIlIIlIII:match("(%d+)/(%d+)") if _IlIlIllIlI and total then return tonumber(_IlIlIllIlI), tonumber(total) end
+ _IlIlIllIlI, total = _lIIlIIlIII:match("(%d+) of (%d+)") if _IlIlIllIlI and total then return tonumber(_IlIlIllIlI), tonumber(total) end
+ end
+ end
+ local _lIllIIIIII, t = _IIlIlIIlII(child) if _lIllIIIIII then return _lIllIIIIII, t end
+ end
+ return nil, nil end
+ return _IIlIlIIlII(_llllllIIll) end
+ function _IlIIllIIIl.IsComplete() local _IlIlIllIlI, total = _IlIIllIIIl.GetProgress() if _IlIlIllIlI and total and total > 0 then return _IlIlIllIlI >= total end
+ local _IIIIlllIIl = _lIlIIlIlll:FindFirstChild("PlayerGui") local _llllllIIll = _IIIIlllIIl and _IIIIlllIIl:FindFirstChild("Quest") if _llllllIIll then local function _lIIllIllIl(obj) for _, child in ipairs(obj:GetChildren()) do if child:IsA("TextLabel") or child:IsA("TextButton") then local _lIIlIIlIII = (child.Text or ""):lower() if _lIIlIIlIII:find(" return ") or _lIIlIIlIII:find("completed") or _lIIlIIlIII:find("done") or _lIIlIIlIII:find("talk to") then return true end
+ end
+ if _lIIllIllIl(child) then return true end
+ end
+ return false end
+ if _lIIllIllIl(_llllllIIll) then return true end
+ end
+ return false end
+ function _IlIIllIIIl.UpdateHasActiveQuest() local _IIIIlllIIl = _lIlIIlIlll:FindFirstChild("PlayerGui") if not _IIIIlllIIl then _llIIIlIllI = false return end
+ local _llllllIIll = _IIIIlllIIl:FindFirstChild("Quest") if not _llllllIIll then _llIIIlIllI = false return end
+ local _IlIIllIllI = _llllllIIll:FindFirstChild("Main") if _llllllIIll:IsA("ScreenGui") and not _llllllIIll.Enabled then _llIIIlIllI = false return end
+ if _IlIIllIllI and not _IlIIllIllI.Visible then _llIIIlIllI = false return end
+ local _lllllIlllI = _IlIIllIIIl.GetQuestName() if not _lllllIlllI or _lllllIlllI:gsub("%s", "") == "" or _lllllIlllI:lower():find("none") or _lllllIlllI:lower():find("no quest") or _lllllIlllI == "QuestName" or _lllllIlllI == "Label" then _llIIIlIllI = false else _llIIIlIllI = true end
+ end
+ local _llllIlIIII = {} local function _lIlIllllII(_IIlIIllIlI) local _IIIlllIlII = _IIlIIllIlI:FindFirstChild("FlyBV") if not _IIIlllIlII then _IIIlllIlII = Instance.new("BodyVelocity") _IIIlllIlII.Name = "FlyBV" _IIIlllIlII.MaxForce = Vector3.new(1e8, 1e8, 1e8) _IIIlllIlII.P = 1e5 _IIIlllIlII.Parent = _IIlIIllIlI end
+ return _IIIlllIlII end
+ function _llllIlIIII.Stop(_IIlIIllIlI) if _IIlIIllIlI then local _IIIlllIlII = _IIlIIllIlI:FindFirstChild("FlyBV") if _IIIlllIlII then _IIIlllIlII.Velocity = Vector3.zero end
+ _IIlIIllIlI.Velocity = Vector3.zero _IIlIIllIlI.AssemblyLinearVelocity = Vector3.zero _IIlIIllIlI.AssemblyAngularVelocity = Vector3.zero end
+ end
+ function _llllIlIIII.Remove(_IIlIIllIlI) if _IIlIIllIlI and _IIlIIllIlI:FindFirstChild("FlyBV") then _IIlIIllIlI.FlyBV:Destroy() end
+ if _IIlIIllIlI then _IIlIIllIlI.Velocity = Vector3.zero _IIlIIllIlI.AssemblyLinearVelocity = Vector3.zero end
+ end
+ local _lIIIllIIlI = 0 local _IlIIlllIlI = false local _lIIlIlIIlI = 0 local function _lIIlIIlIlI(_IIIlIllIII) if tick() - _lIIIllIIlI >= 1 then _lIIIllIIlI = tick() local _lllIIIllII = RaycastParams.new() _lllIIIllII.FilterType = Enum.RaycastFilterType.Exclude local _lIlIIlIlll = game:GetService("Players").LocalPlayer _lllIIIllII.FilterDescendantsInstances = {_lIlIIlIlll.Character} _lllIIIllII.IgnoreWater = true local _lIllllIllI = workspace:Raycast(_IIIlIllIII, Vector3.new(0, -5000, 0), _lllIIIllII) if _lIllllIllI and _lIllllIllI.Instance and _lIllllIllI.Instance.Name == "Sand" then local _lIIlIlIIlI = _lIllllIllI.Instance:GetFullName() if _lIIlIlIIlI:find("WaterStuff") or _lIIlIlIIlI:find("Env") then _IlIIlllIlI = true _lIIlIlIIlI = _lIllllIllI.Position.Y else _IlIIlllIlI = false end
+ else _IlIIlllIlI = false end
+ end
+ return _IlIIlllIlI, _lIIlIlIIlI end
+ function _llllIlIIII.AdjustToTarget(_IIlIIllIlI, _llIlIIIIII, stopRadius, _lIIlIllllI, useWaterRadar) if not _llIlIIIIII or not _IIlIIllIlI then return false end
+ stopRadius = stopRadius or _IllIIllIll.STOP_RADIUS local _IlIllIllll = (_llIlIIIIII - _IIlIIllIlI.Position).Magnitude if _IlIllIllll <= stopRadius then _llllIlIIII.Stop(_IIlIIllIlI) return true end
+ local _IIIlIIIIll = _lIIlIllllI or _IllIIllIll.FLY_SPEED if _IlIllIllll < 20 then _IIIlIIIIll = math.max(15, _IIIlIIIIll * (_IlIllIllll / 20)) end
+ local _lIIIIllIIl = _IIlIIllIlI.Position local _lIlllIIIII = (_llIlIIIIII - _lIIIIllIIl).Unit if useWaterRadar then local _lIIllIIIIl = (Vector3.new(_llIlIIIIII.X, 0, _llIlIIIIII.Z) - Vector3.new(_lIIIIllIIl.X, 0, _lIIIIllIIl.Z)).Magnitude local _IIIIlIllll, sandY = _lIIlIIlIlI(_lIIIIllIIl) if _lIIllIIIIl > 50 and _IIIIlIllll then local _IllIIIllll = sandY + 102 local _IIlIIlIIII = Vector3.new(_llIlIIIIII.X, _IllIIIllll, _llIlIIIIII.Z) _lIlllIIIII = (_IIlIIlIIII - _lIIIIllIIl).Unit if _lIIIIllIIl.Y > _IllIIIllll + 5 then _lIlllIIIII = Vector3.new(_lIlllIIIII.X, -0.5, _lIlllIIIII.Z).Unit end
+ end
+ end
+ local _IIIlllIlII = _lIlIllllII(_IIlIIllIlI) _IIIlllIlII.Velocity = _lIlllIIIII * _IIIlIIIIll local _IIllllIllI = Vector3.new(_llIlIIIIII.X, _IIlIIllIlI.Position.Y, _llIlIIIIII.Z) if (_IIllllIllI - _IIlIIllIlI.Position).Magnitude > 0.5 then pcall( function () _IIlIIllIlI.CFrame = CFrame.lookAt(_IIlIIllIlI.Position, _IIllllIllI) end
+ ) end
+ return false end
+ function _llllIlIIII.AdjustToMob(_IIlIIllIlI, _lllIlIllll, headOffset) if not _lllIlIllll or not _lllIlIllll:FindFirstChild("HumanoidRootPart") then return false end
+ local _llIlIIIIII = _lllIlIllll.HumanoidRootPart.Position + Vector3.new(0, headOffset or _IllIIllIll.HEAD_OFFSET, 0) return _llllIlIIII.AdjustToTarget(_IIlIIllIlI, _llIlIIIIII, 2, _IllIIllIll.FLY_SPEED) end
+ local _IlIIlIIlIl = {} _IlIIlIIlIl.lastCheckTime = 0 _IlIIlIIlIl.pullBackVelocity = {} local _IIIllIlIll = {} local _IlIIIIlIll = {} function _IlIIlIIlIl.Reset() _IlIIlIIlIl.StopAllPulling() _IlIIlIIlIl.pullBackVelocity = {} _IIIllIlIll = {} _IlIIIIlIll = {} _IlIIlIIlIl.lastCheckTime = 0 end
+ function _IlIIlIIlIl.ClearMonsterData(_lllIlIllll) _IIIllIlIll[_lllIlIllll] = nil _IlIIIIlIll[_lllIlIllll] = nil if _IlIIlIIlIl.pullBackVelocity[_lllIlIllll] then pcall( function () _IlIIlIIlIl.pullBackVelocity[_lllIlIllll]:Destroy() end
+ ) _IlIIlIIlIl.pullBackVelocity[_lllIlIllll] = nil end
+ end
+ function _IlIIlIIlIl.CreatePullBV(_IlIlllIIII) local _IIIlllIlII = Instance.new("BodyVelocity") _IIIlllIlII.Name = "PullBackBV" _IIIlllIlII.MaxForce = Vector3.new(1e7, 1e7, 1e7) _IIIlllIlII.P = 5e4 _IIIlllIlII.Parent = _IlIlllIIII return _IIIlllIlII end
+ function _IlIIlIIlIl.PullMonster(_lllIlIllll, _llIlIIIIII) if not _lllIlIllll or not _lllIlIllll:FindFirstChild("HumanoidRootPart") then return end
+ local _IlIlllIIII = _lllIlIllll.HumanoidRootPart local _IIIlIllIII = _IlIlllIIII.Position local _IlIllIllll = (_IIIlIllIII - _llIlIIIIII).Magnitude if _IlIllIllll < 10 then if _IlIIlIIlIl.pullBackVelocity[_lllIlIllll] then _IlIIlIIlIl.pullBackVelocity[_lllIlIllll]:Destroy() _IlIIlIIlIl.pullBackVelocity[_lllIlIllll] = nil end
+ return true end
+ if not _IlIIlIIlIl.pullBackVelocity[_lllIlIllll] then _IlIIlIIlIl.pullBackVelocity[_lllIlIllll] = _IlIIlIIlIl.CreatePullBV(_IlIlllIIII) end
+ local _lIlllIIIII = (_llIlIIIIII - _IIIlIllIII).Unit local _lIIlIllllI = math.min(120, _IlIllIllll * 3) _IlIIlIIlIl.pullBackVelocity[_lllIlIllll].Velocity = _lIlllIIIII * _lIIlIllllI return false end
+ function _IlIIlIIlIl.CheckAndPullTeleportedMobs(_llIlIIIIll, gatherPoint) if not _llIlIIIIll or type(_llIlIIIIll) ~= "table" or #_llIlIIIIll == 0 or not gatherPoint then return {} end
+ local _IlIIIllllI = tick() local _llIlIlIlIl = {} for _, _lllIlIllll in ipairs(_llIlIIIIll) do if _lllIlIllll and _lllIlIllll.Parent and _lllIlIllll:FindFirstChild("HumanoidRootPart") and _lllIlIllll.Humanoid.Health > 0 then local _IIIlIllIII = _lllIlIllll.HumanoidRootPart.Position local _llllIlllll = (_IIIlIllIII - gatherPoint).Magnitude if _IIIllIlIll[_lllIlIllll] then local _IlIlIIIIlI = (_IIIlIllIII - _IIIllIlIll[_lllIlIllll]).Magnitude if _IlIlIIIIlI > 30 and _llllIlllll > _IllIIllIll.TELEPORT_THRESHOLD then table.insert(_llIlIlIlIl, _lllIlIllll) end
+ end
+ _IIIllIlIll[_lllIlIllll] = _IIIlIllIII _IlIIIIlIll[_lllIlIllll] = _IlIIIllllI else _IlIIlIIlIl.ClearMonsterData(_lllIlIllll) end
+ end
+ return _llIlIlIlIl end
+ function _IlIIlIIlIl.FindNewMobs(_lIlllIlIlI, gatherPoint, _llIlIIIIll) if not _lIlllIlIlI or type(_lIlllIlIlI) ~= "table" or #_lIlllIlIlI == 0 or not gatherPoint then return {} end
+ local _IlIIIIIlII = {} if tick() - _IlIIlIIlIl.lastCheckTime < 0.5 then return _IlIIIIIlII end
+ _IlIIlIIlIl.lastCheckTime = tick() local _lIIIllIIII = workspace:FindFirstChild("NPCs") if not _lIIIllIIII then return _IlIIIIIlII end
+ for _, npc in ipairs(_lIIIllIIII:GetChildren()) do if npc.Parent and npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 and npc:FindFirstChild("HumanoidRootPart") then local _lIllllIIlI = false for _, _lllllIlllI in ipairs(_lIlllIlIlI) do if npc.Name == _lllllIlllI then _lIllllIIlI = true break end
+ end
+ if not _lIllllIIlI then continue end
+ local _lIIIIlllIl = false if _llIlIIIIll and type(_llIlIIIIll) == "table" then for _, pulled in ipairs(_llIlIIIIll) do if pulled == npc then _lIIIIlllIl = true break end
+ end
+ end
+ if _lIIIIlllIl then continue end
+ local _lllllllIlI = npc.HumanoidRootPart.Position local _IlIllIllll = (_lllllllIlI - gatherPoint).Magnitude local _llllIlIlII = math.abs(_lllllllIlI.Y - gatherPoint.Y) if _IlIllIllll < _IllIIllIll.PULL_RADIUS and _llllIlIlII < 35 then table.insert(_IlIIIIIlII, npc) end
+ end
+ end
+ return _IlIIIIIlII end
+ function _IlIIlIIlIl.StopAllPulling() for _lllIlIllll, _IIIlllIlII in pairs(_IlIIlIIlIl.pullBackVelocity) do pcall( function () _IIIlllIlII:Destroy() end
+ ) _IlIIlIIlIl.pullBackVelocity[_lllIlIllll] = nil end
+ end
+ local _lIllIllllI = {} local _llIllIlllI = 1 local _llIllllIII = 0 local _lIllIllIlI = false local _llIlllllIl = 0 local _lllllIIIII = 0 local _IIlIlIIIll = 1 local _IllIlIlIll = 0 local _llIIllIIll = 0 function _lIllIllllI.SingleAttack(_lllIlIllll) if _lIllIllIlI or not _lllIlIllll or not _lllIlIllll:FindFirstChild("HumanoidRootPart") or _lllIlIllll.Humanoid.Health <= 0 then return false end
+ if tick() < _llIlllllIl then return false end
+ _lIllIllIlI = true task.spawn( function () if tick() - _llIllllIII > 3 then _llIllIlllI = 1 _lllllIIIII = 0 end
+ if _lllllIIIII >= 5 then _lllllIIIII = 0 _llIllIlllI = 1 _llIlllllIl = tick() + _IllIIllIll.COMBO_COOLDOWN _lIllIllIlI = false return end
+ local _llIIIIIIlI = _lIllIIllIl[_llIllIlllI] if _llIIIIIIlI then pcall( function () _IlllIIIIII:InvokeServer(unpack({{"swingsfx", "Melee", _llIllIlllI, "Ground", false, _llIIIIIIlI, 2, 1.5}})) end
+ ) task.wait(_IllIIllIll.ATTACK_DELAY) pcall( function () _IlllIIIIII:InvokeServer(unpack({{ "damage", { _lllIlIllll.HumanoidRootPart }, "Melee", { _llIllIlllI, "Ground", "Melee" }, true, _lllIlIllll.HumanoidRootPart.CFrame, aircombo = "Ground" }})) end
+ ) _lllllIIIII = _lllllIIIII + 1 _llIllllIII = tick() if _llIllIlllI < 5 then _llIllIlllI = _llIllIlllI + 1 task.wait(0.05) else _llIllIlllI = 1 end
+ end
+ _lIllIllIlI = false end
+ ) return true end
+ function _lIllIllllI.AoeAttack(mobs, _IIlIIllIlI) if _lIllIllIlI or #mobs == 0 then return end
+ if tick() < _llIIllIIll then return end
+ local _IllIIlllll = {} for _, m in ipairs(mobs) do if m and m:FindFirstChild("HumanoidRootPart") and m.Humanoid and m.Humanoid.Health > 0 then table.insert(_IllIIlllll, m.HumanoidRootPart) end
+ end
+ if #_IllIIlllll == 0 then return end
+ _lIllIllIlI = true task.spawn( function () if tick() - _IllIlIlIll > 3 and tick() > _llIIllIIll then _IIlIlIIIll = 1 end
+ if _IIlIlIIIll > 5 then _IIlIlIIIll = 1 end
+ local _llIIIIIIlI = _lIllIIllIl[_IIlIlIIIll] if _llIIIIIIlI then pcall( function () _IlllIIIIII:InvokeServer(unpack({{"swingsfx", "Melee", _IIlIlIIIll, "Ground", false, _llIIIIIIlI, 2, 1.5}})) end
+ ) task.wait(_IllIIllIll.ATTACK_DELAY) pcall( function () _IlllIIIIII:InvokeServer(unpack({{ "damage", _IllIIlllll, "Melee", { _IIlIlIIIll, "Ground", "Melee" }, true, _IIlIIllIlI.CFrame, aircombo = "Ground" }})) end
+ ) _IllIlIlIll = tick() if _IIlIlIIIll == 5 then _llIIllIIll = tick() + _IllIIllIll.COMBO_COOLDOWN _IIlIlIIIll = 1 else _IIlIlIIIll = _IIlIlIIIll + 1 task.wait(0.05) end
+ end
+ _lIllIllIlI = false end
+ ) end
+ local _lllIIlllII = {} local _IllIlIIIlI = { PULL = "PULL", GATHER = "GATHER", KILL = "KILL", KILL_SINGLE = "KILL_SINGLE", WAITING = "WAITING" } local _lIIIllIllI = _IllIlIIIlI.PULL local _llIlIIIIll = {} local _lIlllIlIlI = {} local _lIllIlllII = {} local _llIIlllIll = 1 local _IlIlIIlIll = nil local _llIIlIlIIl = nil local _IIIlIIIIII = 0 local _IIlllIIlll = 0 local _IllIIIIlll = 0 local _lIIIIIIIlI = nil local _lIIllllIlI = nil function _lllIIlllII.SetQuest(_IIIlllIlll) if _IIIlllIlll then _lIlllIlIlI = _IIIlllIlll.TargetMobs _llIIlIlIIl = _IIIlllIlll if typeof(_IIIlllIlll.GatherPoint) == "Vector3" then _lIllIlllII = {_IIIlllIlll.GatherPoint} _IlIlIIlIll = _IIIlllIlll.GatherPoint elseif type(_IIIlllIlll.GatherPoint) == "table" and #_IIIlllIlll.GatherPoint > 0 then _lIllIlllII = _IIIlllIlll.GatherPoint _llIIlllIll = 1 _IlIlIIlIll = _lIllIlllII[_llIIlllIll] end
+ else _lIlllIlIlI = {} _lIllIlllII = {} _IlIlIIlIll = nil _llIIlIlIIl = nil end
+ _llIlIIIIll = {} _lIIIIIIIlI = nil _lIIIllIllI = _IllIlIIIlI.PULL _IIlllIIlll = 0 _llIIllIIll = 0 _lIIllllIlI = nil _IlIIlIIlIl.Reset() end
+ function _lllIIlllII.PullMob(_lllIlIllll) if not _lllIlIllll or not _lllIlIllll.Parent then return false end
+ for _, m in ipairs(_llIlIIIIll) do if m == _lllIlIllll then return true end
+ end
+ table.insert(_llIlIIIIll, _lllIlIllll) return true end
+ function _lllIIlllII.CheckTeleportedMobs() if not _IlIlIIlIll or not _llIlIIIIll or type(_llIlIIIIll) ~= "table" or #_llIlIIIIll == 0 then return false end
+ local _llIlIlIlIl = _IlIIlIIlIl.CheckAndPullTeleportedMobs(_llIlIIIIll, _IlIlIIlIll) local _IIIIlllIIl = false for _, _lllIlIllll in ipairs(_llIlIlIlIl) do _IlIIlIIlIl.PullMonster(_lllIlIllll, _IlIlIIlIll) _IIIIlllIIl = true end
+ return _IIIIlllIIl end
+ function _lllIIlllII.CheckNewMobs() if not _IlIlIIlIll or not _lIlllIlIlI or type(_lIlllIlIlI) ~= "table" or #_lIlllIlIlI == 0 then return false end
+ local _IlIIIIIlII = _IlIIlIIlIl.FindNewMobs(_lIlllIlIlI, _IlIlIIlIll, _llIlIIIIll) local _llIIIIlIII = false for _, _lllIlIllll in ipairs(_IlIIIIIlII) do _lllIIlllII.PullMob(_lllIlIllll) _llIIIIlIII = true end
+ return _llIIIIlIII end
+ function _lllIIlllII.PullAllMobsToGather() if not _IlIlIIlIll then return false end
+ if not _llIlIIIIll or type(_llIlIIIIll) ~= "table" or #_llIlIIIIll == 0 then return false end
+ local _llIIIlIlIl = false for _, _lllIlIllll in ipairs(_llIlIIIIll) do if _lllIlIllll and _lllIlIllll.Parent and _lllIlIllll:FindFirstChild("HumanoidRootPart") then local _IlIIIllIll = Vector3.new(_lllIlIllll.HumanoidRootPart.Position.X, 0, _lllIlIllll.HumanoidRootPart.Position.Z) local _IIIlIIIlII = Vector3.new(_IlIlIIlIll.X, 0, _IlIlIIlIll.Z) local _IlIllIllll = (_IlIIIllIll - _IIIlIIIlII).Magnitude if _IlIllIllll > 20 then _IlIIlIIlIl.PullMonster(_lllIlIllll, _IlIlIIlIll) _llIIIlIlIl = true end
+ end
+ end
+ return _llIIIlIlIl end
+ function _lllIIlllII.Update() if not _G.SystemEnabled or not _lIlllIlIlI or type(_lIlllIlIlI) ~= "table" or #_lIlllIlIlI == 0 or not _IlIlIIlIll then return end
+ local _lIIIlIlIIl = _lIlIIlIlll.Character local _IIlIIllIlI = _lIIIlIlIIl and _lIIIlIlIIl:FindFirstChild("HumanoidRootPart") if not _IIlIIllIlI then return end
+ local _IIllllIIll = {} if _llIlIIIIll and type(_llIlIIIIll) == "table" then for _, m in ipairs(_llIlIIIIll) do if m and m.Parent and m:FindFirstChild("Humanoid") and m.Humanoid.Health > 0 and m:FindFirstChild("HumanoidRootPart") then table.insert(_IIllllIIll, m) else _IlIIlIIlIl.ClearMonsterData(m) end
+ end
+ end
+ _llIlIIIIll = _IIllllIIll if _lIIIllIllI == _IllIlIIIlI.PULL then _IIlllIIlll = 0 _lIIllllIlI = nil _IlIIlIIlIl.StopAllPulling() if _lIIIIIIIlI and ( not _lIIIIIIIlI.Parent or _lIIIIIIIlI.Humanoid.Health <= 0) then _lIIIIIIIlI = nil end
+ if not _lIIIIIIIlI then if tick() - _IllIIIIlll > 0.3 then _IllIIIIlll = tick() local _lIIIllIIII = workspace:FindFirstChild("NPCs") if _lIIIllIIII then for _, npc in ipairs(_lIIIllIIII:GetChildren()) do local _lIIIIlllIl = false if _llIlIIIIll and type(_llIlIIIIll) == "table" then for _, p in ipairs(_llIlIIIIll) do if p == npc then _lIIIIlllIl = true break end
+ end
+ end
+ if not _lIIIIlllIl and npc.Parent and npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 then for _, _lllllIlllI in ipairs(_lIlllIlIlI) do if npc.Name == _lllllIlllI then local _llllIlIlII = math.abs(npc.HumanoidRootPart.Position.Y - _IlIlIIlIll.Y) if _llllIlIlII < 35 then _lIIIIIIIlI = npc break end
+ end
+ end
+ end
+ if _lIIIIIIIlI then break end
+ end
+ end
+ if not _lIIIIIIIlI then if _llIlIIIIll and type(_llIlIIIIll) == "table" and #_llIlIIIIll > 0 then if #_llIlIIIIll == 1 then _lIIIllIllI = _IllIlIIIlI.KILL_SINGLE _IIIlIIIIII = tick() else _lIIIllIllI = _IllIlIIIlI.GATHER end
+ else _lIIIllIllI = _IllIlIIIlI.WAITING end
+ end
+ end
+ end
+ if _lIIIIIIIlI then local _lllIIllIll = (_llIIlIlIIl and _llIIlIlIIl.CustomHeadOffset) or _IllIIllIll.HEAD_OFFSET if _llllIlIIII.AdjustToMob(_IIlIIllIlI, _lIIIIIIIlI, _lllIIllIll) then _lIllIllllI.SingleAttack(_lIIIIIIIlI) if _lIIIIIIIlI.Humanoid.Health < _lIIIIIIIlI.Humanoid.MaxHealth then _lllIIlllII.PullMob(_lIIIIIIIlI) _lIIIIIIIlI = nil end
+ end
+ end
+ elseif _lIIIllIllI == _IllIlIIIlI.GATHER then if #_llIlIIIIll == 1 then _lIIIllIllI = _IllIlIIIlI.KILL_SINGLE _IIIlIIIIII = tick() _IlIIlIIlIl.StopAllPulling() return end
+ _lllIIlllII.CheckTeleportedMobs() _lllIIlllII.CheckNewMobs() _lllIIlllII.PullAllMobsToGather() _llllIlIIII.AdjustToTarget(_IIlIIllIlI, _IlIlIIlIll, 15, _IllIIllIll.FLY_SPEED) if not _lIIllllIlI then _lIIllllIlI = tick() end
+ local _IlIIlIIIll = true if _llIlIIIIll and type(_llIlIIIIll) == "table" then for _, _lllIlIllll in ipairs(_llIlIIIIll) do if _lllIlIllll and _lllIlIllll:FindFirstChild("HumanoidRootPart") then local _IlIIIllIll = Vector3.new(_lllIlIllll.HumanoidRootPart.Position.X, 0, _lllIlIllll.HumanoidRootPart.Position.Z) local _IIIlIIIlII = Vector3.new(_IlIlIIlIll.X, 0, _IlIlIIlIll.Z) if (_IlIIIllIll - _IIIlIIIlII).Magnitude > 20 then _IlIIlIIIll = false break end
+ end
+ end
+ end
+ if _IlIIlIIIll or (tick() - _lIIllllIlI > 3) then _lIIIllIllI = _IllIlIIIlI.KILL _IIIlIIIIII = tick() _lIIllllIlI = nil _IlIIlIIlIl.StopAllPulling() end
+ elseif _lIIIllIllI == _IllIlIIIlI.KILL_SINGLE then local _llIIIIlIII = _lllIIlllII.CheckNewMobs() if _llIIIIlIII then _lIIIllIllI = _IllIlIIIlI.GATHER _lIIllllIlI = nil return end
+ if not _llIlIIIIll or type(_llIlIIIIll) ~= "table" or #_llIlIIIIll == 0 or (tick() - _IIIlIIIIII > _IllIIllIll.KILL_STUCK_TIMEOUT) then _llIlIIIIll = {} _lIIIllIllI = _IllIlIIIlI.PULL _IlIIlIIlIl.StopAllPulling() else local _lllIlIllll = _llIlIIIIll[1] if _lllIlIllll and _lllIlIllll:FindFirstChild("HumanoidRootPart") then local _IIIllIIIII = false if _llIIlIlIIl and _llIIlIlIIl.LockGatherHeight and _IlIlIIlIll then _IIIllIIIII = _llllIlIIII.AdjustToTarget(_IIlIIllIlI, _IlIlIIlIll, 3, _IllIIllIll.FLY_SPEED) else local _lllIIllIll = (_llIIlIlIIl and _llIIlIlIIl.CustomHeadOffset) or _IllIIllIll.HEAD_OFFSET _IIIllIIIII = _llllIlIIII.AdjustToMob(_IIlIIllIlI, _lllIlIllll, _lllIIllIll) end
+ if _IIIllIIIII then _lIllIllllI.SingleAttack(_lllIlIllll) end
+ else _llIlIIIIll = {} _lIIIllIllI = _IllIlIIIlI.PULL end
+ end
+ elseif _lIIIllIllI == _IllIlIIIlI.KILL then local _IIIIlllIIl = false if _IlIlIIlIll and _llIlIIIIll and type(_llIlIIIIll) == "table" and #_llIlIIIIll > 0 then _IIIIlllIIl = _lllIIlllII.CheckTeleportedMobs() end
+ if _IIIIlllIIl then _lIIIllIllI = _IllIlIIIlI.GATHER _lIIllllIlI = nil return end
+ if not _llIlIIIIll or type(_llIlIIIIll) ~= "table" or #_llIlIIIIll == 0 or (tick() - _IIIlIIIIII > _IllIIllIll.KILL_STUCK_TIMEOUT) then _llIlIIIIll = {} _lIIIllIllI = _IllIlIIIlI.PULL _IlIIlIIlIl.StopAllPulling() else if _IIlllIIlll == 0 then local _IlllIlIlIl = nil for _, m in ipairs(_llIlIIIIll) do if m and m:FindFirstChild("HumanoidRootPart") then local _IllIIIllII = (Vector3.new(m.HumanoidRootPart.Position.X, 0, m.HumanoidRootPart.Position.Z) - Vector3.new(_IlIlIIlIll.X, 0, _IlIlIIlIll.Z)).Magnitude if _IllIIIllII <= 30 then _IlllIlIlIl = m.HumanoidRootPart.Position.Y break end
+ end
+ end
+ if _IlllIlIlIl then if _llIIlIlIIl and _llIIlIlIIl.LockGatherHeight and _IlIlIIlIll then _IIlllIIlll = _IlIlIIlIll.Y else local _IllllIIllI = (_llIIlIlIIl and _llIIlIlIIl.CustomKillOffset) or _IllIIllIll.KILL_OFFSET _IIlllIIlll = _IlllIlIlIl + _IllllIIllI end
+ else _llIlIIIIll = {} _lIIIllIllI = _IllIlIIIlI.PULL return end
+ end
+ local _lIlIIIlIlI = Vector3.new(_IlIlIIlIll.X, _IIlllIIlll, _IlIlIIlIll.Z) _llllIlIIII.AdjustToTarget(_IIlIIllIlI, _lIlIIIlIlI, 3) _lIllIllllI.AoeAttack(_llIlIIIIll, _IIlIIllIlI) end
+ elseif _lIIIllIllI == _IllIlIIIlI.WAITING then if _IlIlIIlIll and _lIlllIlIlI and type(_lIlllIlIlI) == "table" and #_lIlllIlIlI > 0 then local _IlIIIIIlII = _IlIIlIIlIl.FindNewMobs(_lIlllIlIlI, _IlIlIIlIll, _llIlIIIIll) if #_IlIIIIIlII > 0 then for _, _lllIlIllll in ipairs(_IlIIIIIlII) do _lllIIlllII.PullMob(_lllIlIllll) end
+ _lIIIllIllI = _IllIlIIIlI.GATHER else local _IlIIIlllIl = (_IIlIIllIlI.Position - _IlIlIIlIll).Magnitude if _IlIIIlllIl > 40 then _llllIlIIII.AdjustToTarget(_IIlIIllIlI, _IlIlIIlIll, 15, _IllIIllIll.FLY_SPEED) return else if _lIllIlllII and #_lIllIlllII > 1 then _llIIlllIll = _llIIlllIll + 1 if _llIIlllIll > #_lIllIlllII then _llIIlllIll = 1 end
+ _IlIlIIlIll = _lIllIlllII[_llIIlllIll] task.wait(0.5) return end
+ end
+ end
+ end
+ _llllIlIIII.Stop(_IIlIIllIlI) end
+ end
+ local _lllllIIIII = {} _lllllIIIII.LastSpawnNPC = nil function _lllllIIIII.DoSetSpawn(_IIIlllIlll) if not _IIIlllIlll or not _IIIlllIlll.SpawnPoint then return end
+ if _lllllIIIII.LastSpawnNPC == _IIIlllIlll.NPCId then print("[System] จุดเกิดของ " .. _IIIlllIlll.NPCId .. " ถูกเซ็ตไปแล้ว ข้ามการเซ็ตจุดเกิดใหม่...") return end
+ local _lIIIlIlIIl = _lIlIIlIlll.Character local _IIlIIllIlI = _lIIIlIlIIl and _lIIIlIlIIl:FindFirstChild("HumanoidRootPart") local _lIIllllIII = _lIIIlIlIIl and _lIIIlIlIIl:FindFirstChild("Humanoid") if not _IIlIIllIlI or not _lIIllllIII then return end
+ print("[System] บินไปเซ็ตจุดเกิดที่ NPC: " .. _IIIlllIlll.NPCId) local _lIIIlIIIll = tick() while _G.SystemEnabled and _lIlIIlIlll.Character == _lIIIlIlIIl and _IIlIIllIlI.Parent and _lIIllllIII.Health > 0 and (_IIlIIllIlI.Position - _IIIlllIlll.SpawnPoint).Magnitude > 3 do _llllIlIIII.AdjustToTarget(_IIlIIllIlI, _IIIlllIlll.SpawnPoint, 3, _IllIIllIll.FLY_SPEED, true) task.wait() if tick() - _lIIIlIIIll > 120 then break end
+ end
+ if not _G.SystemEnabled or _lIIllllIII.Health <= 0 then return end
+ _llllIlIIII.Stop(_IIlIIllIlI) task.wait(1) pcall( function () _IlIlIlIllI:InvokeServer(unpack({{"npcChat", true}})) task.wait(0.5) for i = 1, 3 do _llIIlIlIII:FireServer() task.wait(0.3) end
+ _IlIlIlIllI:InvokeServer(unpack({{"npcChat", false}})) end
+ ) _lllllIIIII.LastSpawnNPC = _IIIlllIlll.NPCId print("[System] เซ็ตจุดเกิดเสร็จสมบูรณ์") end
+ local _llIIIIllII = {} function _llIIIIllII.AutoAcceptQuest() local _IIIlllIlll = _IIIlIIlIll.GetBestQuest() if not _IIIlllIlll then print("[System] หาเควสที่ตรงกับเลเวลไม่เจอ!") return nil end
+ local _lIIIlIlIIl = _lIlIIlIlll.Character local _IIlIIllIlI = _lIIIlIlIIl and _lIIIlIlIIl:FindFirstChild("HumanoidRootPart") local _lIIllllIII = _lIIIlIlIIl and _lIIIlIlIIl:FindFirstChild("Humanoid") if not _IIlIIllIlI or not _lIIllllIII then return nil end
+ _lllllIIIII.DoSetSpawn(_IIIlllIlll) print("[System] บินไปรับเควส: " .. _IIIlllIlll.TargetQuestName) local _lIIIlIIIll = tick() while _G.SystemEnabled and _lIlIIlIlll.Character == _lIIIlIlIIl and _IIlIIllIlI.Parent and _lIIllllIII.Health > 0 and (_IIlIIllIlI.Position - _IIIlllIlll.Position).Magnitude > 3 do _llllIlIIII.AdjustToTarget(_IIlIIllIlI, _IIIlllIlll.Position, 3, _IllIIllIll.FLY_SPEED, true) task.wait() if tick() - _lIIIlIIIll > 120 then break end
+ end
+ if not _G.SystemEnabled or _lIIllllIII.Health <= 0 then return nil end
+ _llllIlIIII.Stop(_IIlIIllIlI) task.wait(1.5) pcall( function () _IlIlIlIllI:InvokeServer(unpack({{"npcChat", true}})) task.wait(0.5) _IlIlIlIllI:InvokeServer(unpack({{"takequest", _IIIlllIlll.TargetQuestName}})) task.wait(0.5) _IlIlIlIllI:InvokeServer(unpack({{"npcChat", false}})) end
+ ) task.wait(2.5) _IlIIllIIIl.UpdateHasActiveQuest() if _llIIIlIllI then return _IIIlllIlll end
+ return nil end
+ local function _IlIIllllll(part) if part:IsA("BasePart") then part.CanCollide = false part.CanQuery = false part.CanTouch = false for _, child in pairs(part:GetChildren()) do if child:IsA("TouchTransmitter") then child:Destroy() end
+ end
+ end
+ end
+ RunService.Stepped:Connect( function () if _G.SystemEnabled then local _lIIIlIlIIl = _lIlIIlIlll.Character if _lIIIlIlIIl then for _, part in ipairs(_lIIIlIlIIl:GetDescendants()) do _IlIIllllll(part) end
+ end
+ end
+ end
+ ) local function _llIIIlIIII() local _lIIIlIlIIl = _lIlIIlIlll.Character if not _lIIIlIlIIl then return end
+ if _lIIIlIlIIl:FindFirstChildOfClass("Tool") then return end
+ local _lllIIlIllI = _lIlIIlIlll:FindFirstChild("Backpack") if not _lllIIlIllI then return end
+ local _IIIllIlIlI = _lllIIlIllI:FindFirstChild("Melee") or _lllIIlIllI:FindFirstChildOfClass("Tool") if _IIIllIlIlI then _IIIllIlIlI.Parent = _lIIIlIlIIl end
+ end
+ task.spawn( function () while task.wait(1) do if _G.SystemEnabled and _lIlIIlIlll.Character then local _IIlIIllIlI = _lIlIIlIlll.Character:FindFirstChild("HumanoidRootPart") if _IIlIIllIlI then pcall( function () local _IlllIIllII = { 0.605, "dash", _IIlIIllIlI.CFrame } _IlIIllllIl:FireServer(unpack(_IlllIIllII)) end
+ ) end
+ end
+ end
+ end
+ ) local function _llllIIlIIl() local _lllIlIllll = Instance.new("ScreenGui", _IIIllIIllI) _lllIlIllll.Name = "FarmSystem_Pro" _lllIlIllll.ResetOnSpawn = false local _llllllIIll = Instance.new("TextButton", _lllIlIllll) _llllllIIll.Size = UDim2.new(0, 200, 0, 60) _llllllIIll.Position = UDim2.new(0.5, -100, 0.05, 0) _llllllIIll.Text = "AUTO FARM: OFF" _llllllIIll.BackgroundColor3 = Color3.fromRGB(200, 50, 50) _llllllIIll.TextColor3 = Color3.new(1,1,1) _llllllIIll.Font = Enum.Font.GothamBold _llllllIIll.TextSize = 18 Instance.new("UICorner", _llllllIIll).CornerRadius = UDim.new(0, 8) _llllllIIll.MouseButton1Click:Connect( function () _G.SystemEnabled = not _G.SystemEnabled _llllllIIll.Text = _G.SystemEnabled and "AUTO FARM: ON" or "AUTO FARM: OFF" _llllllIIll.BackgroundColor3 = _G.SystemEnabled and Color3.fromRGB(50, 200, 50) or Color3.fromRGB(200, 50, 50) if not _G.SystemEnabled then local _IIlIIllIlI = _lIlIIlIlll.Character and _lIlIIlIlll.Character:FindFirstChild("HumanoidRootPart") if _IIlIIllIlI then _llllIlIIII.Remove(_IIlIIllIlI) end
+ _lllIIlllII.SetQuest(nil) _IlIIlIIlIl.StopAllPulling() end
+ end
+ ) end
+ _llllIIlIIl() local _llIlIllIll = 0 local _IIlllIIIlI = nil local _IIIIIlIIIl = 0 task.spawn( function () while task.wait() do if _G.SystemEnabled then local _lIIIlIlIIl = _lIlIIlIlll.Character local _IIlIIllIlI = _lIIIlIlIIl and _lIIIlIlIIl:FindFirstChild("HumanoidRootPart") local _lIIllllIII = _lIIIlIlIIl and _lIIIlIlIIl:FindFirstChild("Humanoid") if _IIlIIllIlI and _lIIllllIII and _lIIllllIII.Health > 0 then if _lIIIlIlIIl ~= _IIlllIIIlI then _IIlllIIIlI = _lIIIlIlIIl _IIIIIlIIIl = tick() _IIIlllIIlI = false _llIIIlIllI = false _lIIlIlllll = nil _lllIIlllII.SetQuest(nil) _IlIIlIIlIl.Reset() end
+ if _G.IsRespawning then continue end
+ if tick() - _IIIIIlIIIl < 4 then continue end
+ _llIIIlIIII() if not _IIIlllIIlI and (tick() - _llIlIllIll > 1.5) then _llIlIllIll = tick() _IlIIllIIIl.UpdateHasActiveQuest() local _IlIIlIlllI = _IlIIllIIIl.IsComplete() if not _llIIIlIllI or _IlIIlIlllI then _IIIlllIIlI = true _lllIIlllII.SetQuest(nil) _lIIlIlllll = _llIIIIllII.AutoAcceptQuest() if _lIIlIlllll then _lllIIlllII.SetQuest(_lIIlIlllll) end
+ _IIIlllIIlI = false elseif _lIIlIlllll == nil and _llIIIlIllI then _lIIlIlllll = _IIIlIIlIll.GetBestQuest() if _lIIlIlllll then _lllllIIIII.DoSetSpawn(_lIIlIlllll) _lllIIlllII.SetQuest(_lIIlIlllll) end
+ end
+ end
+ if not _IIIlllIIlI and _lIIlIlllll and _llIIIlIllI then _lllIIlllII.Update() end
+ end
+ end
+ end
+ end
+ ) task.spawn( function () while true do if _G.SystemEnabled then pcall( function () local _IlllIIllII = { 3457788725, "536248645108658" } ReplicatedStorage:WaitForChild("Events"):WaitForChild("ADShop"):FireServer(unpack(_IlllIIllII)) end
+ ) task.wait(240) else task.wait(1) end
+ end
+ end
+ ) print("🚀 AUTO FARM + QUEST SYSTEM READY (Dynamic Sand Radar +107)") _G.AutoStatsEnabled = true _G.UpgradeAmount = 4 _G.StatCaps = { Defense = 2000, Strength = 1000 } local function _lllIllIIIl(statName) local _lIllllllll = -1 pcall( function () local _lIIlIIIIll = _lIlIIlIlll.PlayerGui.Statistics.Main.Stats local _llIIllIlIl = _lIIlIIIIll:FindFirstChild(statName) if _llIIllIlIl then for _, v in ipairs(_llIIllIlIl:GetDescendants()) do if v:IsA("TextLabel") then local _IlIlllIlIl = tonumber(v.Text:match("%d+")) if _IlIlllIlIl then _lIllllllll = _IlIlllIlIl break end
+ end
+ end
+ end
+ end
+ ) return _lIllllllll end
+ local function _lIIIlllIll() local _lIIlIIIIll = 0 pcall( function () local _llIlllllIl = _lIlIIlIlll.PlayerGui.Statistics.Main for _, v in ipairs(_llIlllllIl:GetDescendants()) do if v:IsA("TextLabel") and (v.Name:lower():find("point") or v.Text:lower():find("point")) then local _IlIlllIlIl = tonumber(v.Text:match("%d+")) if _IlIlllIlIl then _lIIlIIIIll = _IlIlllIlIl break end
+ end
+ end
+ end
+ ) return _lIIlIIIIll end
+ task.spawn( function () local _llIIllIIII = ReplicatedStorage:WaitForChild("Events"):WaitForChild("stats") while task.wait(0.8) do if _G.SystemEnabled and _G.AutoStatsEnabled and _lIlIIlIlll.Character then local _llIIIIIIII = _lIIIlllIll() if _llIIIIIIII <= 0 then continue end
+ local _IIIIIIllIl = _lllIllIIIl("Defense") local _lllIIlIIIl = _lllIllIIIl("Strength") if _IIIIIIllIl ~= -1 and _lllIIlIIIl ~= -1 then if (_IIIIIIllIl < (_lllIIlIIIl * 2)) and (_IIIIIIllIl < _G.StatCaps.Defense) then pcall( function () _llIIllIIII:FireServer("Defense", nil, _G.UpgradeAmount) end
+ ) elseif _lllIIlIIIl < _G.StatCaps.Strength then pcall( function () _llIIllIIII:FireServer("Strength", nil, _G.UpgradeAmount) end
+ ) end
+ elseif _IIIIIIllIl == -1 then pcall( function () _llIIllIIII:FireServer("Defense", nil, _G.UpgradeAmount) end
+ ) end
+ end
+ end
+ end
+ ) local GuiService = game:GetService("GuiService") local TeleportService = game:GetService("TeleportService") GuiService.ErrorMessageChanged:Connect( function () task.wait(5) print("[System] 🔄 ตรวจพบการตัดการเชื่อมต่อ กำลังพยายามกลับเข้าเกม...") pcall( function () if #game.Players:GetPlayers() <= 1 then TeleportService:Teleport(game.PlaceId, _lIlIIlIlll) else TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, _lIlIIlIlll) end
+ end
+ ) end
+ ) local _llllIlIllI = syn and syn.queue_on_teleport or queue_on_teleport if _llllIlIllI then _llllIlIllI([[ repeat task.wait() until game:IsLoaded() print("Successfully Rejoined!") ]]) end
+ print("✅ [Integrated] Auto Stats Ratio 2:1 System Loaded!") if _G.LowCPUMode then pcall( function () if setfpscap then setfpscap(_G.FPSCap) end
+ end
+ ) pcall( function () game:GetService("RunService"):Set3dRenderingEnabled(false) end
+ ) local _IIIllIIllI = game:GetService("CoreGui") local _IIIIIIIIlI = Instance.new("ScreenGui") _IIIIIIIIlI.Name = "LowCPUScreen" _IIIIIIIIlI.IgnoreGuiInset = true local _IIIIlIIIIl = gethui and gethui() or _IIIllIIllI _IIIIIIIIlI.Parent = _IIIIlIIIIl local _llllIIIlll = Instance.new("Frame") _llllIIIlll.Size = UDim2.new(1, 0, 1, 0) _llllIIIlll.BackgroundColor3 = Color3.new(0, 0, 0) _llllIIIlll.Parent = _IIIIIIIIlI local _llIlIIlllI = Instance.new("TextLabel") _llIlIIlllI.Size = UDim2.new(1, 0, 1, 0) _llIlIIlllI.BackgroundTransparency = 1 _llIlIIlllI.TextColor3 = Color3.new(0, 1, 0) _llIlIIlllI.TextSize = 35 _llIlIIlllI.Font = Enum.Font.Code _llIlIIlllI.Text = "Loading Data..." _llIlIIlllI.Parent = _llllIIIlll local RunService = game:GetService("RunService") local _llIlIllIll = 0 local _IlIllllIIl = tick() local _llIIIIIIlI = 0 RunService.RenderStepped:Connect( function () _llIlIllIll = _llIlIllIll + 1 local _IlIlllIIlI = tick() if _IlIlllIIlI - _IlIllllIIl >= 1 then _llIIIIIIlI = _llIlIllIll _llIlIllIll = 0 _IlIllllIIl = _IlIlllIIlI local _IIIIllllII = "0" pcall( function () _IIIIllllII = _lIlIIlIlll.PlayerGui.HUD.Main.Peli.TextLabel.Text end
+ ) local _lIIllIIIIl = "0" pcall( function () local _lIllIIIIII = _lIlIIlIlll.PlayerGui.HUD.Main.Bars.Experience.Detail.Level.Text local _IIlIIIlIIl = _lIllIIIIII:match("%d+") if _IIlIIIlIIl then _lIIllIIIIl = tostring(_IIlIIIlIIl) end
+ end
+ ) _llIlIIlllI.Text = string.format( "🟢 LOW CPU MODE ENABLED\n\nFPS: %d\nLevel: %s\nPeli: %s", _llIIIIIIlI, _lIIllIIIIl, _IIIIllllII ) end
+ end
+ ) print("[System] 🖥️ เปิดใช้งานโหมดจอดำประหยัดทรัพยากร (FPS Cap: " .. tostring(_G.FPSCap) .. ")") end
+ end
+ )(...)
