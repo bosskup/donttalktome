@@ -1,4 +1,34 @@
+-- ==========================================
+-- 👑 การตรวจสอบคีย์ด่านสุดท้าย (Anti-Bypass PREMIUM)
+-- ==========================================
+local HttpService = game:GetService("HttpService")
+local hwid = tostring(game:GetService("Players").LocalPlayer.UserId)
+local workerUrl = "https://keysdatabase.bosswattanai.workers.dev"
+local userKey = getgenv().script_key -- รับคีย์มาจาก UI หน้า Map Selector
 
+-- ถ้าไม่มีคีย์ส่งมา ให้เตะทิ้งทันที
+if not userKey or userKey == "" or userKey == "KEY_XXXXX" then
+    game.Players.LocalPlayer:Kick("Security Alert: Missing API Key! Please execute from the main Hex Hub loader.")
+    while true do task.wait() end
+    return
+end
+
+-- เช็กคีย์กับฐานข้อมูลอีกรอบ
+local success, result = pcall(function()
+    return game:HttpGet(workerUrl .. "/check?key=" .. userKey .. "&hwid=" .. hwid)
+end)
+
+-- 🛑 จุดที่ต่างจากตัวธรรมดา: ต้องมีคำว่า "Premium User" ส่งกลับมาจาก Worker ด้วย
+if not success or not string.find(result, "สคริปต์ทำงาน") or not string.find(result, "Premium User") then
+    game.Players.LocalPlayer:Kick("Security Alert: Premium Key Required or Bypass Detected!")
+    while true do task.wait() end
+    return
+end
+
+print("👑 Premium Double Check Passed! Loading Premium Script...")
+-- ==========================================
+-- สิ้นสุดระบบตรวจสอบคีย์พรีเมียม
+-- ==========================================
 
 
 -- ==========================================
@@ -1063,7 +1093,7 @@ task.spawn(function()
 end)
 
 -- ==========================================
--- 🌈 & 🔴 [RenderStepped Loop & ESP Update] + Smooth Body Rotation
+-- 🌈 & 🔴 [RenderStepped Loop & ESP Update]
 -- ==========================================
 RunService.RenderStepped:Connect(function()
     local char = player.Character
@@ -1115,7 +1145,6 @@ RunService.RenderStepped:Connect(function()
         if onScreen then
             local isMobile = UserInputService.TouchEnabled
             
-            -- 1. หันกล้อง
             if mousemoverel and not isMobile then
                 local centerPos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
                 local deltaX = (screenPos.X - centerPos.X) * _G.AimSmoothness
@@ -1127,40 +1156,30 @@ RunService.RenderStepped:Connect(function()
                 Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, lerpSpeed)
             end
             
-            -- 2. 🔥 หันตัวละครและปืนด้วยฟิสิกส์ (หมุนแค่ซ้ายขวา ลดอาการกระตุก)
-            local myChar = game.Players.LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                local myRoot = myChar.HumanoidRootPart
-                local gyro = myRoot:FindFirstChild("AimbotGyro")
-                
-                -- สร้าง BodyGyro ถ้ายังไม่มี
-                if not gyro then
-                    gyro = Instance.new("BodyGyro")
-                    gyro.Name = "AimbotGyro"
-                    gyro.MaxTorque = Vector3.new(0, 500000, 0) -- ล็อคแกน X, Z ไม่ให้ตัวพับ หมุนแค่แกน Y
-                    gyro.P = 20000 -- ความแรงในการหมุน ยิ่งเยอะยิ่งหันเร็ว
-                    gyro.D = 100 -- ความหน่วงไม่ให้หมุนเลยเป้า
-                    gyro.Parent = myRoot
-                end
-                
-                -- บังคับให้หน้าหันไปหาเป้าหมาย
-                local lookAtPos = Vector3.new(predictedPosition.X, myRoot.Position.Y, predictedPosition.Z)
-                gyro.CFrame = CFrame.lookAt(myRoot.Position, lookAtPos)
-            end
-        end
+            -- [ปิดการทำงานส่วนนี้เพื่อไม่ให้มือถือเดินกระตุกเวลาล็อคเป้า]
+-- แก้ไขส่วนที่คอมเมนต์ไว้เดิม เป็นโค้ดนี้:
+local myChar = game.Players.LocalPlayer.Character
+if myChar and myChar:FindFirstChild("HumanoidRootPart") and _G.LockedTarget then
+    local myRoot = myChar.HumanoidRootPart
+    local targetRoot = _G.LockedTarget.Character:FindFirstChild("HumanoidRootPart")
+    
+    if targetRoot then
+        -- คำนวณตำแหน่งเป้าหมายล่วงหน้า (ใช้ _G.Prediction ที่คุณมีอยู่แล้ว)
+        local predictedPosition = targetRoot.Position + (targetRoot.AssemblyLinearVelocity * (_G.Prediction or 0.15))
+        
+        -- ล็อกแกน Y เพื่อไม่ให้ตัวละครก้มหรือเงยเอง
+        local targetLookAt = Vector3.new(predictedPosition.X, myRoot.Position.Y, predictedPosition.Z)
+        local targetCFrame = CFrame.lookAt(myRoot.Position, targetLookAt)
+        
+        -- ใช้ Lerp เพื่อความสมูท ไม่ให้ขัดการเดิน
+        myRoot.CFrame = myRoot.CFrame:Lerp(targetCFrame, 0.15)
+    end
+end
 
         aimText = "🔒 LOCKED: " .. _G.LockedTarget.Name
         lockBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
     else
         if _G.LockedTarget then _G.LockedTarget = nil end
-        
-        -- ลบตัวหันหน้าทิ้งเมื่อไม่ได้ล็อคเป้า จะได้เดินเล่นได้ปกติ
-        local myChar = game.Players.LocalPlayer.Character
-        if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-            local gyro = myChar.HumanoidRootPart:FindFirstChild("AimbotGyro")
-            if gyro then gyro:Destroy() end
-        end
-
         local closest = getClosestWantedPlayer()
         aimText = closest and ("🎯 Closest: " .. closest.Name) or "🎯 Lock: None"
         lockBtn.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
