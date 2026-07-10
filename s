@@ -1063,7 +1063,7 @@ task.spawn(function()
 end)
 
 -- ==========================================
--- 🌈 & 🔴 [RenderStepped Loop & ESP Update]
+-- 🌈 & 🔴 [RenderStepped Loop & ESP Update] + Smooth Body Rotation
 -- ==========================================
 RunService.RenderStepped:Connect(function()
     local char = player.Character
@@ -1115,6 +1115,7 @@ RunService.RenderStepped:Connect(function()
         if onScreen then
             local isMobile = UserInputService.TouchEnabled
             
+            -- 1. หันกล้อง
             if mousemoverel and not isMobile then
                 local centerPos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
                 local deltaX = (screenPos.X - centerPos.X) * _G.AimSmoothness
@@ -1126,19 +1127,40 @@ RunService.RenderStepped:Connect(function()
                 Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, lerpSpeed)
             end
             
-            -- [ปิดการทำงานส่วนนี้เพื่อไม่ให้มือถือเดินกระตุกเวลาล็อคเป้า]
-            -- local myChar = game.Players.LocalPlayer.Character
-            -- if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-            --     local myRoot = myChar.HumanoidRootPart
-            --     local lookAtPos = Vector3.new(predictedPosition.X, myRoot.Position.Y, predictedPosition.Z)
-            --     myRoot.CFrame = CFrame.lookAt(myRoot.Position, lookAtPos)
-            -- end
+            -- 2. 🔥 หันตัวละครและปืนด้วยฟิสิกส์ (หมุนแค่ซ้ายขวา ลดอาการกระตุก)
+            local myChar = game.Players.LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                local myRoot = myChar.HumanoidRootPart
+                local gyro = myRoot:FindFirstChild("AimbotGyro")
+                
+                -- สร้าง BodyGyro ถ้ายังไม่มี
+                if not gyro then
+                    gyro = Instance.new("BodyGyro")
+                    gyro.Name = "AimbotGyro"
+                    gyro.MaxTorque = Vector3.new(0, 500000, 0) -- ล็อคแกน X, Z ไม่ให้ตัวพับ หมุนแค่แกน Y
+                    gyro.P = 20000 -- ความแรงในการหมุน ยิ่งเยอะยิ่งหันเร็ว
+                    gyro.D = 100 -- ความหน่วงไม่ให้หมุนเลยเป้า
+                    gyro.Parent = myRoot
+                end
+                
+                -- บังคับให้หน้าหันไปหาเป้าหมาย
+                local lookAtPos = Vector3.new(predictedPosition.X, myRoot.Position.Y, predictedPosition.Z)
+                gyro.CFrame = CFrame.lookAt(myRoot.Position, lookAtPos)
+            end
         end
 
         aimText = "🔒 LOCKED: " .. _G.LockedTarget.Name
         lockBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
     else
         if _G.LockedTarget then _G.LockedTarget = nil end
+        
+        -- ลบตัวหันหน้าทิ้งเมื่อไม่ได้ล็อคเป้า จะได้เดินเล่นได้ปกติ
+        local myChar = game.Players.LocalPlayer.Character
+        if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+            local gyro = myChar.HumanoidRootPart:FindFirstChild("AimbotGyro")
+            if gyro then gyro:Destroy() end
+        end
+
         local closest = getClosestWantedPlayer()
         aimText = closest and ("🎯 Closest: " .. closest.Name) or "🎯 Lock: None"
         lockBtn.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
