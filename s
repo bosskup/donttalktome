@@ -1,0 +1,1199 @@
+
+
+-- ==========================================
+-- 🎯 BOUNTY HUNTER V32 (Smart Aim - Zero Lag Hook)
+-- ==========================================
+_G.FlyHeight = 21.5  
+_G.FlySpeed  = 350   
+_G.ChasingTarget = nil 
+_G.LockedTarget = nil 
+_G.WarrantedTarget = nil 
+_G.AimSmoothness = 1    
+_G.Prediction = 0.15    
+
+local isConfiscating = false
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TeleportService = game:GetService("TeleportService")
+local player = Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
+local Camera = workspace.CurrentCamera
+local Mouse = player:GetMouse()
+
+-- เช็คว่าเล่นบนมือถือหรือไม่
+local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+
+-- ==========================================
+-- 🎯 [SMART AIMBOT FIX: Mobile Silent Aim]
+-- ==========================================
+-- รัน Hook เฉพาะบนมือถือเท่านั้น และปรับโค้ดให้เบาที่สุด (ไม่ให้ PC ค้าง)
+if isMobile and hookmetamethod then
+    local oldIndex
+    oldIndex = hookmetamethod(game, "__index", function(self, key)
+        -- ⚡ ป้องกันเกมค้าง: ต้องเช็คคีย์ String ก่อนสิ่งอื่นใด
+        if key == "Hit" or key == "Target" then
+            if not checkcaller() and _G.LockedTarget then
+                local char = _G.LockedTarget.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                if hrp and typeof(self) == "Instance" and (self:IsA("Mouse") or self.ClassName == "PlayerMouse") then
+                    if key == "Hit" then
+                        local predictedPosition = hrp.Position + (hrp.AssemblyLinearVelocity * _G.Prediction)
+                        return CFrame.new(predictedPosition)
+                    elseif key == "Target" then
+                        return hrp
+                    end
+                end
+            end
+        end
+        return oldIndex(self, key)
+    end)
+end
+
+-- ==========================================
+-- 🏢 [Apartment Data Management System]
+-- ==========================================
+local ApartmentOwners = {} 
+local UnitOwners = {}      
+local UI_RainbowElements = {} 
+
+local function updateApartmentData()
+    ApartmentOwners = {}
+    UnitOwners = {}
+    local nameplates = workspace:FindFirstChild("Apartments") and workspace.Apartments:FindFirstChild("Nameplates")
+    
+    if nameplates then
+        for _, np in pairs(nameplates:GetChildren()) do
+            pcall(function()
+                local textLabel = np:FindFirstChild("Plate") and np.Plate:FindFirstChild("SurfaceGui") and np.Plate.SurfaceGui:FindFirstChild("TextLabel")
+                if textLabel then
+                    local rawText = textLabel.Text
+                    local contentText = textLabel.ContentText
+                    local textToCheck = (contentText and contentText ~= "") and contentText or rawText
+                    
+                    if textToCheck and not string.find(string.lower(textToCheck), "unoccupied") and textToCheck ~= "" then
+                        local unitNumber = np.Name:match("%d+")
+                        local unitName = unitNumber and ("Apartment" .. unitNumber) or np.Name
+                        
+                        local matchedPlayer = nil
+                        for _, p in pairs(Players:GetPlayers()) do
+                            if string.find(string.lower(p.Name), string.lower(textToCheck)) or 
+                               string.find(string.lower(p.DisplayName), string.lower(textToCheck)) or
+                               string.find(string.lower(textToCheck), string.lower(p.Name)) then
+                                matchedPlayer = p
+                                break
+                            end
+                        end
+                        
+                        if matchedPlayer then
+                            ApartmentOwners[matchedPlayer.Name] = unitName
+                            UnitOwners[unitName] = matchedPlayer.Name
+                        else
+                            ApartmentOwners[textToCheck] = unitName
+                            UnitOwners[unitName] = textToCheck
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end
+
+-- ==========================================
+-- 🛡️ [Wanted Status Check Function]
+-- ==========================================
+local function isPlayerWanted(targetPlayer)
+    if targetPlayer == player then return false end
+    if not targetPlayer.Character then return false end
+    
+    local hrp = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return false end
+    
+    local wanted = false
+    pcall(function()
+        local nametag = hrp:FindFirstChild("NametagGui")
+        if nametag then
+            local stars = nametag:FindFirstChild("WantedStars")
+            if stars then
+                wanted = true
+                if stars:IsA("GuiObject") and stars.Visible == false then
+                    wanted = false
+                end
+            end
+        end
+    end)
+    return wanted
+end
+
+local function getClosestWantedPlayer()
+    local closest, shortestDist = nil, math.huge
+    local myPos = player.Character and player.Character:GetPivot().Position
+    if not myPos then return nil end
+    
+    for _, p in pairs(Players:GetPlayers()) do
+        if isPlayerWanted(p) then
+            local hrp = p.Character.HumanoidRootPart
+            local dist = (hrp.Position - myPos).Magnitude
+            if dist < shortestDist then
+                shortestDist = dist
+                closest = p
+            end
+        end
+    end
+    return closest
+end
+
+-- ==========================================
+-- 🖨️ & 🏢 [Money Printer & Room ESP System]
+-- ==========================================
+local Printer_ESP_Objects = {}
+local Apt_ESP_Objects = {}
+
+local function updatePrinterAndAptESP()
+    for _, esp in pairs(Printer_ESP_Objects) do esp.IsActive = false; esp.Box.Visible = false; esp.Text.Visible = false end
+    for _, esp in pairs(Apt_ESP_Objects) do esp.IsActive = false; esp.Text.Visible = false end
+
+    local apartments = workspace:FindFirstChild("Apartments")
+    if apartments and apartments:FindFirstChild("Units") then
+        for _, unit in pairs(apartments.Units:GetChildren()) do
+            local ownerName = UnitOwners[unit.Name]
+            
+            local moneyPrintersFolder = unit:FindFirstChild("MoneyPrinters")
+            if moneyPrintersFolder and #moneyPrintersFolder:GetChildren() > 0 then
+                for _, printer in pairs(moneyPrintersFolder:GetChildren()) do
+                    local targetPart = printer:IsA("Model") and (printer.PrimaryPart or printer:FindFirstChildWhichIsA("BasePart")) or printer
+                    if targetPart and targetPart:IsA("BasePart") then
+                        if not Printer_ESP_Objects[printer] then
+                            Printer_ESP_Objects[printer] = { Box = Drawing.new("Square"), Text = Drawing.new("Text"), IsActive = true }
+                            local esp = Printer_ESP_Objects[printer]
+                            esp.Box.Color = Color3.fromRGB(255, 255, 0) 
+                            esp.Box.Thickness = 1.5
+                            esp.Box.Filled = false
+                            esp.Text.Color = Color3.fromRGB(255, 255, 0)
+                            esp.Text.Size = 14
+                            esp.Text.Center = true
+                            esp.Text.Outline = true
+                        end
+                        
+                        local esp = Printer_ESP_Objects[printer]
+                        esp.IsActive = true
+                        local rootPos, onScreen = Camera:WorldToViewportPoint(targetPart.Position)
+                        if onScreen then
+                            esp.Box.Size = Vector2.new(15, 15)
+                            esp.Box.Position = Vector2.new(rootPos.X - 7.5, rootPos.Y - 7.5)
+                            esp.Box.Visible = true
+                            
+                            local distance = math.floor((Camera.CFrame.Position - targetPart.Position).Magnitude)
+                            local displayOwner = ownerName or "Unknown"
+                            esp.Text.Text = string.format("🖨️ Printer | %s | %dm", displayOwner, distance)
+                            esp.Text.Position = Vector2.new(rootPos.X, rootPos.Y - 25)
+                            esp.Text.Visible = true
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    if apartments and apartments:FindFirstChild("Nameplates") then
+        for _, np in pairs(apartments.Nameplates:GetChildren()) do
+            local textLabel = np:FindFirstChild("Plate") and np.Plate:FindFirstChild("SurfaceGui") and np.Plate.SurfaceGui:FindFirstChild("TextLabel")
+            if textLabel and not string.find(string.lower(textLabel.Text), "unoccupied") and textLabel.Text ~= "" then
+                local ownerName = textLabel.Text
+                local targetPart = np:FindFirstChild("Plate")
+                
+                if targetPart then
+                    if not Apt_ESP_Objects[np] then
+                        Apt_ESP_Objects[np] = { Text = Drawing.new("Text"), IsActive = true }
+                        local esp = Apt_ESP_Objects[np]
+                        esp.Text.Size = 16
+                        esp.Text.Center = true
+                        esp.Text.Outline = true
+                    end
+                    
+                    local esp = Apt_ESP_Objects[np]
+                    esp.IsActive = true
+                    
+                    local matchedPlayer = nil
+                    for _, p in pairs(Players:GetPlayers()) do
+                        if string.find(string.lower(ownerName), string.lower(p.Name)) or string.find(string.lower(ownerName), string.lower(p.DisplayName)) then matchedPlayer = p break end
+                    end
+                    
+                    local isWanted = matchedPlayer and isPlayerWanted(matchedPlayer)
+
+                    local rootPos, onScreen = Camera:WorldToViewportPoint(targetPart.Position)
+                    if onScreen then
+                        local distance = math.floor((Camera.CFrame.Position - targetPart.Position).Magnitude)
+                        local displayRoomOwner = matchedPlayer and matchedPlayer.Name or ownerName
+                        esp.Text.Text = string.format("🏠 %s's Room | %dm", displayRoomOwner, distance)
+                        esp.Text.Position = Vector2.new(rootPos.X, rootPos.Y - 15)
+                        esp.Text.Visible = true
+                        
+                        if isWanted then
+                            local hue = tick() % 3 / 3 
+                            esp.Text.Color = Color3.fromHSV(hue, 1, 1) 
+                        else
+                            esp.Text.Color = Color3.fromRGB(50, 255, 50) 
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    for key, esp in pairs(Printer_ESP_Objects) do if not esp.IsActive then esp.Box:Remove(); esp.Text:Remove(); Printer_ESP_Objects[key] = nil end end
+    for key, esp in pairs(Apt_ESP_Objects) do if not esp.IsActive then esp.Text:Remove(); Apt_ESP_Objects[key] = nil end end
+end
+
+-- ==========================================
+-- 🔴 [Player ESP System]
+-- ==========================================
+local ESP_Objects = {}
+local function createESP(targetPlayer)
+    local esp = { Box = Drawing.new("Square"), Text = Drawing.new("Text") }
+    esp.Box.Thickness = 1.5
+    esp.Box.Filled = false
+    esp.Box.Visible = false
+    esp.Text.Size = 16
+    esp.Text.Center = true
+    esp.Text.Outline = true
+    esp.Text.Visible = false
+    ESP_Objects[targetPlayer] = esp
+end
+
+local function removeESP(targetPlayer)
+    if ESP_Objects[targetPlayer] then
+        ESP_Objects[targetPlayer].Box:Remove()
+        ESP_Objects[targetPlayer].Text:Remove()
+        ESP_Objects[targetPlayer] = nil
+    end
+end
+Players.PlayerRemoving:Connect(removeESP)
+
+-- ==========================================
+-- 🖥️ [Create UI Boards & Buttons]
+-- ==========================================
+local oldUI = CoreGui:FindFirstChild("BountyBoardUI") or player:WaitForChild("PlayerGui"):FindFirstChild("BountyBoardUI")
+if oldUI then oldUI:Destroy() end
+
+local sg = Instance.new("ScreenGui")
+sg.Name = "BountyBoardUI"
+sg.ResetOnSpawn = false
+pcall(function() sg.Parent = CoreGui end)
+if sg.Parent == nil then sg.Parent = player:WaitForChild("PlayerGui") end
+
+-- 1️⃣ Wanted Board (Left) - ลากได้อิสระ
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 320, 0, 280)
+mainFrame.Position = UDim2.new(0, 10, 0, 10) 
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+mainFrame.BackgroundTransparency = 0.1
+mainFrame.BorderSizePixel = 2
+mainFrame.BorderColor3 = Color3.fromRGB(255, 170, 0)
+mainFrame.Active = true; mainFrame.Draggable = true
+mainFrame.Parent = sg
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, 0, 0, 35)
+titleLabel.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
+titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.Text = "🎯 Hex X HUB - V32 (Anti-Lag)"
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 14
+titleLabel.Parent = mainFrame
+Instance.new("UICorner", titleLabel).CornerRadius = UDim.new(0, 8)
+
+local aimLockLabel = Instance.new("TextLabel")
+aimLockLabel.Size = UDim2.new(1, 0, 0, 30)
+aimLockLabel.Position = UDim2.new(0, 0, 1, -75)
+aimLockLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+aimLockLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+aimLockLabel.Text = "🎯 Lock: None | 🚪 Target: None"
+aimLockLabel.Font = Enum.Font.GothamBold
+aimLockLabel.TextSize = 11
+aimLockLabel.Parent = mainFrame
+Instance.new("UICorner", aimLockLabel).CornerRadius = UDim.new(0, 6)
+
+local stopChaseBtn = Instance.new("TextButton")
+stopChaseBtn.Size = UDim2.new(1, -20, 0, 30)
+stopChaseBtn.Position = UDim2.new(0, 10, 1, -40)
+stopChaseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+stopChaseBtn.TextColor3 = Color3.new(1, 1, 1)
+stopChaseBtn.Text = "🛑 STOP CHASE"
+stopChaseBtn.Font = Enum.Font.GothamBold
+stopChaseBtn.TextSize = 14
+stopChaseBtn.Visible = false
+stopChaseBtn.Parent = mainFrame
+Instance.new("UICorner", stopChaseBtn).CornerRadius = UDim.new(0, 6)
+
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, -20, 1, -125)
+scrollFrame.Position = UDim2.new(0, 10, 0, 40)
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.ScrollBarThickness = 4
+scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollFrame.Parent = mainFrame
+Instance.new("UIListLayout", scrollFrame).Padding = UDim.new(0, 5)
+
+-- 2️⃣ Apartment Board (Right) - ลากได้อิสระ
+local aptMainFrame = Instance.new("Frame")
+aptMainFrame.Size = UDim2.new(0, 350, 0, 280) 
+aptMainFrame.Position = UDim2.new(0, 340, 0, 10) 
+aptMainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+aptMainFrame.BackgroundTransparency = 0.1
+aptMainFrame.BorderSizePixel = 2
+aptMainFrame.BorderColor3 = Color3.fromRGB(50, 150, 255)
+aptMainFrame.Active = true; aptMainFrame.Draggable = true
+aptMainFrame.Parent = sg
+Instance.new("UICorner", aptMainFrame).CornerRadius = UDim.new(0, 8)
+
+local aptTitleLabel = Instance.new("TextLabel")
+aptTitleLabel.Size = UDim2.new(1, 0, 0, 35)
+aptTitleLabel.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
+aptTitleLabel.TextColor3 = Color3.new(1, 1, 1)
+aptTitleLabel.Text = "🏢 APARTMENT MONITOR"
+aptTitleLabel.Font = Enum.Font.GothamBold
+aptTitleLabel.TextSize = 14
+aptTitleLabel.Parent = aptMainFrame
+Instance.new("UICorner", aptTitleLabel).CornerRadius = UDim.new(0, 8)
+
+local aptScrollFrame = Instance.new("ScrollingFrame")
+aptScrollFrame.Size = UDim2.new(1, -20, 1, -45)
+aptScrollFrame.Position = UDim2.new(0, 10, 0, 40)
+aptScrollFrame.BackgroundTransparency = 1
+aptScrollFrame.ScrollBarThickness = 4
+aptScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+aptScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+aptScrollFrame.Parent = aptMainFrame
+Instance.new("UIListLayout", aptScrollFrame).Padding = UDim.new(0, 5)
+
+-- ==========================================
+-- 🎛️ [Control Panel (Speed, Monitors Toggle)] - ลากได้อิสระ + มีย่อ/ขยาย
+-- ==========================================
+local controlFrame = Instance.new("Frame")
+controlFrame.Size = UDim2.new(0, 400, 0, 105)
+controlFrame.Position = UDim2.new(0.5, -200, 0, 10) 
+controlFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+controlFrame.BackgroundTransparency = 0.1
+controlFrame.BorderSizePixel = 2
+controlFrame.BorderColor3 = Color3.fromRGB(150, 50, 255)
+controlFrame.Active = true
+controlFrame.Draggable = true
+controlFrame.Parent = sg
+Instance.new("UICorner", controlFrame).CornerRadius = UDim.new(0, 8)
+
+local isSpeedEnabled = false
+local currentSpeed = 300
+local minSpeed = 16
+local maxSpeed = 600
+
+local speedToggleBtn = Instance.new("TextButton", controlFrame)
+speedToggleBtn.Size = UDim2.new(0, 130, 0, 35)
+speedToggleBtn.Position = UDim2.new(0, 10, 0, 10)
+speedToggleBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+speedToggleBtn.TextColor3 = Color3.new(1, 1, 1)
+speedToggleBtn.Text = "🏃 Speed: OFF"
+speedToggleBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", speedToggleBtn).CornerRadius = UDim.new(0, 6)
+
+local speedSliderBg = Instance.new("Frame", controlFrame)
+speedSliderBg.Size = UDim2.new(0, 210, 0, 12)
+speedSliderBg.Position = UDim2.new(0, 150, 0, 20)
+speedSliderBg.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+Instance.new("UICorner", speedSliderBg).CornerRadius = UDim.new(1, 0)
+
+local speedSliderFill = Instance.new("Frame", speedSliderBg)
+local defaultPercentage = (currentSpeed - minSpeed) / (maxSpeed - minSpeed)
+speedSliderFill.Size = UDim2.new(defaultPercentage, 0, 1, 0)
+speedSliderFill.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+Instance.new("UICorner", speedSliderFill).CornerRadius = UDim.new(1, 0)
+
+local speedSliderBtn = Instance.new("TextButton", speedSliderBg)
+speedSliderBtn.Size = UDim2.new(1, 0, 1, 20)
+speedSliderBtn.Position = UDim2.new(0, 0, 0, -10)
+speedSliderBtn.BackgroundTransparency = 1
+speedSliderBtn.Text = ""
+
+local speedLabel = Instance.new("TextLabel", controlFrame)
+speedLabel.Size = UDim2.new(0, 210, 0, 15)
+speedLabel.Position = UDim2.new(0, 150, 0, 35)
+speedLabel.BackgroundTransparency = 1
+speedLabel.TextColor3 = Color3.new(1, 1, 1)
+speedLabel.Text = "Current Speed: 300"
+speedLabel.Font = Enum.Font.GothamBold
+speedLabel.TextSize = 12
+
+local wantedToggleBtn = Instance.new("TextButton", controlFrame)
+wantedToggleBtn.Size = UDim2.new(0, 185, 0, 35)
+wantedToggleBtn.Position = UDim2.new(0, 10, 0, 60)
+wantedToggleBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+wantedToggleBtn.TextColor3 = Color3.new(1, 1, 1)
+wantedToggleBtn.Text = "🎯 Wanted UI: ON"
+wantedToggleBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", wantedToggleBtn).CornerRadius = UDim.new(0, 6)
+
+local aptToggleBtn = Instance.new("TextButton", controlFrame)
+aptToggleBtn.Size = UDim2.new(0, 185, 0, 35)
+aptToggleBtn.Position = UDim2.new(0, 205, 0, 60)
+aptToggleBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+aptToggleBtn.TextColor3 = Color3.new(1, 1, 1)
+aptToggleBtn.Text = "🏢 Apartment UI: ON"
+aptToggleBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", aptToggleBtn).CornerRadius = UDim.new(0, 6)
+
+local controlMinBtn = Instance.new("TextButton", controlFrame)
+controlMinBtn.Size = UDim2.new(0, 25, 0, 25)
+controlMinBtn.Position = UDim2.new(1, -30, 0, 5)
+controlMinBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+controlMinBtn.TextColor3 = Color3.new(1, 1, 1)
+controlMinBtn.Text = "-"
+controlMinBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", controlMinBtn).CornerRadius = UDim.new(0, 5)
+
+local controlIsMin = false
+controlMinBtn.MouseButton1Click:Connect(function()
+    controlIsMin = not controlIsMin
+    if controlIsMin then
+        controlFrame.Size = UDim2.new(0, 400, 0, 35)
+        controlMinBtn.Text = "+"
+        speedToggleBtn.Visible = false
+        speedSliderBg.Visible = false
+        speedLabel.Visible = false
+        wantedToggleBtn.Visible = false
+        aptToggleBtn.Visible = false
+    else
+        controlFrame.Size = UDim2.new(0, 400, 0, 105)
+        controlMinBtn.Text = "-"
+        speedToggleBtn.Visible = true
+        speedSliderBg.Visible = true
+        speedLabel.Visible = true
+        wantedToggleBtn.Visible = true
+        aptToggleBtn.Visible = true
+    end
+end)
+
+local dragging = false
+speedSliderBtn.MouseButton1Down:Connect(function() dragging = true end)
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local mousePos = UserInputService:GetMouseLocation().X
+        local sliderPos = speedSliderBg.AbsolutePosition.X
+        local sliderSize = speedSliderBg.AbsoluteSize.X
+        local percentage = math.clamp((mousePos - sliderPos) / sliderSize, 0, 1)
+        
+        speedSliderFill.Size = UDim2.new(percentage, 0, 1, 0)
+        currentSpeed = math.floor(minSpeed + (maxSpeed - minSpeed) * percentage)
+        speedLabel.Text = "Current Speed: " .. currentSpeed
+        
+        if isSpeedEnabled and player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.WalkSpeed = currentSpeed
+        end
+    end
+end)
+
+speedToggleBtn.MouseButton1Click:Connect(function()
+    isSpeedEnabled = not isSpeedEnabled
+    if isSpeedEnabled then
+        speedToggleBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+        speedToggleBtn.Text = "🏃 Speed: ON"
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.WalkSpeed = currentSpeed
+        end
+    else
+        speedToggleBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+        speedToggleBtn.Text = "🏃 Speed: OFF"
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.WalkSpeed = 16
+        end
+    end
+end)
+
+wantedToggleBtn.MouseButton1Click:Connect(function()
+    mainFrame.Visible = not mainFrame.Visible
+    if mainFrame.Visible then
+        wantedToggleBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+        wantedToggleBtn.Text = "🎯 Wanted UI: ON"
+    else
+        wantedToggleBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+        wantedToggleBtn.Text = "🎯 Wanted UI: OFF"
+    end
+end)
+
+aptToggleBtn.MouseButton1Click:Connect(function()
+    aptMainFrame.Visible = not aptMainFrame.Visible
+    if aptMainFrame.Visible then
+        aptToggleBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+        aptToggleBtn.Text = "🏢 Apartment UI: ON"
+    else
+        aptToggleBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+        aptToggleBtn.Text = "🏢 Apartment UI: OFF"
+    end
+end)
+
+-- ==========================================
+-- 🚪 [Main Control Buttons - Independent & Draggable]
+-- ==========================================
+local enterBtn = Instance.new("TextButton")
+enterBtn.Size = UDim2.new(0, 155, 0, 35)
+enterBtn.Position = UDim2.new(1, -340, 1, -170)
+enterBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+enterBtn.TextColor3 = Color3.new(1, 1, 1)
+enterBtn.Text = "ENTER ROOM"
+enterBtn.Font = Enum.Font.GothamBold
+enterBtn.Active = true
+enterBtn.Draggable = true
+enterBtn.Parent = sg
+Instance.new("UICorner", enterBtn).CornerRadius = UDim.new(0, 6) 
+
+local exitBtn = Instance.new("TextButton")
+exitBtn.Size = UDim2.new(0, 155, 0, 35)
+exitBtn.Position = UDim2.new(1, -170, 1, -170)
+exitBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+exitBtn.TextColor3 = Color3.new(1, 1, 1)
+exitBtn.Text = "EXIT ROOM"
+exitBtn.Font = Enum.Font.GothamBold
+exitBtn.Active = true
+exitBtn.Draggable = true
+exitBtn.Parent = sg
+Instance.new("UICorner", exitBtn).CornerRadius = UDim.new(0, 6) 
+
+local confiscateBtn = Instance.new("TextButton")
+confiscateBtn.Size = UDim2.new(0, 75, 0, 75)
+confiscateBtn.Position = UDim2.new(1, -340, 1, -125) 
+confiscateBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 150)
+confiscateBtn.TextColor3 = Color3.new(1, 1, 1)
+confiscateBtn.Text = "🖨️\nSEIZE (B)"
+confiscateBtn.Font = Enum.Font.GothamBold
+confiscateBtn.TextSize = 12
+confiscateBtn.Active = true
+confiscateBtn.Draggable = true
+confiscateBtn.Parent = sg
+Instance.new("UICorner", confiscateBtn).CornerRadius = UDim.new(1, 0)
+
+local kickBtn = Instance.new("TextButton")
+kickBtn.Size = UDim2.new(0, 75, 0, 75)
+kickBtn.Position = UDim2.new(1, -255, 1, -125) 
+kickBtn.BackgroundColor3 = Color3.fromRGB(150, 50, 200)
+kickBtn.TextColor3 = Color3.new(1, 1, 1)
+kickBtn.Text = "🚪\nKICK (J)"
+kickBtn.Font = Enum.Font.GothamBold
+kickBtn.TextSize = 13
+kickBtn.Active = true
+kickBtn.Draggable = true
+kickBtn.Parent = sg
+Instance.new("UICorner", kickBtn).CornerRadius = UDim.new(1, 0)
+
+local arrestBtn = Instance.new("TextButton")
+arrestBtn.Size = UDim2.new(0, 75, 0, 75)
+arrestBtn.Position = UDim2.new(1, -170, 1, -125) 
+arrestBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
+arrestBtn.TextColor3 = Color3.new(1, 1, 1)
+arrestBtn.Text = "🚔\nARREST (G)"
+arrestBtn.Font = Enum.Font.GothamBold
+arrestBtn.TextSize = 12
+arrestBtn.Active = true
+arrestBtn.Draggable = true
+arrestBtn.Parent = sg
+Instance.new("UICorner", arrestBtn).CornerRadius = UDim.new(1, 0) 
+
+local lockBtn = Instance.new("TextButton")
+lockBtn.Size = UDim2.new(0, 75, 0, 75)
+lockBtn.Position = UDim2.new(1, -85, 1, -125) 
+lockBtn.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
+lockBtn.TextColor3 = Color3.new(1, 1, 1)
+lockBtn.Text = "🔒\nLOCK (F)"
+lockBtn.Font = Enum.Font.GothamBold
+lockBtn.TextSize = 13
+lockBtn.Active = true
+lockBtn.Draggable = true
+lockBtn.Parent = sg
+Instance.new("UICorner", lockBtn).CornerRadius = UDim.new(1, 0) 
+
+-- ==========================================
+-- 🚪 & 🚔 [Button Functionalities]
+-- ==========================================
+enterBtn.MouseButton1Click:Connect(function()
+    local char = player.Character or player.CharacterAdded:Wait()
+    local root = char:WaitForChild("HumanoidRootPart")
+    local remote = game:GetService("ReplicatedStorage").__remotes.ApartmentService.TeleportFromApartmentCircle
+    root.CFrame = CFrame.new(-217.3, 17.1, 190.6)
+    task.wait(0.1)
+    for i = 1, 5 do task.spawn(function() remote:InvokeServer("Enter") end); task.wait(0.05) end
+end)
+
+exitBtn.MouseButton1Click:Connect(function()
+    local char = player.Character or player.CharacterAdded:Wait()
+    local root = char:WaitForChild("HumanoidRootPart")
+    root.CFrame = CFrame.new(1152.2, -83.8, -6029.0)
+    task.wait(0.1)
+    game:GetService("ReplicatedStorage").__remotes.ApartmentService.GetApartmentCircleTeleportDestination:InvokeServer("Exit")
+    game:GetService("ReplicatedStorage").__remotes.ApartmentService.TeleportFromApartmentCircle:InvokeServer("Exit")
+end)
+
+local function toggleAimLock()
+    if _G.LockedTarget then _G.LockedTarget = nil else
+        local target = getClosestWantedPlayer()
+        if target then _G.LockedTarget = target end
+    end
+end
+
+local function triggerShoot()
+    if not _G.LockedTarget then return end
+    local char = player.Character
+    if char and char:FindFirstChildOfClass("Tool") then
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+        task.wait(0.05)
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+    end
+end
+
+local function triggerArrest()
+    local target = _G.LockedTarget or getClosestWantedPlayer()
+    if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+        local char = game.Players.LocalPlayer.Character
+        local myRoot = char and char:FindFirstChild("HumanoidRootPart")
+        local targetRoot = target.Character.HumanoidRootPart
+        if not myRoot then return end
+        
+        local distance = (myRoot.Position - targetRoot.Position).Magnitude
+        if distance <= 30 then myRoot.CFrame = targetRoot.CFrame * CFrame.new(0, 0, 2.5) end
+        
+        local humanoid = char:FindFirstChild("Humanoid")
+        local backpack = game.Players.LocalPlayer:FindFirstChild("Backpack")
+        local handcuffs = backpack and backpack:FindFirstChild("Handcuffs")
+        local equippedHandcuffs = char:FindFirstChild("Handcuffs")
+        
+        if handcuffs and humanoid then humanoid:EquipTool(handcuffs)
+        elseif not equippedHandcuffs then return end
+        
+        task.wait(0.2) 
+        pcall(function() 
+            local args = { target }
+            ReplicatedStorage:WaitForChild("__remotes"):WaitForChild("Handcuffs"):WaitForChild("Detain"):InvokeServer(unpack(args)) 
+        end)
+    end
+end
+
+local function triggerKickDoor()
+    local target = _G.WarrantedTarget
+    if not target then return end
+    
+    local unitName = ApartmentOwners[target.Name]
+    if unitName then
+        local unitNum = unitName:match("%d+")
+        if unitNum then
+            local doorsFolder = workspace:FindFirstChild("Apartments") and workspace.Apartments:FindFirstChild("Doors")
+            local targetDoor = doorsFolder and doorsFolder:FindFirstChild("Door" .. tostring(unitNum))
+            
+            if targetDoor then
+                task.spawn(function()
+                    pcall(function()
+                        local args = { targetDoor }
+                        ReplicatedStorage:WaitForChild("__remotes"):WaitForChild("ApartmentService"):WaitForChild("StartApartmentForceEntry"):InvokeServer(unpack(args))
+                    end)
+                    task.wait(0.1) 
+                    for i = 1, 10 do
+                        pcall(function()
+                            local args = { targetDoor }
+                            ReplicatedStorage:WaitForChild("__remotes"):WaitForChild("ApartmentService"):WaitForChild("KickApartmentDoor"):InvokeServer(unpack(args))
+                        end)
+                        task.wait(0.2)
+                    end
+                end)
+            end
+        end
+    end
+end
+
+ local function triggerConfiscatePrinters()
+    if isConfiscating then 
+        warn("⏳ Script is currently seizing printers, please wait...")
+        return 
+    end
+    
+    local target = _G.WarrantedTarget 
+    if not target then return end
+    
+    local unitName = nil
+    local nameplates = workspace:FindFirstChild("Apartments") and workspace.Apartments:FindFirstChild("Nameplates") 
+    if nameplates then
+        for _, np in pairs(nameplates:GetChildren()) do 
+            local textLabel = np:FindFirstChild("Plate") and np.Plate:FindFirstChild("SurfaceGui") and np.Plate.SurfaceGui:FindFirstChild("TextLabel") 
+            if textLabel then 
+                local textToCheck = textLabel.ContentText ~= "" and textLabel.ContentText or textLabel.Text 
+                if textToCheck and textToCheck ~= "" and not string.find(string.lower(textToCheck), "unoccupied") then
+                    if string.find(string.lower(target.Name), string.lower(textToCheck)) or  
+                       string.find(string.lower(target.DisplayName), string.lower(textToCheck)) or 
+                       string.find(string.lower(textToCheck), string.lower(target.Name)) then
+                        local unitNumber = np.Name:match("%d+") 
+                        unitName = unitNumber and ("Apartment" .. unitNumber) or np.Name 
+                    end
+                end
+            end
+        end
+    end
+    
+    if unitName then
+        local apartments = workspace:FindFirstChild("Apartments") 
+        local targetUnitFolder = apartments and apartments:FindFirstChild("Units") and apartments.Units:FindFirstChild(unitName) 
+        local printersFolder = targetUnitFolder and targetUnitFolder:FindFirstChild("MoneyPrinters") 
+        
+        if printersFolder and #printersFolder:GetChildren() > 0 then
+            isConfiscating = true
+            local originalColor = confiscateBtn.BackgroundColor3
+            local originalTextColor = confiscateBtn.TextColor3
+            confiscateBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+            confiscateBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            
+            task.spawn(function() 
+                pcall(function()
+                    local printers = printersFolder:GetChildren() 
+                    for index, printer in pairs(printers) do 
+                        if printer and printer.Parent and (printer.Name == "Money Printer" or printer:IsA("Model")) then 
+                            local beginSuccess = pcall(function()
+                                local args = { printer }
+                                ReplicatedStorage:WaitForChild("__remotes"):WaitForChild("MoneyPrinterService"):WaitForChild("BeginConfiscateMoneyPrinter"):InvokeServer(unpack(args)) 
+                            end)
+                            
+                            if not beginSuccess then continue end
+                            
+                            local timeLeft = 5.1
+                            while timeLeft > 0 do
+                                if not printer or not printer.Parent then
+                                    break
+                                end
+                                confiscateBtn.Text = string.format("⏳ WAIT\n%.1fs\n[%d/%d]", timeLeft, index, #printers)
+                                task.wait(0.1)
+                                timeLeft = timeLeft - 0.1
+                            end
+                            
+                            if printer and printer.Parent then
+                                pcall(function() 
+                                    local args = { printer } 
+                                    ReplicatedStorage:WaitForChild("__remotes"):WaitForChild("MoneyPrinterService"):WaitForChild("ConfiscateMoneyPrinter"):InvokeServer(unpack(args)) 
+                                end)
+                            end
+                            
+                            confiscateBtn.Text = "⏳ NEXT..."
+                            task.wait(0.3) 
+                        end
+                    end
+                end)
+                
+                confiscateBtn.BackgroundColor3 = originalColor
+                confiscateBtn.TextColor3 = originalTextColor
+                confiscateBtn.Text = "🖨️\nSEIZE (B)"
+                isConfiscating = false
+            end)
+        end
+    end
+end
+
+kickBtn.MouseButton1Click:Connect(triggerKickDoor)
+confiscateBtn.MouseButton1Click:Connect(triggerConfiscatePrinters)
+lockBtn.MouseButton1Click:Connect(toggleAimLock)
+arrestBtn.MouseButton1Click:Connect(triggerArrest)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed then
+        if input.KeyCode == Enum.KeyCode.F then toggleAimLock()
+        elseif input.KeyCode == Enum.KeyCode.Q then triggerShoot()
+        elseif input.KeyCode == Enum.KeyCode.G then triggerArrest()
+        elseif input.KeyCode == Enum.KeyCode.J then triggerKickDoor()
+        elseif input.KeyCode == Enum.KeyCode.B then triggerConfiscatePrinters() 
+        end
+    end
+end)
+
+-- ==========================================
+-- 📜 [Board Auto-Refresh System]
+-- ==========================================
+local function populateBoards()
+    for _, child in pairs(scrollFrame:GetChildren()) do if child:IsA("Frame") then child:Destroy() end end
+    for _, child in pairs(aptScrollFrame:GetChildren()) do if child:IsA("Frame") then child:Destroy() end end
+    
+    -- 1️⃣ Wanted Board
+    for _, p in pairs(Players:GetPlayers()) do
+        if isPlayerWanted(p) then
+            local isOwner = ApartmentOwners[p.Name] ~= nil
+            local char = p.Character
+            local inCar = (char and char:FindFirstChild("Humanoid") and char.Humanoid.SeatPart ~= nil)
+            local statusText = inCar and "🚗 In Vehicle" or "🚶 On Foot"
+            local statusColor = inCar and Color3.fromRGB(200, 200, 50) or Color3.fromRGB(50, 200, 50)
+            
+            local itemFrame = Instance.new("Frame", scrollFrame)
+            itemFrame.Name = p.Name
+            itemFrame.Size = UDim2.new(1, -10, 0, 40)
+            itemFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            Instance.new("UICorner", itemFrame).CornerRadius = UDim.new(0, 6)
+            
+            local nameLabel = Instance.new("TextLabel", itemFrame)
+            nameLabel.Size = UDim2.new(0.6, 0, 0.5, 0)
+            nameLabel.Position = UDim2.new(0, 10, 0, 0)
+            nameLabel.BackgroundTransparency = 1
+            nameLabel.TextColor3 = Color3.new(1, 1, 1)
+            nameLabel.Text = "👤 " .. p.Name
+            nameLabel.Font = Enum.Font.GothamBold
+            nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+            
+            local statLabel = Instance.new("TextLabel", itemFrame)
+            statLabel.Size = UDim2.new(0.6, 0, 0.5, 0)
+            statLabel.Position = UDim2.new(0, 10, 0.5, 0)
+            statLabel.BackgroundTransparency = 1
+            statLabel.TextColor3 = statusColor
+            statLabel.Text = statusText
+            statLabel.Font = Enum.Font.Gotham
+            statLabel.TextSize = 12
+            statLabel.TextXAlignment = Enum.TextXAlignment.Left
+            
+            local chaseBtn = Instance.new("TextButton", itemFrame)
+            chaseBtn.Size = UDim2.new(0, 70, 0, 25)
+            chaseBtn.Position = UDim2.new(1, -80, 0.5, -12.5)
+            chaseBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
+            chaseBtn.TextColor3 = Color3.new(1, 1, 1)
+            chaseBtn.Text = "CHASE"
+            chaseBtn.Font = Enum.Font.GothamBold
+            Instance.new("UICorner", chaseBtn).CornerRadius = UDim.new(0, 4)
+            
+            chaseBtn.MouseButton1Click:Connect(function()
+                local myChar = player.Character
+                if myChar and myChar:FindFirstChild("Humanoid") and myChar.Humanoid.SeatPart then
+                    _G.ChasingTarget = p
+                    stopChaseBtn.Visible = true
+                end
+            end)
+
+            if isOwner then
+                table.insert(UI_RainbowElements, nameLabel)
+                table.insert(UI_RainbowElements, itemFrame)
+                itemFrame.BorderSizePixel = 2
+            end
+        end
+    end
+    
+    -- 2️⃣ Apartment Board
+    local sortedOwners = {}
+    for ownerName, unitName in pairs(ApartmentOwners) do
+        table.insert(sortedOwners, {name = ownerName, unit = unitName})
+    end
+    
+    table.sort(sortedOwners, function(a, b)
+        local pA = Players:FindFirstChild(a.name)
+        local pB = Players:FindFirstChild(b.name)
+        local wA = pA and isPlayerWanted(pA) and 1 or 0
+        local wB = pB and isPlayerWanted(pB) and 1 or 0
+        return wA > wB
+    end)
+
+    for _, data in ipairs(sortedOwners) do
+        local ownerName = data.name
+        local unitName = data.unit
+        local pObj = Players:FindFirstChild(ownerName)
+        local isWanted = pObj and isPlayerWanted(pObj)
+        
+        local printerCount = 0
+        local apartments = workspace:FindFirstChild("Apartments")
+        local targetUnitFolder = apartments and apartments:FindFirstChild("Units") and apartments.Units:FindFirstChild(unitName)
+        
+        if targetUnitFolder then
+            local printersFolder = targetUnitFolder:FindFirstChild("MoneyPrinters")
+            if printersFolder then
+                printerCount = #printersFolder:GetChildren()
+            end
+        end
+        
+        local hasPrinters = printerCount > 0
+        
+        local itemFrame = Instance.new("Frame", aptScrollFrame)
+        itemFrame.Size = UDim2.new(1, -10, 0, 52) 
+        itemFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        Instance.new("UICorner", itemFrame).CornerRadius = UDim.new(0, 6)
+        
+        local nameLabel = Instance.new("TextLabel", itemFrame)
+        nameLabel.Size = UDim2.new(0.65, 0, 0.5, 0)
+        nameLabel.Position = UDim2.new(0, 10, 0, 4)
+        nameLabel.BackgroundTransparency = 1
+        nameLabel.Text = string.format("🏠 %s (%s)", ownerName, unitName)
+        nameLabel.Font = Enum.Font.GothamBold
+        nameLabel.TextSize = 12
+        nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+        
+        local printerLabel = Instance.new("TextLabel", itemFrame)
+        printerLabel.Size = UDim2.new(0.65, 0, 0.5, 0)
+        printerLabel.Position = UDim2.new(0, 10, 0.5, -2)
+        printerLabel.BackgroundTransparency = 1
+        printerLabel.Font = Enum.Font.GothamBold
+        printerLabel.TextSize = 11
+        printerLabel.TextXAlignment = Enum.TextXAlignment.Left
+        
+        if hasPrinters then
+            printerLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
+            printerLabel.Text = string.format("🔴 Money Printers: %d 🖨️", printerCount)
+        else
+            printerLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+            printerLabel.Text = "🟢 Status: Normal (No Printers)"
+        end
+        
+        if isWanted then
+            table.insert(UI_RainbowElements, nameLabel)
+            table.insert(UI_RainbowElements, itemFrame)
+            itemFrame.BorderSizePixel = 2
+            
+            local warrantBtn = Instance.new("TextButton", itemFrame)
+            warrantBtn.Size = UDim2.new(0, 75, 0, 25)
+            warrantBtn.Position = UDim2.new(1, -85, 0.5, -12.5) 
+            warrantBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            warrantBtn.TextColor3 = Color3.new(1, 1, 1)
+            warrantBtn.Text = "WARRANT"
+            warrantBtn.Font = Enum.Font.GothamBold
+            warrantBtn.TextSize = 11
+            warrantBtn.BorderSizePixel = 2
+            Instance.new("UICorner", warrantBtn).CornerRadius = UDim.new(0, 4)
+            
+            table.insert(UI_RainbowElements, warrantBtn)
+            
+            warrantBtn.MouseButton1Click:Connect(function()
+                if pObj then
+                    _G.WarrantedTarget = pObj 
+                    
+                    local myChar = game.Players.LocalPlayer.Character
+                    local hum = myChar and myChar:FindFirstChild("Humanoid")
+                    local backpack = game.Players.LocalPlayer:FindFirstChild("Backpack")
+                    local tablet = (backpack and backpack:FindFirstChild("Tablet")) or (myChar and myChar:FindFirstChild("Tablet"))
+                    
+                    if hum and tablet then
+                        hum:EquipTool(tablet)
+                        task.wait(0.15) 
+                    end
+                    
+                    local args = { pObj.UserId } 
+                    pcall(function()
+                        game:GetService("ReplicatedStorage"):WaitForChild("__remotes"):WaitForChild("Tablet"):WaitForChild("ObtainSearchWarrant"):InvokeServer(unpack(args))
+                    end)
+                end
+            end)
+        else
+            nameLabel.TextColor3 = Color3.new(1, 1, 1)
+        end
+    end
+end
+
+task.spawn(function()
+    while true do
+        pcall(updateApartmentData)
+        pcall(populateBoards)
+        task.wait(3)
+    end
+end)
+
+-- ==========================================
+-- 🚗 [Chase Vehicle Fly/Teleport System]
+-- ==========================================
+local function stopChase()
+    _G.ChasingTarget = nil
+    stopChaseBtn.Visible = false
+    local char = player.Character
+    if char and char:FindFirstChild("Humanoid") then
+        local seat = char.Humanoid.SeatPart
+        if seat then
+            local bv = seat:FindFirstChild("StableBV")
+            local bg = seat:FindFirstChild("StableBG")
+            if bv then bv:Destroy() end
+            if bg then bg:Destroy() end
+            seat.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+            seat.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+        end
+    end
+end
+stopChaseBtn.MouseButton1Click:Connect(stopChase)
+
+task.spawn(function()
+    while true do
+        task.wait()
+        if _G.ChasingTarget then
+            local target = _G.ChasingTarget
+            local char = player.Character
+            local seat = char and char:FindFirstChild("Humanoid") and char.Humanoid.SeatPart
+            
+            if not seat or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                stopChase(); continue
+            end
+            
+            local targetPos = target.Character.HumanoidRootPart.Position
+            local myPos = seat.Position
+            local horizontalDistance = (Vector3.new(targetPos.X, 0, targetPos.Z) - Vector3.new(myPos.X, 0, myPos.Z)).Magnitude
+            
+            if horizontalDistance <= 40 then stopChase(); continue end
+            
+            local bv = seat:FindFirstChild("StableBV") or Instance.new("BodyVelocity", seat)
+            bv.Name = "StableBV"
+            bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+            
+            local bg = seat:FindFirstChild("StableBG") or Instance.new("BodyGyro", seat)
+            bg.Name = "StableBG"
+            bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+            bg.P = 9000
+            
+            seat.CFrame = CFrame.new(seat.Position.X, _G.FlyHeight, seat.Position.Z) * seat.CFrame.Rotation
+            local adjustedTarget = Vector3.new(targetPos.X, _G.FlyHeight, targetPos.Z)
+            
+            bv.Velocity = (adjustedTarget - seat.Position).Unit * _G.FlySpeed
+            bg.CFrame = CFrame.new(seat.Position, Vector3.new(targetPos.X, seat.Position.Y, targetPos.Z))
+        end
+    end
+end)
+
+-- ==========================================
+-- 🌈 & 🔴 [RenderStepped Loop & ESP Update]
+-- ==========================================
+RunService.RenderStepped:Connect(function()
+    local char = player.Character
+    if char then
+        local humanoid = char:FindFirstChild("Humanoid")
+        if humanoid and isSpeedEnabled then 
+            humanoid.WalkSpeed = currentSpeed 
+        end
+        
+        local hue = tick() % 3 / 3 
+        local rainbowColor = Color3.fromHSV(hue, 1, 1)
+        for _, obj in pairs(char:GetDescendants()) do
+            if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+                if string.find(obj.Text, player.Name, 1, true) or string.find(obj.Text, player.DisplayName, 1, true) or string.find(obj.Text, "Hex X HUB", 1, true) then
+                    obj.Text = "Hex X HUB"
+                    obj.TextColor3 = rainbowColor
+                    obj.TextStrokeTransparency = 0.2
+                    obj.TextStrokeColor3 = Color3.new(1, 1, 1) 
+                end
+            end
+        end
+    end
+
+    updatePrinterAndAptESP()
+    
+    local globalHue = tick() % 3 / 3 
+    local globalRainbowColor = Color3.fromHSV(globalHue, 1, 1)
+    
+    for _, obj in pairs(UI_RainbowElements) do
+        if obj and obj.Parent then
+            if obj:IsA("TextLabel") then 
+                obj.TextColor3 = globalRainbowColor
+            elseif obj:IsA("TextButton") then
+                obj.BorderColor3 = globalRainbowColor
+                obj.TextColor3 = globalRainbowColor
+            elseif obj:IsA("Frame") then 
+                obj.BorderColor3 = globalRainbowColor 
+            end
+        end
+    end
+
+    local aimText = ""
+    if _G.LockedTarget and _G.LockedTarget.Character and _G.LockedTarget.Character:FindFirstChild("HumanoidRootPart") then
+        local targetRoot = _G.LockedTarget.Character.HumanoidRootPart
+        local targetVelocity = targetRoot.AssemblyLinearVelocity
+        local predictedPosition = targetRoot.Position + (targetVelocity * _G.Prediction)
+        local screenPos, onScreen = Camera:WorldToViewportPoint(predictedPosition)
+        
+        if onScreen then
+            if mousemoverel and not isMobile then
+                local centerPos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                local deltaX = (screenPos.X - centerPos.X) * _G.AimSmoothness
+                local deltaY = (screenPos.Y - centerPos.Y) * _G.AimSmoothness
+                mousemoverel(deltaX, deltaY)
+            else
+                local targetCFrame = CFrame.lookAt(Camera.CFrame.Position, predictedPosition)
+                local lerpSpeed = _G.AimSmoothness <= 1 and _G.AimSmoothness or 0.5
+                Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, lerpSpeed)
+            end
+            
+            local myChar = game.Players.LocalPlayer.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                local myRoot = myChar.HumanoidRootPart
+                local lookAtPos = Vector3.new(predictedPosition.X, myRoot.Position.Y, predictedPosition.Z)
+                myRoot.CFrame = CFrame.lookAt(myRoot.Position, lookAtPos)
+            end
+        end
+
+        aimText = "🔒 LOCKED: " .. _G.LockedTarget.Name
+        lockBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+    else
+        if _G.LockedTarget then _G.LockedTarget = nil end
+        local closest = getClosestWantedPlayer()
+        aimText = closest and ("🎯 Closest: " .. closest.Name) or "🎯 Lock: None"
+        lockBtn.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
+    end    
+    local doorText = _G.WarrantedTarget and ("🚪 Target: " .. _G.WarrantedTarget.Name) or "🚪 Target: None"
+    aimLockLabel.Text = aimText .. " | " .. doorText
+    if _G.WarrantedTarget then aimLockLabel.TextColor3 = Color3.fromRGB(255, 170, 0) else aimLockLabel.TextColor3 = Color3.fromRGB(150, 150, 150) end
+
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= player then
+            local isWanted = isPlayerWanted(p)
+            local hasPrinter = false
+            
+            local unitName = ApartmentOwners[p.Name]
+            if unitName then
+                local unitsFolder = workspace:FindFirstChild("Apartments") and workspace.Apartments:FindFirstChild("Units")
+                local pUnit = unitsFolder and unitsFolder:FindFirstChild(unitName)
+                local mpFolder = pUnit and pUnit:FindFirstChild("MoneyPrinters")
+                if mpFolder and #mpFolder:GetChildren() > 0 then
+                    hasPrinter = true
+                end
+            end
+            
+            if (isWanted or hasPrinter) and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid") then
+                if not ESP_Objects[p] then createESP(p) end
+                
+                local hrp = p.Character.HumanoidRootPart
+                local hum = p.Character.Humanoid
+                local rootPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
+                
+                if onScreen then
+                    local esp = ESP_Objects[p]
+                    local head = p.Character:FindFirstChild("Head")
+                    if head then
+                        local headPos = Camera:WorldToViewportPoint(head.Position + Vector3.new(0, 0.5, 0))
+                        local legPos = Camera:WorldToViewportPoint(hrp.Position - Vector3.new(0, 3, 0))
+                        
+                        local height = math.abs(headPos.Y - legPos.Y)
+                        local width = height / 2
+                        
+                        esp.Box.Size = Vector2.new(width, height)
+                        esp.Box.Position = Vector2.new(headPos.X - width / 2, headPos.Y)
+                        esp.Box.Visible = true
+                        
+                        local distance = math.floor((Camera.CFrame.Position - hrp.Position).Magnitude)
+                        local health = math.floor(hum.Health)
+                        esp.Text.Text = string.format("%s\n[%d HP] | %dm", p.Name, health, distance)
+                        esp.Text.Position = Vector2.new(headPos.X, headPos.Y - 35)
+                        esp.Text.Visible = true
+                        
+                        if isWanted and hasPrinter then
+                            esp.Box.Color = globalRainbowColor
+                            esp.Text.Color = globalRainbowColor
+                        elseif hasPrinter and not isWanted then
+                            esp.Box.Color = Color3.fromRGB(255, 255, 0)
+                            esp.Text.Color = Color3.fromRGB(255, 255, 0)
+                        elseif isWanted then
+                            esp.Box.Color = Color3.fromRGB(255, 50, 50)
+                            esp.Text.Color = Color3.fromRGB(255, 100, 100)
+                        end
+                    end
+                else
+                    if ESP_Objects[p] then ESP_Objects[p].Box.Visible = false; ESP_Objects[p].Text.Visible = false end
+                end
+            else
+                removeESP(p)
+            end
+        end
+    end
+end)
