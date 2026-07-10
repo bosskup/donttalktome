@@ -1,7 +1,6 @@
 
-
 -- ==========================================
--- 🎯 BOUNTY HUNTER V32 (Smart Aim - Zero Lag Hook)
+-- 🎯 BOUNTY HUNTER V30 (Fix Apartment Search & Rainbow Match)
 -- ==========================================
 _G.FlyHeight = 21.5  
 _G.FlySpeed  = 350   
@@ -23,34 +22,33 @@ local CoreGui = game:GetService("CoreGui")
 local Camera = workspace.CurrentCamera
 local Mouse = player:GetMouse()
 
--- เช็คว่าเล่นบนมือถือหรือไม่
-local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+-- ==========================================
+-- 🎯 MOBILE AIMBOT FIX (Optimized Mouse Hooking)
+-- ==========================================
+local mt = getrawmetatable(game)
+local oldIndex = mt.__index
+setreadonly(mt, false)
 
--- ==========================================
--- 🎯 [SMART AIMBOT FIX: Mobile Silent Aim]
--- ==========================================
--- รัน Hook เฉพาะบนมือถือเท่านั้น และปรับโค้ดให้เบาที่สุด (ไม่ให้ PC ค้าง)
-if isMobile and hookmetamethod then
-    local oldIndex
-    oldIndex = hookmetamethod(game, "__index", function(self, key)
-        -- ⚡ ป้องกันเกมค้าง: ต้องเช็คคีย์ String ก่อนสิ่งอื่นใด
-        if key == "Hit" or key == "Target" then
-            if not checkcaller() and _G.LockedTarget then
-                local char = _G.LockedTarget.Character
-                local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                if hrp and typeof(self) == "Instance" and (self:IsA("Mouse") or self.ClassName == "PlayerMouse") then
-                    if key == "Hit" then
-                        local predictedPosition = hrp.Position + (hrp.AssemblyLinearVelocity * _G.Prediction)
-                        return CFrame.new(predictedPosition)
-                    elseif key == "Target" then
-                        return hrp
-                    end
+mt.__index = newcclosure(function(self, key)
+    if (key == "Hit" or key == "Target") and self == Mouse then
+        local target = _G.LockedTarget
+        if target and target.Character then
+            local targetRoot = target.Character:FindFirstChild("HumanoidRootPart")
+            if targetRoot then
+                if key == "Hit" then
+                    local predictedPosition = targetRoot.Position + (targetRoot.AssemblyLinearVelocity * (_G.Prediction or 0))
+                    return CFrame.new(predictedPosition)
+                elseif key == "Target" then
+                    return targetRoot
                 end
             end
         end
-        return oldIndex(self, key)
-    end)
-end
+    end
+    return oldIndex(self, key)
+end)
+
+setreadonly(mt, true)
+-- ==========================================
 
 -- ==========================================
 -- 🏢 [Apartment Data Management System]
@@ -300,7 +298,7 @@ local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1, 0, 0, 35)
 titleLabel.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
 titleLabel.TextColor3 = Color3.new(1, 1, 1)
-titleLabel.Text = "🎯 Hex X HUB - V32 (Anti-Lag)"
+titleLabel.Text = "🎯 Hex X HUB - V30"
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextSize = 14
 titleLabel.Parent = mainFrame
@@ -382,7 +380,7 @@ controlFrame.BackgroundTransparency = 0.1
 controlFrame.BorderSizePixel = 2
 controlFrame.BorderColor3 = Color3.fromRGB(150, 50, 255)
 controlFrame.Active = true
-controlFrame.Draggable = true
+controlFrame.Draggable = true -- เปิดระบบลาก
 controlFrame.Parent = sg
 Instance.new("UICorner", controlFrame).CornerRadius = UDim.new(0, 8)
 
@@ -391,6 +389,7 @@ local currentSpeed = 300
 local minSpeed = 16
 local maxSpeed = 600
 
+-- Speed Toggle Button
 local speedToggleBtn = Instance.new("TextButton", controlFrame)
 speedToggleBtn.Size = UDim2.new(0, 130, 0, 35)
 speedToggleBtn.Position = UDim2.new(0, 10, 0, 10)
@@ -400,24 +399,28 @@ speedToggleBtn.Text = "🏃 Speed: OFF"
 speedToggleBtn.Font = Enum.Font.GothamBold
 Instance.new("UICorner", speedToggleBtn).CornerRadius = UDim.new(0, 6)
 
+-- Speed Slider Background
 local speedSliderBg = Instance.new("Frame", controlFrame)
 speedSliderBg.Size = UDim2.new(0, 210, 0, 12)
 speedSliderBg.Position = UDim2.new(0, 150, 0, 20)
 speedSliderBg.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 Instance.new("UICorner", speedSliderBg).CornerRadius = UDim.new(1, 0)
 
+-- Speed Slider Fill
 local speedSliderFill = Instance.new("Frame", speedSliderBg)
 local defaultPercentage = (currentSpeed - minSpeed) / (maxSpeed - minSpeed)
 speedSliderFill.Size = UDim2.new(defaultPercentage, 0, 1, 0)
 speedSliderFill.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
 Instance.new("UICorner", speedSliderFill).CornerRadius = UDim.new(1, 0)
 
+-- Speed Slider Button (Invisible drag area)
 local speedSliderBtn = Instance.new("TextButton", speedSliderBg)
 speedSliderBtn.Size = UDim2.new(1, 0, 1, 20)
 speedSliderBtn.Position = UDim2.new(0, 0, 0, -10)
 speedSliderBtn.BackgroundTransparency = 1
 speedSliderBtn.Text = ""
 
+-- Speed Value Label
 local speedLabel = Instance.new("TextLabel", controlFrame)
 speedLabel.Size = UDim2.new(0, 210, 0, 15)
 speedLabel.Position = UDim2.new(0, 150, 0, 35)
@@ -427,6 +430,7 @@ speedLabel.Text = "Current Speed: 300"
 speedLabel.Font = Enum.Font.GothamBold
 speedLabel.TextSize = 12
 
+-- Wanted Monitor Toggle
 local wantedToggleBtn = Instance.new("TextButton", controlFrame)
 wantedToggleBtn.Size = UDim2.new(0, 185, 0, 35)
 wantedToggleBtn.Position = UDim2.new(0, 10, 0, 60)
@@ -436,6 +440,7 @@ wantedToggleBtn.Text = "🎯 Wanted UI: ON"
 wantedToggleBtn.Font = Enum.Font.GothamBold
 Instance.new("UICorner", wantedToggleBtn).CornerRadius = UDim.new(0, 6)
 
+-- Apt Monitor Toggle
 local aptToggleBtn = Instance.new("TextButton", controlFrame)
 aptToggleBtn.Size = UDim2.new(0, 185, 0, 35)
 aptToggleBtn.Position = UDim2.new(0, 205, 0, 60)
@@ -445,6 +450,7 @@ aptToggleBtn.Text = "🏢 Apartment UI: ON"
 aptToggleBtn.Font = Enum.Font.GothamBold
 Instance.new("UICorner", aptToggleBtn).CornerRadius = UDim.new(0, 6)
 
+-- ปุ่มย่อ/ขยาย Control Panel UI
 local controlMinBtn = Instance.new("TextButton", controlFrame)
 controlMinBtn.Size = UDim2.new(0, 25, 0, 25)
 controlMinBtn.Position = UDim2.new(1, -30, 0, 5)
@@ -476,6 +482,7 @@ controlMinBtn.MouseButton1Click:Connect(function()
     end
 end)
 
+-- ===== [Control Panel Logic] =====
 local dragging = false
 speedSliderBtn.MouseButton1Down:Connect(function() dragging = true end)
 UserInputService.InputEnded:Connect(function(input)
@@ -1104,6 +1111,8 @@ RunService.RenderStepped:Connect(function()
         local screenPos, onScreen = Camera:WorldToViewportPoint(predictedPosition)
         
         if onScreen then
+            local isMobile = UserInputService.TouchEnabled
+            
             if mousemoverel and not isMobile then
                 local centerPos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
                 local deltaX = (screenPos.X - centerPos.X) * _G.AimSmoothness
@@ -1115,12 +1124,13 @@ RunService.RenderStepped:Connect(function()
                 Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, lerpSpeed)
             end
             
-            local myChar = game.Players.LocalPlayer.Character
-            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-                local myRoot = myChar.HumanoidRootPart
-                local lookAtPos = Vector3.new(predictedPosition.X, myRoot.Position.Y, predictedPosition.Z)
-                myRoot.CFrame = CFrame.lookAt(myRoot.Position, lookAtPos)
-            end
+            -- [ปิดการทำงานส่วนนี้เพื่อไม่ให้มือถือเดินกระตุกเวลาล็อคเป้า]
+            -- local myChar = game.Players.LocalPlayer.Character
+            -- if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+            --     local myRoot = myChar.HumanoidRootPart
+            --     local lookAtPos = Vector3.new(predictedPosition.X, myRoot.Position.Y, predictedPosition.Z)
+            --     myRoot.CFrame = CFrame.lookAt(myRoot.Position, lookAtPos)
+            -- end
         end
 
         aimText = "🔒 LOCKED: " .. _G.LockedTarget.Name
